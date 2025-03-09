@@ -13,7 +13,7 @@ function App() {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch('http://localhost:8000/api/users/')
+      const res = await fetch('54.169.163.184:8000/api/users')
       const data = await res.json()
       setUsers(data)
     } catch (error) {
@@ -27,7 +27,7 @@ function App() {
       birth_year: birthYear
     }
     try {
-      const res = await fetch('http://localhost:8000/api/users/create/', {
+      const res = await fetch('54.169.163.184:8000/api/userscreate/', {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
@@ -45,7 +45,7 @@ function App() {
 
   const delUser = async (id, index) => {
     try {
-      await fetch(`http://localhost:8000/api/users/${id}/`, {
+      await fetch(`54.169.163.184:8000/api/users/${id}/`, {
         method: "DELETE",
       })
 
