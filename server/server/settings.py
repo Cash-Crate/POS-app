@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-lkps_i$8--#n4ykjh(t1xowhp^3kfp02ncb*6_@oe4%pcya_&)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['54.169.163.184']
 
 
 # Application definition
@@ -80,10 +80,10 @@ WSGI_APPLICATION = 'server.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'pos-db',
-        'USER': "root",
-        'PASSWORD': 'password',
-        'HOST': 'localhost',
+        'NAME': 'pos_db',
+        'USER': "postgres",
+        'PASSWORD': 'Bitis_12345',
+        'HOST': 'cash-crate-db.c94w4ugi067x.ap-southeast-1.rds.amazonaws.com',
         'PORT': '5432'
     }
 }
