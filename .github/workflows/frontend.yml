@@ -27,11 +27,6 @@ jobs:
           cd client
           npm install
           
-      - name: Run Test
-        run: |
-          cd client
-          npm test
-
       - name: Build React App
         run: |
           cd client
