@@ -30,7 +30,7 @@ jobs:
       - name: Run Test
         run: |
           cd client
-          npm tets
+          npm test
 
       - name: Build React App
         run: |
