@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import './App.css';
 
 function App() {
-  const API_BASE_URL = "https://54.169.163.184:8000"; // Updated API URL
+  const API_BASE_URL = "http://54.169.163.184:8000"; // Updated API URL
 
   const [users, setUsers] = useState([]);
   const [name, setName] = useState("");
