@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import './App.css';
 
 function App() {
-  const API_BASE_URL = "cashcrate.shop"; // Updated API URL
+  const API_BASE_URL = "https://cashcrate.shop"; // Updated API URL
 
   const [users, setUsers] = useState([]);
   const [name, setName] = useState("");
