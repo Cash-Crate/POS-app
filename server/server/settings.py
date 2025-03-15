@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-lkps_i$8--#n4ykjh(t1xowhp^3kfp02ncb*6_@oe4%pcya_&)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['54.169.163.184']
+ALLOWED_HOSTS = ['18.143.106.190','api.cashcrate.shop']
 
 
 # Application definition
