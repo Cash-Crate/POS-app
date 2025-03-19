@@ -78,3 +78,4 @@ INSERT INTO bought_items (item_id, onetime_trans_id, num_item, items_cost) VALUE
 (4, 4, 1, 500.00),
 (5, 5, 2, 60.00);
 
+
