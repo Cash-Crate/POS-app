@@ -41,8 +41,8 @@ ALTER TABLE public.bought_items OWNER TO root;
 --
 
 CREATE TABLE public.crud_logging (
-    action_id integer NOT NULL,
-    user_id integer,
+    action_id integer,
+    user_id integer NOT NULL,
     action_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     action_taken text NOT NULL,
     x_requested_with text NOT NULL
@@ -71,7 +71,9 @@ ALTER TABLE public.crud_logging ALTER COLUMN action_id ADD GENERATED ALWAYS AS I
 
 CREATE TABLE public.item_attributes (
     item_type integer NOT NULL,
-    item_id integer NOT NULL
+    item_id integer NOT NULL,
+    attr_name text NOT NULL,
+    attr_value text NOT NULL
 );
 
 
@@ -111,7 +113,8 @@ CREATE TABLE public.items (
     item_id integer NOT NULL,
     item_name text NOT NULL,
     description text,
-    item_type integer,
+    item_type integer NOT NULL,
+    item_image text,
     price numeric(10,2) NOT NULL
 );
 
@@ -137,8 +140,8 @@ ALTER TABLE public.items ALTER COLUMN item_id ADD GENERATED ALWAYS AS IDENTITY (
 --
 
 CREATE TABLE public.logins_logging (
-    login_id integer NOT NULL,
-    user_id integer,
+    login_id integer,
+    user_id integer NOT NULL,
     login_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     logout_at timestamp without time zone,
     ip_addr inet NOT NULL,
