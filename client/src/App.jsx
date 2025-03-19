@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import './App.css';
 
 function App() {
-  const API_BASE_URL = "https://api.cashcrate.shop"; // Updated API URL
-  const LOCAL_API_BASE_URL = "http://localhost:8000";
+  const API_BASE_URL = "https://api.cashcrate.shop";
+  //const API_BASE_URL = "http://localhost:8000";
 
   const [users, setUsers] = useState([]);
   const [name, setName] = useState("");
@@ -20,7 +20,7 @@ function App() {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch(`${LOCAL_API_BASE_URL}/api/users/`);
+      const res = await fetch(`${API_BASE_URL}/api/users/`);
       const data = await res.json();
       setUsers(data);
     } catch (error) {
@@ -42,7 +42,7 @@ function App() {
     console.log(userData)
 
     try {
-      const res = await fetch(`${LOCAL_API_BASE_URL}/api/users/create/`, {
+      const res = await fetch(`${API_BASE_URL}/api/users/create/`, {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData)
@@ -59,7 +59,7 @@ function App() {
 
   const delUser = async (id, index) => {
     try {
-      await fetch(`${LOCAL_API_BASE_URL}/api/users/${id}/`, { method: "DELETE" });
+      await fetch(`${API_BASE_URL}/api/users/${id}/`, { method: "DELETE" });
       setUsers(prev => prev.filter((_, i) => i !== index));
     } catch (error) {
       console.error("Error deleting user:", error);
