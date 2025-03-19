@@ -4,7 +4,7 @@ from django.db import models
 
 
 class Users(models.Model):
-    user_id = models.IntegerField(primary_key=True)
+    user_id = models.AutoField(primary_key=True)
     user_name = models.TextField()
     user_email = models.TextField()
     user_pass = models.TextField()
@@ -29,7 +29,7 @@ class Users(models.Model):
 
 
 class LoginsLoggin(models.Model):
-    login_id = models.IntegerField(primary_key=True)
+    login_id = models.AutoField(primary_key=True)
     user_id = models.ForeignKey("Users",
                                 on_delete=models.CASCADE,
                                 db_column="user_id")
@@ -75,7 +75,7 @@ class CrudLogging(models.Model):
 
 
 class ItemTypes(models.Model):
-    item_type_id = models.IntegerField(primary_key=True)
+    item_type_id = models.AutoField(primary_key=True)
     item_type_name = models.TextField()
 
     class Meta:
@@ -88,7 +88,7 @@ class ItemTypes(models.Model):
 
 
 class Items(models.Model):
-    item_id = models.IntegerField(primary_key=True)
+    item_id = models.AutoField(primary_key=True)
     item_name = models.TextField()
     item_desc = models.TextField(null=True, blank=True)
     item_type = models.ForeignKey("ItemTypes",
@@ -132,7 +132,7 @@ class ItemAttributes(models.Model):
 
 
 class OnetimeTrans(models.Model):
-    trans_id = models.IntegerField(primary_key=True)
+    trans_id = models.AutoField(primary_key=True)
     trans_date = models.DateTimeField(auto_now_add=True)
     user_id = models.ForeignKey("Users",
                                 on_delete=models.CASCADE,
@@ -155,7 +155,7 @@ class OnetimeTrans(models.Model):
 
 
 class RecurringTrans(models.Model):
-    trans_id = models.IntegerField(primary_key=True)
+    trans_id = models.AutoField(primary_key=True)
     cost_total = models.DecimalField(max_digits=10, decimal_places=2)
     item_count = models.IntegerField()
     start_date = models.DateTimeField(auto_now_add=True)

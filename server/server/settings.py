@@ -22,10 +22,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-lkps_i$8--#n4ykjh(t1xowhp^3kfp02ncb*6_@oe4%pcya_&)'
 
+# DATABASE SHIT
+DB_NAME = "pos_db"
+DB_USER = "postgres"
+DB_PASSWORD = "Bitis_12345"
+DB_HOST = "psg-cashcrate.c94w4ugi067x.ap-southeast-1.rds.amazonaws.com"
+DB_PORT = "5432"
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['18.143.106.190','api.cashcrate.shop']
+ALLOWED_HOSTS = [
+    '18.143.106.190',
+    'api.cashcrate.shop',
+    'localhost',
+    '120.29.111.99'
+]
 
 
 # Application definition
@@ -80,11 +92,11 @@ WSGI_APPLICATION = 'server.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'pos_db',
-        'USER': "postgres",
-        'PASSWORD': 'Bitis_12345',
-        'HOST': 'cash-crate-db.c94w4ugi067x.ap-southeast-1.rds.amazonaws.com',
-        'PORT': '5432'
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSWORD,
+        'HOST': DB_HOST,
+        'PORT': DB_PORT
     }
 }
 
