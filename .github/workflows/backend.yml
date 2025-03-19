@@ -42,6 +42,6 @@ jobs:
             pip install -r requirements.txt
             python manage.py migrate
             pkill -f gunicorn || true
-            gunicorn --workers 3 --bind 0.0.0.0:8000 server.wsgi:application --daemon
+            gunicorn --bind 0.0.0.0:8000 server.wsgi:application
             sudo systemctl restart gunicorn
             sudo systemctl restart nginx
