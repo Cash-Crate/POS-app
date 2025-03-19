@@ -3,14 +3,14 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from .models import Users
-from .serializer import UserSerializer
+from .serializer import UsersSerializer
 
 
 # Create your views here.
 @api_view(['GET'])
 def get_users(req):
     users = Users.objects.all()
-    serializedUsers = UserSerializer(users, many=True).data
+    serializedUsers = UsersSerializer(users, many=True).data
     return Response(serializedUsers)
 
 

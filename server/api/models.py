@@ -43,7 +43,7 @@ class LoginsLoggin(models.Model):
     origin = models.TextField()
 
     class Meta:
-        db_table = "logins_loggin"
+        db_table = "logins_logging"
         managed = False
 
     def __str__(self):
@@ -72,28 +72,6 @@ class CrudLogging(models.Model):
 
     def __str__(self):
         return f"Action {self.action_id} by User {self.user_id}"
-
-
-class ItemAttributes(models.Model):
-    item_type = models.IntegerField()
-    item_id = models.ForeignKey("Items", on_delete=models.CASCADE,
-                                db_column="item_id")
-    attr_name = models.TextField()
-    attr_value = models.TextField()
-
-    class Meta:
-        db_table = "item_attributes"
-        managed = False
-        constraints = [
-            models.UniqueConstraint(fields=["item_type", "item_id"],
-                                    name="unique_item_attributes")
-        ]
-
-    def __str__(self):
-        return f"Item Type: {self.item_type},\
-        Item ID: {self.item},\
-        Attribute Name: {self.attr_name},\
-        Attribute Value: {self.attr_value}"
 
 
 class ItemTypes(models.Model):
@@ -129,6 +107,28 @@ class Items(models.Model):
         Item Type: {self.item_type},\
         Item Image: {self.item_image},\
         Item Price: {self.price}"
+
+
+class ItemAttributes(models.Model):
+    item_type = models.IntegerField()
+    item_id = models.ForeignKey("Items", on_delete=models.CASCADE,
+                                db_column="item_id")
+    attr_name = models.TextField()
+    attr_value = models.TextField()
+
+    class Meta:
+        db_table = "item_attributes"
+        managed = False
+        constraints = [
+            models.UniqueConstraint(fields=["item_type", "item_id"],
+                                    name="unique_item_attributes")
+        ]
+
+    def __str__(self):
+        return f"Item Type: {self.item_type},\
+        Item ID: {self.item},\
+        Attribute Name: {self.attr_name},\
+        Attribute Value: {self.attr_value}"
 
 
 class OnetimeTrans(models.Model):
@@ -186,7 +186,9 @@ class RecurringTrans(models.Model):
 
 
 class RecurringTransPayment(models.Model):
-    trans_id = models.IntegerField(primary_key=True)
+    trans_id = models.OneToOneField("RecurringTrans",
+                                    on_delete=models.CASCADE,
+                                    db_column="trans_id")
     payment_rcvd = models.DecimalField(max_digits=10, decimal_places=2)
     date_rcvd = models.DateTimeField(auto_now_add=True)
 
@@ -201,9 +203,9 @@ class RecurringTransPayment(models.Model):
 
 
 class BoughtItems(models.Model):
-    item = models.ForeignKey("Items",
-                             on_delete=models.CASCADE,
-                             db_column="item_id")
+    item_id = models.ForeignKey("Items",
+                                on_delete=models.CASCADE,
+                                db_column="item_id")
     onetime_trans_id = models.IntegerField(null=True, blank=True)
     recurring_trans_id = models.IntegerField(null=True, blank=True)
     num_item = models.IntegerField()
