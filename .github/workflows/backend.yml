@@ -5,7 +5,7 @@ on:
     branches:
       - test-branch
     paths:
-    - "server/**"
+      - "server/**"
 
 jobs:
   deploy:
@@ -42,5 +42,7 @@ jobs:
             pip install -r requirements.txt
             python manage.py migrate
             python manage.py collectstatic --noinput
+            pkill -f gunicorn || true
+            gunicorn --workers 3 --bind 0.0.0.0:8000 POS.wsgi:application --daemon
             sudo systemctl restart gunicorn
             sudo systemctl restart nginx
