@@ -70,14 +70,8 @@ jobs:
               docker rm -f server || true
             fi
 
-            # Remove old containers/networks if they exist
-            docker compose down --remove-orphans || true
-
-            # Ensure no dangling containers exist
-            docker system prune -f
-            
-            # Start with the updated image
-            docker compose up -d --force-recreate
+            chmod +x deploy.sh
+            ./deploy.sh
 
             # Restart Nginx to apply any changes
             sudo systemctl restart nginx
