@@ -46,7 +46,7 @@ jobs:
       - name: Build and tag Docker image
         run: |
           set -e
-          docker build -t server ./server
+          docker build -t server -f server/Dockerfile server/
           docker tag server:latest 891377178047.dkr.ecr.ap-southeast-1.amazonaws.com/server:latest
 
       - name: Push image to AWS ECR
