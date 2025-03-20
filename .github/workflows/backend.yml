@@ -43,38 +43,32 @@ jobs:
           set -e
           aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 891377178047.dkr.ecr.ap-southeast-1.amazonaws.com
 
-      - name: Build and tag Docker image
+      - name: Build and push Docker image
         run: |
           set -e
-          docker build -t server -f server/Dockerfile server/
-          docker tag server:latest 891377178047.dkr.ecr.ap-southeast-1.amazonaws.com/server:latest
-
-      - name: Push image to AWS ECR
-        run: |
-          set -e
+          docker build -t 891377178047.dkr.ecr.ap-southeast-1.amazonaws.com/server:latest -f server/Dockerfile server/
           docker push 891377178047.dkr.ecr.ap-southeast-1.amazonaws.com/server:latest
 
-      - name: Deploy to EC2
+      - name: Deploy to EC2 using Docker Compose
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.AWS_HOST }}
           username: ${{ secrets.AWS_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            set -e
             cd ~/POS-app/server
             git checkout test-branch
             git pull origin test-branch
+            
+            # Pull latest Docker image
             docker pull 891377178047.dkr.ecr.ap-southeast-1.amazonaws.com/server:latest
             
-            # Stop and remove any existing container using port 8000
-            RUNNING_CONTAINER=$(docker ps --filter "name=server" --format "{{.ID}}")
-            if [ ! -z "$RUNNING_CONTAINER" ]; then
-              docker stop $RUNNING_CONTAINER
-              docker rm $RUNNING_CONTAINER
-            fi
+            # Stop and remove existing containers
+            docker-compose down
             
-            # Run new container
-            docker run -d -p 8000:8000 --name server 891377178047.dkr.ecr.ap-southeast-1.amazonaws.com/server:latest
+            # Start updated containers in detached mode
+            docker-compose up -d --force-recreate --remove-orphans
             
-            # Restart Nginx if necessary
+            # Restart Nginx
             sudo systemctl restart nginx
