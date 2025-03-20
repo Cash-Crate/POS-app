@@ -65,10 +65,10 @@ jobs:
             docker pull 891377178047.dkr.ecr.ap-southeast-1.amazonaws.com/server:latest
             
             # Stop and remove existing containers
-            docker-compose down
+            docker compose down
             
             # Start updated containers in detached mode
-            docker-compose up -d --force-recreate --remove-orphans
+            docker compose up -d --force-recreate --remove-orphans
             
             # Restart Nginx
             sudo systemctl restart nginx
