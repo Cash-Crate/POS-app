@@ -56,7 +56,6 @@ jobs:
           username: ${{ secrets.AWS_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            set -e
             cd ~/POS-app/server
             git checkout test-branch
             git pull origin test-branch
@@ -64,12 +63,18 @@ jobs:
             # Pull latest Docker image
             docker pull 891377178047.dkr.ecr.ap-southeast-1.amazonaws.com/server:latest
             
-            # Stop and remove the existing container if it exists
-            docker ps -q --filter "name=server" | grep -q . && docker stop server && docker rm server || true
+            # Stop and remove the existing container if running
+            if [ $(docker ps -q -f name=server) ]; then
+              echo "Stopping existing container..."
+              docker stop server
+              docker rm server
+            fi
 
-            # Start new containers using Docker Compose
-            docker compose up -d --force-recreate
-
+            # Ensure Docker Compose is clean
+            docker-compose down || true
             
-            # Restart Nginx
+            # Start with the updated image
+            docker-compose up -d --force-recreate
+            
+            # Restart Nginx to apply any changes
             sudo systemctl restart nginx
