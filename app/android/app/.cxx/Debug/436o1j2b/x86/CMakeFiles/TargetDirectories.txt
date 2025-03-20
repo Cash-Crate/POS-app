@@ -1,0 +1,2 @@
+C:/Users/Admin/Desktop/pos-app/POS-app/app/android/app/.cxx/Debug/436o1j2b/x86/CMakeFiles/edit_cache.dir
+C:/Users/Admin/Desktop/pos-app/POS-app/app/android/app/.cxx/Debug/436o1j2b/x86/CMakeFiles/rebuild_cache.dir

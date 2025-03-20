@@ -51,7 +51,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        bool isTablet = constraints.maxWidth > 600;
+        bool isTablet = constraints.maxWidth >= 900;
+        bool isBelowTablet = constraints.maxWidth >= 600 && constraints.maxWidth < 900;
+        
 
         return Scaffold(
           key: _scaffoldKey,
@@ -102,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Expanded(
                 child: Row(
                   children: [
-                    if (isTablet) const LeftPanel(),
+                    if (isTablet) const LeftPanel(), 
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -110,10 +112,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           shrinkWrap: true,
                           physics: const AlwaysScrollableScrollPhysics(),
                           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: isTablet ? 3 : 1,
+                            crossAxisCount: constraints.maxWidth >= 901 && constraints.maxWidth <= 1265
+                              ? 2
+                              : isTablet
+                                  ? 3
+                                  : isBelowTablet
+                                      ? 2 
+                                      : 1,
                             crossAxisSpacing: 8,
                             mainAxisSpacing: 8,
-                            childAspectRatio: isTablet ? 1.2 : 2,
+                            childAspectRatio: isTablet ? 1.2 : isBelowTablet ? 1.5 : 2,
                           ),
                           itemCount: filteredProducts.length,
                           itemBuilder: (context, index) {
@@ -151,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
-                    if (isTablet) RightPanel(cart: cart, onUpdate: updateCart),
+                    if (isTablet) RightPanel(cart: cart, onUpdate: updateCart), 
                   ],
                 ),
               ),
@@ -210,8 +218,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 )
               : null,
-          drawer: isTablet ? null : Drawer(child: LeftPanel()),
-          endDrawer: isTablet ? null : Drawer(child: RightPanel(cart: cart, onUpdate: updateCart)),
+          drawer: !isTablet ? Drawer(child: LeftPanel()) : null,
+          endDrawer: !isTablet ? Drawer(child: RightPanel(cart: cart, onUpdate: updateCart)) : null,
         );
       },
     );

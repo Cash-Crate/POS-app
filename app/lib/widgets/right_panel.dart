@@ -23,7 +23,7 @@ class _RightPanelState extends State<RightPanel> {
     });
 
     return Container(
-      width: 300,
+      width: 250,
       color: Colors.blue.shade50,
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -49,18 +49,18 @@ class _RightPanelState extends State<RightPanel> {
                           child: Row(
                             children: [
                               SizedBox(
-                                height: 50,
-                                width: 50,
+                                height: 30,
+                                width: 30,
                                 child: Image.asset(
                                   product.image,
                                   fit: BoxFit.cover,
                                   errorBuilder: (context, error, stackTrace) {
                                     return Image.asset("assets/images/placeholder.jpg",
-                                        height: 50, width: 50, fit: BoxFit.cover);
+                                        height: 40, width: 40, fit: BoxFit.cover);
                                   },
                                 ),
                               ),
-                              const SizedBox(width: 10),
+                              const SizedBox(width: 5),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,6 +75,7 @@ class _RightPanelState extends State<RightPanel> {
                                 children: [
                                   IconButton(
                                     icon: const Icon(Icons.remove_circle, color: Colors.red),
+                                    iconSize: 20,
                                     onPressed: () {
                                       setState(() {
                                         if (widget.cart[entry.key]! > 1) {
@@ -89,6 +90,7 @@ class _RightPanelState extends State<RightPanel> {
                                   Text(entry.value.toString(), style: const TextStyle(fontSize: 16)),
                                   IconButton(
                                     icon: const Icon(Icons.add_circle, color: Colors.green),
+                                    iconSize: 20,
                                     onPressed: () {
                                       setState(() {
                                         widget.cart[entry.key] = widget.cart[entry.key]! + 1;
