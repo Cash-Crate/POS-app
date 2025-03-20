@@ -19,6 +19,6 @@ echo "🧹 Cleaning up old images, volumes, and cache..."
 docker system prune -af --volumes
 
 echo "🚀 Redeploying the application..."
-docker-compose up -d --force-recreate --build
+docker compose up -d --force-recreate --build
 
 echo "✅ Deployment completed successfully!"
