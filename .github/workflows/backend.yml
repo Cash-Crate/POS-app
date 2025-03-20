@@ -71,10 +71,10 @@ jobs:
             fi
 
             # Ensure Docker Compose is clean
-            docker-compose down || true
+            docker compose down || true
             
             # Start with the updated image
-            docker-compose up -d --force-recreate
+            docker compose up -d --force-recreate
             
             # Restart Nginx to apply any changes
             sudo systemctl restart nginx
