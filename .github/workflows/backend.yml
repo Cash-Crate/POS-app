@@ -61,22 +61,20 @@ jobs:
           username: ${{ secrets.AWS_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            set -e
-            echo "Pulling latest changes..."
             cd ~/POS-app/server
             git checkout test-branch
             git pull origin test-branch
-
-            echo "Pulling latest Docker image..."
             docker pull 891377178047.dkr.ecr.ap-southeast-1.amazonaws.com/server:latest
-
-            echo "Stopping existing container..."
-            docker stop server || true
-            docker rm server || true
-
-            echo "Running new container..."
-            docker run -d -p 8000:8000 --name server \
-              891377178047.dkr.ecr.ap-southeast-1.amazonaws.com/server:latest
-
-            echo "Restarting Nginx..."
+            
+            # Stop and remove any existing container using port 8000
+            RUNNING_CONTAINER=$(docker ps --filter "name=server" --format "{{.ID}}")
+            if [ ! -z "$RUNNING_CONTAINER" ]; then
+              docker stop $RUNNING_CONTAINER
+              docker rm $RUNNING_CONTAINER
+            fi
+            
+            # Run new container
+            docker run -d -p 8000:8000 --name server 891377178047.dkr.ecr.ap-southeast-1.amazonaws.com/server:latest
+            
+            # Restart Nginx if necessary
             sudo systemctl restart nginx
