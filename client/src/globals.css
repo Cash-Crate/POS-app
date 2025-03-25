@@ -1,2 +1,17 @@
 /* GLOBAL CSS STYLESHEET FOR TAILWIND */
 @import "tailwindcss";
+
+:root{
+    --text-base: clamp(0.875rem, 0.831rem + 0.1878vw, 1rem);
+    --text-base-lg: clamp(1rem, 0.912rem + 0.3756vw, 1.25rem);
+    --text-heading-1: clamp(4rem, 2.5915rem + 6.0094vw, 8rem);
+    --text-heading-2: clamp(2rem, 1.2958rem + 3.0047vw, 4rem);
+    --text-heading-3: clamp(1.125rem, 0.993rem + 0.5634vw, 1.5rem);
+    --color-shadow: #1F3745;
+    --color-primary: #2E414D;
+    --color-highlight: #3BDEB2;
+    --color-white: #FAFCFC;
+    --color-danger: #C62323;
+    --space-md: clamp(1rem, 0.6479rem + 1.5023vw, 2rem);
+    --space-sm: clamp(0.9375rem, 0.8275rem + 0.4695vw, 1.25rem);
+}
