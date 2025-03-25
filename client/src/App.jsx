@@ -3,7 +3,7 @@ import Home from './pages/Home';
 import Test from './pages/test';
 import './App.css';
 
-function  App() {
+function App() {
   return (
     <Router>
       <Routes>
