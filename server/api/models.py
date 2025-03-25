@@ -90,7 +90,8 @@ class ItemTypes(models.Model):
 class Items(models.Model):
     item_id = models.AutoField(primary_key=True)
     item_name = models.TextField()
-    item_desc = models.TextField(null=True, blank=True)
+    item_desc = models.TextField(null=True, blank=True,
+                                 db_column="description")
     item_type = models.ForeignKey("ItemTypes",
                                   on_delete=models.CASCADE,
                                   db_column="item_type")

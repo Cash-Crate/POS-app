@@ -4,8 +4,8 @@ import logging
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .models import Users
-from .serializer import UsersSerializer
+from .models import Users, Items
+from .serializer import UsersSerializer, ItemsSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -47,3 +47,10 @@ def delete_user(req, key):
     elif req.method == 'GET':
         serializer = UsersSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def get_items(req):
+    items = Items.objects.all()
+    serializedItems = ItemsSerializer(items, many=True).data
+    return Response(serializedItems)
