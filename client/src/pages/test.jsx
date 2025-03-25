@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Navbar from '../components/Navbar';
 
 function Test() {
   const API_BASE_URL = "https://api.cashcrate.shop";
@@ -67,6 +68,7 @@ function Test() {
 
   return (
     <>
+      <Navbar />
       <h1 className="text-5xl font-bold">Users Website</h1>
 
       <div className="flex flex-col items-center *:border-2 
