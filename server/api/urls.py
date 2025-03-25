@@ -1,9 +1,10 @@
 from django.urls import path
-from .views import get_users, create_user, delete_user, get_items
+from .views import get_users, create_user, delete_user, get_items, get_logins
 
 urlpatterns = [
     path('users/', get_users, name='get_users'),
     path('users/create/', create_user, name='create_user'),
     path('users/<int:key>/', delete_user, name='delete_user'),
-    path('items/', get_items, name='get_items')
+    path('items/', get_items, name='get_items'),
+    path('logins/', get_logins, name='get_logins')
 ]

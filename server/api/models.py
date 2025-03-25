@@ -35,7 +35,7 @@ class LoginsLoggin(models.Model):
                                 db_column="user_id")
     login_at = models.DateTimeField(auto_now_add=True)
     logout_at = models.DateTimeField(null=True, blank=True)
-    ip_address = models.GenericIPAddressField()
+    ip_address = models.GenericIPAddressField(db_column="ip_addr")
     device_type = models.TextField()
     browser = models.TextField()
     cpu_arch = models.TextField()

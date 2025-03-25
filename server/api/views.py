@@ -1,10 +1,11 @@
 from rest_framework import status
+from django.db.models import F
 import logging
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .models import Users, Items
+from .models import Users, Items, LoginsLoggin
 from .serializer import UsersSerializer, ItemsSerializer
 
 logger = logging.getLogger(__name__)
@@ -54,3 +55,21 @@ def get_items(req):
     items = Items.objects.all()
     serializedItems = ItemsSerializer(items, many=True).data
     return Response(serializedItems)
+
+
+@api_view(['GET'])
+def get_logins(req):
+    logins = LoginsLoggin.objects.select_related('user_id').annotate(
+        email=F('user_id__user_email')
+    ).values(
+        'email',
+        'login_at',
+        'logout_at',
+        'ip_address',
+        'device_type',
+        'browser',
+        'cpu_arch',
+        'host',
+        'origin'
+    )
+    return Response(list(logins))

@@ -1,4 +1,5 @@
 import Navbar from "../components/Navbar";
+import LoginTable from "../components/loginslogging";
 
 const Home = () => {
   return (
@@ -15,6 +16,7 @@ const Home = () => {
           </p>
         </div>
       </main>
+      <LoginTable />
     </>
   );
 };
