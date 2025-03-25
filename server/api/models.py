@@ -97,6 +97,7 @@ class Items(models.Model):
                                   db_column="item_type")
     item_image = models.TextField(null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.IntegerField(null=True)
 
     class Meta:
         db_table = "items"
@@ -107,7 +108,8 @@ class Items(models.Model):
         Item Name: {self.item_name},\
         Item Type: {self.item_type},\
         Item Image: {self.item_image},\
-        Item Price: {self.price}"
+        Item Price: {self.price},\
+        Item Quantity: {self.quantity}"
 
 
 class ItemAttributes(models.Model):

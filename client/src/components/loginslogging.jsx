@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const LoginTable = () => {
+const LoginTable = ({ tablename }) => {
   const [logins, setLogins] = useState([]);
 
   useEffect(() => {
@@ -12,7 +12,7 @@ const LoginTable = () => {
 
   return (
     <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">User Login History</h2>
+      <h2 className="text-xl font-bold mb-4">{tablename}</h2>
       <div className="overflow-x-auto">
         <table className="min-w-full border border-gray-300">
           <thead>

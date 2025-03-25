@@ -16,7 +16,7 @@ const Home = () => {
           </p>
         </div>
       </main>
-      <LoginTable />
+      <LoginTable tablename='Logins History'/>
     </>
   );
 };

@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from .models import Users, Items, LoginsLoggin
-from .serializer import UsersSerializer, ItemsSerializer
+from .serializer import UsersSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -52,9 +52,24 @@ def delete_user(req, key):
 
 @api_view(['GET'])
 def get_items(req):
-    items = Items.objects.all()
-    serializedItems = ItemsSerializer(items, many=True).data
-    return Response(serializedItems)
+    items = Items.objects.select_related('item_type')\
+        .prefetch_related('itemattributes_set')\
+        .annotate(
+            item_type_name=F('item_type__item_type_name'),
+            item_attr=F('itemattributes__attr_name'),
+            attr_value=F('itemattributes__attr_value'))\
+        .values(
+        'item_type_name',
+        'item_name',
+        'item_desc',
+        'item_image',
+        'price',
+        'item_attr',
+        'attr_value',
+        'quantity'
+    )  #.filter(item_attr='Brand') // for filtering in case
+
+    return Response(list(items))
 
 
 @api_view(['GET'])
