@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    quantities = List<int>.filled(products.length, 0);
+    quantities = List<int>.filled(products.length, 1);
   }
 
   void updateCart() {
@@ -57,54 +57,76 @@ class _HomeScreenState extends State<HomeScreen> {
 
         return Scaffold(
           key: _scaffoldKey,
+          backgroundColor: Colors.white,
           appBar: isTablet
               ? AppBar(
-                  backgroundColor: Colors.lightBlue,
+                  backgroundColor: Colors.white,
                   title: SizedBox(
-                    width: 250,
+                    width: 450,
+                    height: 45,
                     child: TextField(
                       controller: searchController,
                       onChanged: filterProducts,
                       decoration: InputDecoration(
                         hintText: "Search...",
-                        prefixIcon: const Icon(Icons.search),
+                        hintStyle: TextStyle(color: Color(0xFF3BDEB2)),
+                        prefixIcon: const Icon(Icons.search, color: Color(0xFF3BDEB2),),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide.none,
                         ),
                         filled: true,
-                        fillColor: Colors.white,
+                        fillColor: const Color(0xFF1F3745),
                       ),
                     ),
                   ),
                   centerTitle: true,
                 )
               : null,
-          body: Column(
+          body: Row(
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: ["All", "Burgers", "Fries", "Rice Meals", "Drinks"]
-                        .map((category) => Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                              child: ChoiceChip(
-                                label: Text(category),
-                                selected: selectedCategory == category,
-                                onSelected: (_) => filterByCategory(category),
-                              ),
-                            ))
-                        .toList(),
-                  ),
-                ),
-              ),
+              if (isTablet) const LeftPanel(),
+              const VerticalDivider(thickness: 1, width: 1, color: Colors.grey),
+              
+             
               Expanded(
-                child: Row(
+                child: Column(
                   children: [
-                    if (isTablet) const LeftPanel(), 
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Container(
+                          alignment: Alignment.centerLeft, 
+                          width: double.maxFinite, 
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start, // Ensure left alignment
+                            children: ["All", "Burgers", "Fries", "Rice Meals", "Drinks"]
+                                .map((category) => Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                                      child: ChoiceChip(
+                                        label: Text(
+                                          category,
+                                          style: TextStyle(
+                                            color: selectedCategory == category 
+                                                ? Colors.white 
+                                                : Color(0xFF3BDEB2), 
+                                          ),
+                                        ),
+                                        selected: selectedCategory == category,
+                                        selectedColor: Color(0xFF176B5D), 
+                                        backgroundColor: Color(0xFF1F3745), 
+                                        onSelected: (_) => filterByCategory(category),
+                                      ),
+                                    ))
+                                .toList(),
+                          ),
+                        ),
+                      ),
+                    ),
+
+
+                    // Products Grid
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -113,15 +135,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           physics: const AlwaysScrollableScrollPhysics(),
                           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: constraints.maxWidth >= 901 && constraints.maxWidth <= 1265
-                              ? 2
-                              : isTablet
-                                  ? 3
-                                  : isBelowTablet
-                                      ? 2 
-                                      : 1,
+                                ? 2
+                                : isTablet
+                                    ? 3
+                                    : isBelowTablet
+                                        ? 2
+                                        : 1,
                             crossAxisSpacing: 8,
                             mainAxisSpacing: 8,
-                            childAspectRatio: isTablet ? 1.2 : isBelowTablet ? 1.5 : 2,
+                            childAspectRatio: isTablet ? 1.3 : isBelowTablet ? 1.7 : 2,
                           ),
                           itemCount: filteredProducts.length,
                           itemBuilder: (context, index) {
@@ -135,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               },
                               onRemove: () {
                                 setState(() {
-                                  if (quantities[index] > 0) {
+                                  if (quantities[index] > 1) {
                                     quantities[index]--;
                                   }
                                 });
@@ -144,7 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 setState(() {
                                   if (quantities[index] > 0) {
                                     cart[filteredProducts[index].name] = (cart[filteredProducts[index].name] ?? 0) + quantities[index];
-                                    quantities[index] = 0;
+                                    quantities[index] = 1;
                                   }
                                 });
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -159,15 +181,20 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
-                    if (isTablet) RightPanel(cart: cart, onUpdate: updateCart), 
                   ],
                 ),
               ),
+
+              if (isTablet) ...[
+                const VerticalDivider(thickness: 1, width: 1, color: Colors.grey),
+                RightPanel(cart: cart, onUpdate: updateCart),
+              ]
             ],
           ),
+
           bottomNavigationBar: !isTablet
               ? BottomAppBar(
-                  color: Colors.lightBlue,
+                  color: Color(0xFF1F3745),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -186,6 +213,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 onChanged: filterProducts,
                                 decoration: InputDecoration(
                                   hintText: "Search...",
+                                  hintStyle: TextStyle(color: Color(0xFF1F3745)),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
                                     borderSide: BorderSide.none,
