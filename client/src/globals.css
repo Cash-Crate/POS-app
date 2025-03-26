@@ -1,12 +1,34 @@
 /* GLOBAL CSS STYLESHEET FOR TAILWIND */
 @import "tailwindcss";
 
+/* @font-face {
+    font-family: 'Maven Pro';
+    src: url('../public/fonts/MavenPro-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+font-family: 'Maven Pro';
+src: url('../public/fonts/MavenPro-Bold.otf') format('opentype');
+font-weight: 600;
+font-style: normal;
+}
+
+@font-face {
+font-family: 'Oxygen';
+src: url('../public/fonts/Oxygen-Bold.otf') format('opentype');
+font-weight: 600;
+font-style: normal;
+} */
+
 :root{
     --text-base: clamp(0.875rem, 0.831rem + 0.1878vw, 1rem);
     --text-base-lg: clamp(1rem, 0.912rem + 0.3756vw, 1.25rem);
     --text-heading-1: clamp(4rem, 2.5915rem + 6.0094vw, 8rem);
     --text-heading-2: clamp(2rem, 1.2958rem + 3.0047vw, 4rem);
-    --text-heading-3: clamp(1.125rem, 0.993rem + 0.5634vw, 1.5rem);
+    --text-heading-3: clamp(1.5rem, 1.3239rem + 0.7512vw, 2rem);
+    --text-heading-4:clamp(1.125rem, 0.993rem + 0.5634vw, 1.5rem);
     --color-shadow: #1F3745;
     --color-primary: #2E414D;
     --color-highlight: #3BDEB2;
@@ -14,4 +36,95 @@
     --color-danger: #C62323;
     --space-md: clamp(1rem, 0.6479rem + 1.5023vw, 2rem);
     --space-sm: clamp(0.9375rem, 0.8275rem + 0.4695vw, 1.25rem);
+}
+
+
+h1{
+    font-family: "Oxygen", sans-serif;
+    font-size: var(--text-heading-1);
+    color: var(--color-white);
+    font-weight:600;
+}
+h2{
+    font-family: "Oxygen", sans-serif;
+    font-size: var(--text-heading-2);
+    font-weight:600;
+}
+h3{
+    font-family: "Oxygen", sans-serif;
+    font-size: var(--text-heading-3);
+    font-weight:600;
+}
+h4{
+    font-family: "Oxygen", sans-serif;
+    font-size: var(--text-heading-4);
+    font-weight:400;
+}
+p{
+    font-family: "Maven Pro", sans-serif;
+    font-size: var(--text-base);
+    font-weight:400;
+}
+label{
+    font-family: "Maven Pro", sans-serif;
+    font-size: var(--text-base-lg);
+    font-weight:400;
+}
+input{
+    color: var(--color-shadow);
+    border: var(--color-shadow) 2px solid;
+}
+input:focus{
+    outline: var(--color-highlight) 1px solid;
+    border: var(--color-highlight) 2px solid;
+}
+button{
+    font-family: "Maven Pro", sans-serif;
+    font-size: var(--text-base);
+    font-weight:400;
+}
+hr{
+    background-color: var(--color-highlight);
+    height: 2px;
+    width: 100%;
+}
+main {
+    font-family: 'Maven Pro', sans-serif;
+    line-height: 1;
+    color: var(--color-white);
+    box-sizing: border-box
+}
+.head{
+    background-color: var(--color-shadow);
+    color: var(--color-white);
+}
+.btn-highlight{
+    background-color: var(--color-highlight);
+    color: var(--color-shadow);
+}
+.btn-dark{
+    background-color: var(--color-shadow);
+    color: var(--color-highlight);
+}
+.btn-light{
+    background-color: var(--color-white);
+    color: var(--color-shadow);
+    border: #000000 2px solid;
+}
+.btn-outline{
+    background-color: transparent;
+    color: var(--color-highlight);
+    border: var(--color-highlight) 1px solid;
+}
+.bg-gradient{
+    background: linear-gradient(303deg,  
+rgb(29, 70, 62) 3%,  
+  var(--color-primary) 20%,  
+rgb(50, 111, 107) 58%,  
+  var(--color-highlight) 95%);
+}
+.card{
+    background-color: var(--color-white);
+    color: var(--color-shadow);
+    border-radius: 8px;
 }
