@@ -1,0 +1,209 @@
+{
+	"info": {
+		"_postman_id": "2e07771c-d49b-438a-a83f-fec30285f948",
+		"name": "CASH CRATE",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33192827"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "GET ALL USERS",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/api/users/",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CREATE NEW USER",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_name\": \"leesin\",\n    \"user_email\": \"leesin@email.com\",\n    \"user_pass\": \"hikuu\",\n    \"birthdate\": \"1899-01-01\",\n    \"address\": \"1234 A Avenue St.\",\n    \"phone_num\": \"09123456789\",\n    \"role\": \"blind\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8000/api/users/create/",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"users",
+								"create",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Items",
+			"item": [
+				{
+					"name": "GET ALL ITEMS WITH ITEM TYPE NAME",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/api/items/",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"items",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CREATE NEW ITEM",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"item_name\": \"Gatorade\",\n    \"item_desc\": \"Energy Drink\",\n    \"item_image\": \"gatorade.jpg\",\n    \"price\": 56.37,\n    \"quantity\": 70,\n    \"item_type\": \"6\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8000/api/items/create/",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"items",
+								"create",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Item Types",
+			"item": [
+				{
+					"name": "CREATE NEW ITEM TYPE",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"item_type_name\": \"Beverages\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8000/api/itemtypes/create/",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"itemtypes",
+								"create",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET ALL ITEM TYPES",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/api/itemtypes/",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"itemtypes",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Logins Logging",
+			"item": []
+		},
+		{
+			"name": "One Time Transactions",
+			"item": []
+		},
+		{
+			"name": "Recurring Transactions",
+			"item": []
+		},
+		{
+			"name": "Recurring Transaction Payments",
+			"item": []
+		},
+		{
+			"name": "Item Attributes",
+			"item": []
+		},
+		{
+			"name": "Bought Items",
+			"item": []
+		},
+		{
+			"name": "CRUD Logging",
+			"item": []
+		}
+	]
+}

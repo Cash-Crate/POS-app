@@ -76,7 +76,7 @@ class CrudLogging(models.Model):
 
 class ItemTypes(models.Model):
     item_type_id = models.AutoField(primary_key=True)
-    item_type_name = models.TextField()
+    item_type_name = models.TextField(unique=True)
 
     class Meta:
         db_table = "item_types"
