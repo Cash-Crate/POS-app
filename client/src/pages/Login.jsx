@@ -27,7 +27,7 @@ const Login = () => {
               <motion.input whileTap={{ scale: 0.95 }} type="password" placeholder="********" className="input p-2 border-2 rounded-lg" required/>
             </div>
           </form>
-            <motion.button whileTap={{ scale: 0.95 }} className='btn-highlight rounded-lg w-full py-2.5'>Log In</motion.button>
+            <motion.button whileTap={{ scale: 0.95 }} className='btn-highlight rounded-lg w-full py-2.5 text-white'>Log In</motion.button>
         </div>
       </section>
     </main>

@@ -2,7 +2,8 @@ import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import Home from './pages/Home';
 import Test from './pages/test';
 import Items from './pages/GetItems';
-import Login from './pages/Login';
+import Login from './pages/login';
+import CustomerLogs from './pages/customerlog';
 import './App.css';
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
         <Route path="/test" element={<Test />} />
         <Route path="/items" element={<Items />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/customerlog" element={<CustomerLogs />} />
       </Routes>
     </Router>
   );
