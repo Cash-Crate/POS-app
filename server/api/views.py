@@ -1,16 +1,18 @@
 from rest_framework import status
+from django.db.models import F
 import logging
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .models import Users
-from .serializer import UsersSerializer
+from .models import Users, Items, LoginsLoggin, ItemTypes
+from .serializer import UsersSerializer, ItemsSerializer, ItemTypesSerializer
 
 logger = logging.getLogger(__name__)
 
 
 # Create your views here.
+# ======================================USERS==================================
 @api_view(['GET'])
 def get_users(req):
     users = Users.objects.all()
@@ -47,3 +49,87 @@ def delete_user(req, key):
     elif req.method == 'GET':
         serializer = UsersSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def get_logins(req):
+    logins = LoginsLoggin.objects.select_related('user_id').annotate(
+        email=F('user_id__user_email')
+    ).values(
+        'email',
+        'login_at',
+        'logout_at',
+        'ip_address',
+        'device_type',
+        'browser',
+        'cpu_arch',
+        'host',
+        'origin'
+    )
+    return Response(list(logins))
+# ======================================USERS==================================
+
+
+# ======================================ITEM TYPES=============================
+@api_view(['GET'])
+def get_item_types(req):
+    itemTypes = ItemTypes.objects.all()
+    serializedItemTypes = ItemTypesSerializer(itemTypes, many=True).data
+    return Response(serializedItemTypes)
+
+
+@api_view(['POST'])
+def create_item_type(req):
+    data = req.data
+    serializer = ItemTypesSerializer(data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=201)
+
+    logger.error(f"Item Type creation failed: {serializer.errors}")
+
+    return Response({
+        "message": "Item Type creation failed",
+        "errors": serializer.errors
+    }, status=400)
+# ======================================ITEM TYPES=============================
+
+
+# ======================================ITEMS==================================
+@api_view(['GET'])
+def get_items(req):
+    items = Items.objects.select_related('item_type')\
+        .prefetch_related('itemattributes_set')\
+        .annotate(
+            item_type_name=F('item_type__item_type_name'),
+            item_attr=F('itemattributes__attr_name'),
+            attr_value=F('itemattributes__attr_value'))\
+        .values(
+        'item_type_name',
+        'item_name',
+        'item_desc',
+        'item_image',
+        'price',
+        'item_attr',
+        'attr_value',
+        'quantity'
+    )  #.filter(item_attr='Brand') // for filtering in case
+
+    return Response(list(items))
+
+
+@api_view(['POST'])
+def create_item(req):
+    data = req.data
+    serializer = ItemsSerializer(data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=201)
+
+    logger.error(f"Item creation failed: {serializer.errors}")
+
+    return Response({
+        "message": "Item creation failed",
+        "errors": serializer.errors
+    }, status=400)
+# ======================================ITEMS==================================

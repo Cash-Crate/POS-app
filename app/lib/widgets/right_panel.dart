@@ -17,14 +17,14 @@ class _RightPanelState extends State<RightPanel> {
     double totalPrice = widget.cart.entries.fold(0, (sum, entry) {
       Product? product = products.firstWhere(
         (p) => p.name == entry.key,
-        orElse: () => Product(name: "Unknown", price: 0, image: "", category: "Uncategorized"),
+        orElse: () => Product(id: 0, name: "Unknown", price: 0, image: "", category: "Uncategorized"),
       );
       return sum + (product.price * entry.value);
     });
 
     return Container(
       width: 250,
-      color: Colors.blue.shade50,
+      color: Colors.white,
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,7 +38,7 @@ class _RightPanelState extends State<RightPanel> {
                     children: widget.cart.entries.map((entry) {
                       Product? product = products.firstWhere(
                         (p) => p.name == entry.key,
-                        orElse: () => Product(name: "Unknown", price: 0, image: "", category: "Uncategorized"),
+                        orElse: () => Product(id: 0, name: "Unknown", price: 0, image: "", category: "Uncategorized"),
                       );
 
                       return Card(
@@ -67,15 +67,23 @@ class _RightPanelState extends State<RightPanel> {
                                   children: [
                                     Text(product.name, style: const TextStyle(fontWeight: FontWeight.bold)),
                                     Text("\₱${product.price.toStringAsFixed(2)}",
-                                        style: const TextStyle(color: Colors.green)),
+                                        // style: const TextStyle(color: Colors.green)
+                                        ),
                                   ],
                                 ),
                               ),
                               Row(
                                 children: [
                                   IconButton(
-                                    icon: const Icon(Icons.remove_circle, color: Colors.red),
-                                    iconSize: 20,
+                                    icon: Container(
+                                      width: 14, // Smaller container
+                                      height: 14,
+                                      decoration: BoxDecoration(
+                                        color: Color(0xFF1F3745), // Background color
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(Icons.remove, color: Color(0xFF3BDEB2), size: 10), // Smaller icon
+                                    ),
                                     onPressed: () {
                                       setState(() {
                                         if (widget.cart[entry.key]! > 1) {
@@ -86,19 +94,31 @@ class _RightPanelState extends State<RightPanel> {
                                         widget.onUpdate();
                                       });
                                     },
+                                    padding: EdgeInsets.zero, 
+                                    constraints: BoxConstraints(), 
                                   ),
-                                  Text(entry.value.toString(), style: const TextStyle(fontSize: 16)),
+                                  Text(entry.value.toString(), style: const TextStyle(fontSize: 14)), // Slightly smaller text
                                   IconButton(
-                                    icon: const Icon(Icons.add_circle, color: Colors.green),
-                                    iconSize: 20,
+                                    icon: Container(
+                                      width: 14, // Same small size
+                                      height: 14,
+                                      decoration: BoxDecoration(
+                                        color: Color(0xFF1F3745), // Background color
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(Icons.add, color: Color(0xFF3BDEB2), size: 10), // Smaller icon
+                                    ),
                                     onPressed: () {
                                       setState(() {
                                         widget.cart[entry.key] = widget.cart[entry.key]! + 1;
                                         widget.onUpdate();
                                       });
                                     },
+                                    padding: EdgeInsets.zero, // No extra spacing
+                                    constraints: BoxConstraints(), // Tight constraints
                                   ),
                                 ],
+
                               ),
                             ],
                           ),
@@ -132,10 +152,10 @@ class _RightPanelState extends State<RightPanel> {
                     });
                   },
             style: ElevatedButton.styleFrom(
-              backgroundColor: widget.cart.isEmpty ? Colors.grey : Colors.green,
+              backgroundColor: widget.cart.isEmpty ? Colors.grey : Color(0xFF3BDEB2),
               minimumSize: const Size(double.infinity, 50),
             ),
-            child: const Text("Place Order"),
+            child: const Text("Place Order", style: TextStyle(color: Color(0xFF1F3745)),),
           ),
         ],
       ),

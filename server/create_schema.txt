@@ -41,7 +41,8 @@ CREATE TABLE items (
     description TEXT,
     item_type INTEGER NOT NULL REFERENCES item_types(item_type_id),
     item_image TEXT,
-    price NUMERIC(10,2) NOT NULL
+    price NUMERIC(10,2) NOT NULL,
+    quantity INT NOT NULL
 )
 
 CREATE TABLE item_attributes (

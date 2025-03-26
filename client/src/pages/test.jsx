@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
+import Navbar from '../components/Navbar';
 
 function Test() {
-  const API_BASE_URL = "https://api.cashcrate.shop";
-  //const API_BASE_URL = "http://localhost:8000";
+  //const API_BASE_URL = "https://api.cashcrate.shop";
+  const API_BASE_URL = "http://localhost:8000";
 
   const [users, setUsers] = useState([]);
   const [name, setName] = useState("");
@@ -67,6 +68,7 @@ function Test() {
 
   return (
     <>
+      <Navbar />
       <h1 className="text-5xl font-bold">Users Website</h1>
 
       <div className="flex flex-col items-center *:border-2 

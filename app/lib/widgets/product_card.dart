@@ -30,6 +30,7 @@ class _ProductCardState extends State<ProductCard> {
     return InkWell(
       onTap: () {},
       child: Card(
+        color: Colors.white,
         elevation: 3,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
@@ -42,7 +43,10 @@ class _ProductCardState extends State<ProductCard> {
                   children: [
                     _buildImageWithQuantityControls(isTablet),
                     const SizedBox(width: 8),
-                    Expanded(child: _buildProductDetails(isTablet, Alignment.centerLeft)),
+                    Expanded(
+                     
+                      child: _buildProductDetails(isTablet, Alignment.centerLeft)
+                      ),
                   ],
                 )
               : Row(
@@ -59,7 +63,7 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   Widget _buildImageWithQuantityControls(bool isTablet) {
-    double imageSize = isTablet ? 120 : 110;
+    double imageSize = isTablet ? 110 : 110;
     return Column(
       children: [
         SizedBox(
@@ -78,23 +82,36 @@ class _ProductCardState extends State<ProductCard> {
             },
           ),
         ),
-        const SizedBox(height: 9),
+        const SizedBox(height: 17),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-              icon: const Icon(Icons.remove_circle, color: Colors.red),
+              icon: CircleAvatar(
+                radius: 10, 
+                backgroundColor: Color(0xFF1F3745), 
+                child: Icon(Icons.remove, color: Color(0xFF3BDEB2), size: 14), 
+              ),
               onPressed: widget.onRemove,
+              padding: EdgeInsets.zero, 
+              constraints: BoxConstraints(),
             ),
             Text(
               widget.quantity.toString(),
               style: TextStyle(fontSize: isTablet ? 18 : 16, fontWeight: FontWeight.bold),
             ),
             IconButton(
-              icon: const Icon(Icons.add_circle, color: Colors.green),
+              icon: CircleAvatar(
+                radius: 10, // Keeps the size small
+                backgroundColor: Color(0xFF1F3745), 
+                child: Icon(Icons.add, color: Color(0xFF3BDEB2), size: 14), 
+              ),
               onPressed: widget.onAdd,
+              padding: EdgeInsets.zero, 
+              constraints: BoxConstraints(), 
             ),
           ],
+
         ),
       ],
     );
@@ -108,18 +125,25 @@ class _ProductCardState extends State<ProductCard> {
         Text(
           widget.product.name,
           textAlign: isTablet ? TextAlign.start : TextAlign.center,
-          style: TextStyle(fontSize: isTablet ? 18 : 20, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: isTablet ? 25 : 20, fontWeight: FontWeight.bold),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
-        const SizedBox(height: 4),
+
         Text(
           "\₱${widget.product.price.toStringAsFixed(2)}",
           style: const TextStyle(fontSize: 14, color: Colors.green),
         ),
-        SizedBox(height: isTablet ? 85 : 10),
+        SizedBox(height: isTablet ? 75 : 10),
         Align(
           alignment: alignment,
           child: ElevatedButton(
             onPressed: widget.onAddToCart,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xFF1F3745),
+              foregroundColor: Color(0xFF3BDEB2),
+              minimumSize: const Size(500, 30),
+              ),
             child: const Text("Add"),
           ),
         ),

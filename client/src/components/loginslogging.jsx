@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 
-const LoginTable = () => {
+const LoginTable = ({ tablename }) => {
   const [logins, setLogins] = useState([]);
 
   useEffect(() => {
-    fetch("demo.json") 
+    fetch("http://localhost:8000/api/logins/") 
       .then((response) => response.json())
       .then((data) => setLogins(data))
       .catch((error) => console.error("Error fetching data:", error));
@@ -12,14 +12,13 @@ const LoginTable = () => {
 
   return (
     <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">User Login History</h2>
+      <h2 className="text-xl font-bold mb-4">{tablename}</h2>
       <div className="overflow-x-auto">
         <table className="min-w-full border border-gray-300">
           <thead>
             <tr className="bg-gray-100">
               {[
-                "Login ID",
-                "User ID",
+                "Email",
                 "Logged In",
                 "Logged Out",
                 "IP Address",
@@ -38,16 +37,15 @@ const LoginTable = () => {
           <tbody>
             {logins.map((login) => (
               <tr key={login.login_id} className="border hover:bg-gray-50">
-                <td className="border px-4 py-2">{login.login_id}</td>
-                <td className="border px-4 py-2">{login.user_id}</td>
-                <td className="border px-4 py-2">{login.Login_at}</td>
-                <td className="border px-4 py-2">{login.Logout_at || "—"}</td>
-                <td className="border px-4 py-2">{login.Ip_Addr}</td>
+                <td className="border px-4 py-2">{login.email}</td>
+                <td className="border px-4 py-2">{login.login_at}</td>
+                <td className="border px-4 py-2">{login.logout_at || "—"}</td>
+                <td className="border px-4 py-2">{login.ip_address}</td>
                 <td className="border px-4 py-2">{login.device_type}</td>
                 <td className="border px-4 py-2">{login.browser}</td>
                 <td className="border px-4 py-2">{login.cpu_arch}</td>
-                <td className="border px-4 py-2">{login.Host}</td>
-                <td className="border px-4 py-2">{login.Origin}</td>
+                <td className="border px-4 py-2">{login.host}</td>
+                <td className="border px-4 py-2">{login.origin}</td>
               </tr>
             ))}
           </tbody>

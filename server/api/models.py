@@ -35,7 +35,7 @@ class LoginsLoggin(models.Model):
                                 db_column="user_id")
     login_at = models.DateTimeField(auto_now_add=True)
     logout_at = models.DateTimeField(null=True, blank=True)
-    ip_address = models.GenericIPAddressField()
+    ip_address = models.GenericIPAddressField(db_column="ip_addr")
     device_type = models.TextField()
     browser = models.TextField()
     cpu_arch = models.TextField()
@@ -76,7 +76,7 @@ class CrudLogging(models.Model):
 
 class ItemTypes(models.Model):
     item_type_id = models.AutoField(primary_key=True)
-    item_type_name = models.TextField()
+    item_type_name = models.TextField(unique=True)
 
     class Meta:
         db_table = "item_types"
@@ -90,12 +90,14 @@ class ItemTypes(models.Model):
 class Items(models.Model):
     item_id = models.AutoField(primary_key=True)
     item_name = models.TextField()
-    item_desc = models.TextField(null=True, blank=True)
+    item_desc = models.TextField(null=True, blank=True,
+                                 db_column="description")
     item_type = models.ForeignKey("ItemTypes",
                                   on_delete=models.CASCADE,
                                   db_column="item_type")
     item_image = models.TextField(null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.IntegerField(null=True)
 
     class Meta:
         db_table = "items"
@@ -106,7 +108,8 @@ class Items(models.Model):
         Item Name: {self.item_name},\
         Item Type: {self.item_type},\
         Item Image: {self.item_image},\
-        Item Price: {self.price}"
+        Item Price: {self.price},\
+        Item Quantity: {self.quantity}"
 
 
 class ItemAttributes(models.Model):
