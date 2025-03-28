@@ -203,6 +203,21 @@ def item_by_id(req, key):
 # ======================================ITEMS==================================
 
 
+# ======================================ITEM ATTRIBUTES========================
+@api_view(['GET'])
+def get_item_attrs(req, key):
+    try:
+        Items.objects.get(pk=key)
+    except Items.DoesNotExist:
+        return Response(status=404)
+
+    item_attrs = ItemAttributes.objects.filter(item_id=key)\
+        .values('attr_name', 'attr_value')
+    return Response(list(item_attrs))
+
+# ======================================ITEM ATTRIBUTES========================
+
+
 # ======================================CRUD LOGGINGS==========================
 @api_view(['GET'])
 def get_crud_logs(req):

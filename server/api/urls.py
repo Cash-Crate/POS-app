@@ -6,6 +6,7 @@ from .views import (
     create_crud_log,
     user_by_id,
     get_items,
+    get_item_attrs,
     item_by_id,
     create_item,
     get_logins,
@@ -25,4 +26,5 @@ urlpatterns = [
     path('items/', get_items, name='get_items'),
     path('items/<int:key>', item_by_id, name='update_item'),
     path('items/create/', create_item, name='create_item'),
+    path('items/attrs/<int:key>', get_item_attrs, name='get_item_attributes')
 ]
