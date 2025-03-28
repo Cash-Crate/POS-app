@@ -129,7 +129,7 @@ class ItemAttributes(models.Model):
 
     def __str__(self):
         return f"Item Type: {self.item_type},\
-        Item ID: {self.item},\
+        Item ID: {self.item_id},\
         Attribute Name: {self.attr_name},\
         Attribute Value: {self.attr_value}"
 
@@ -177,15 +177,15 @@ class RecurringTrans(models.Model):
         db_table = "recurring_trans"
         managed = False
 
-        def __str__(self):
-            return f"Trans ID: {self.trans_id},\
-            Cost Total: {self.cost_total},\
-            Item Count: {self.item_count},\
-            Start Date: {self.start_date},\
-            End Date: {self.end_date},\
-            Month Fee: {self.month_fee},\
-            Year Fee: {self.year_fee},\
-            User ID: {self.user_id}"
+    def __str__(self):
+        return f"Trans ID: {self.trans_id},\
+        Cost Total: {self.cost_total},\
+        Item Count: {self.item_count},\
+        Start Date: {self.start_date},\
+        End Date: {self.end_date},\
+        Month Fee: {self.month_fee},\
+        Year Fee: {self.year_fee},\
+        User ID: {self.user_id}"
 
 
 class RecurringTransPayment(models.Model):
@@ -227,7 +227,7 @@ class BoughtItems(models.Model):
             )]
 
     def __str__(self):
-        return f"Item: {self.item}, \
+        return f"Item: {self.item_id}, \
         One-time: {self.onetime_trans_id}, \
         Recurring: {self.recurring_trans_id}, \
         ItemCost: {self.items_cost}"

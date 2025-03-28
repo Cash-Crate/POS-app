@@ -105,6 +105,7 @@ def get_items(req):
             item_attr=F('itemattributes__attr_name'),
             attr_value=F('itemattributes__attr_value'))\
         .values(
+        'item_id',
         'item_type_name',
         'item_name',
         'item_desc',
@@ -132,4 +133,34 @@ def create_item(req):
         "message": "Item creation failed",
         "errors": serializer.errors
     }, status=400)
+
+
+@api_view(['PUT', 'DELETE'])
+def update_item(req, key):
+    try:
+
+        item = Items.objects.get(pk=key)
+    except Items.DoesNotExist:
+        return Response(status=404)
+
+    if req.method == 'PUT':
+
+        serializer = ItemsSerializer(item, data=req.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=200)
+
+        logger.error(f"Item update failed: {serializer.errors}")
+        return Response({
+            "message": "Item update failed",
+            "errors": serializer.errors
+        }, status=400)
+
+    if req.method == 'DELETE':
+        item.delete()
+        return Response(status=204)
+
+    elif req.method == 'GET':
+        serializer = ItemsSerializer(item)
+        return Response(serializer.data, status=200)
 # ======================================ITEMS==================================
