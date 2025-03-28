@@ -1,19 +1,14 @@
 import logging
 
-from django.db.models import F
 from django.db import connection
-
+from django.db.models import F
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .models import CrudLogging, ItemAttributes, Items, ItemTypes, LoginsLoggin, Users
-from .serializer import (
-    CrudSerializer,
-    ItemAttributesSerializer,
-    ItemsSerializer,
-    ItemTypesSerializer,
-    UsersSerializer,
-)
+from .models import (CrudLogging, ItemAttributes, Items, ItemTypes,
+                     LoginsLoggin, Users)
+from .serializer import (CrudSerializer, ItemAttributesSerializer,
+                         ItemsSerializer, ItemTypesSerializer, UsersSerializer)
 
 logger = logging.getLogger(__name__)
 
@@ -254,6 +249,57 @@ def create_item_attr(req, key):
             "message": "Item Attribute creation failed",
             "errors": str(e)
         }, status=400)
+
+
+@api_view(['PUT'])
+def update_item_value(req, key, name):
+    try:
+        Items.objects.get(pk=key)
+    except Items.DoesNotExist:
+        return Response(status=404)
+
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                UPDATE item_attributes
+                SET attr_value = %s
+                WHERE item_id = %s AND attr_name = %s
+                """,
+                [req.data.get('attr_value'), key, name]
+            )
+
+            if cursor.rowcount == 0:
+                return Response({
+                    "message": "Item Attribute not found",
+                    "errors": "No attribute found with this item"
+                }, status=404)
+
+        return Response({
+            "item_id": key,
+            "attr_name": name,
+            "attr_value": req.data.get('attr_value')
+        }, status=200)
+    except Exception as e:
+        logger.error(f"Item Attribute update failed: {e}")
+        return Response({
+            "message": "Item Attribute update failed",
+            "errors": str(e)
+        }, status=400)
+
+
+@api_view(['DELETE'])
+def delete_item_attr(req, key):
+    try:
+        Items.objects.get(pk=key)
+    except Items.DoesNotExist:
+        return Response(status=404)
+
+    item_attrs = ItemAttributes.objects.filter(item_id=key)
+    for attr in item_attrs:
+        attr.delete()
+
+    return Response(status=204)
 # ======================================ITEM ATTRIBUTES========================
 
 
