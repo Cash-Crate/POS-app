@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, connection
 
 # Create your models here.
 
@@ -113,7 +113,7 @@ class Items(models.Model):
 
 
 class ItemAttributes(models.Model):
-    item_type = models.IntegerField()
+    id = models.AutoField(primary_key=True)
     item_id = models.ForeignKey("Items", on_delete=models.CASCADE,
                                 db_column="item_id")
     attr_name = models.TextField()
@@ -123,15 +123,22 @@ class ItemAttributes(models.Model):
         db_table = "item_attributes"
         managed = False
         constraints = [
-            models.UniqueConstraint(fields=["item_type",
-                                            "item_id",
-                                            "attr_name"],
+            models.UniqueConstraint(fields=["item_id", "attr_name"],
                                     name="unique_item_attributes")
         ]
 
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "INSERT INTO item_attributes (item_id, attr_name, attr_value) VALUES (%s, %s, %s)",
+                    [self.item_id.pk, self.attr_name, self.attr_value]
+                )
+        else:
+            super().save(*args, **kwargs)
+
     def __str__(self):
-        return f"Item Type: {self.item_type},\
-        Item ID: {self.item_id},\
+        return f"Item ID: {self.item_id},\
         Attribute Name: {self.attr_name},\
         Attribute Value: {self.attr_value}"
 

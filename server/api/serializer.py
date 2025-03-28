@@ -32,7 +32,7 @@ class ItemTypesSerializer(serializers.ModelSerializer):
 class ItemAttributesSerializer(serializers.ModelSerializer):
     class Meta:
         model = ItemAttributes
-        fields = '__all__'
+        fields = ['item_id', 'attr_name', 'attr_value']
 
 
 class ItemsSerializer(serializers.ModelSerializer):

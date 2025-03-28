@@ -1,11 +1,19 @@
-from django.db.models import F
 import logging
+
+from django.db.models import F
+from django.db import connection
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .models import Users, Items, LoginsLoggin, ItemTypes, CrudLogging, ItemAttributes
-from .serializer import UsersSerializer, ItemsSerializer, ItemTypesSerializer, CrudSerializer
+from .models import CrudLogging, ItemAttributes, Items, ItemTypes, LoginsLoggin, Users
+from .serializer import (
+    CrudSerializer,
+    ItemAttributesSerializer,
+    ItemsSerializer,
+    ItemTypesSerializer,
+    UsersSerializer,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -215,6 +223,37 @@ def get_item_attrs(req, key):
         .values('attr_name', 'attr_value')
     return Response(list(item_attrs))
 
+
+@api_view(['POST'])
+def create_item_attr(req, key):
+    try:
+        Items.objects.get(pk=key)
+    except Items.DoesNotExist:
+        return Response(status=404)
+
+    data = req.data.copy()
+    data['item_id'] = key
+
+    try:
+        serializer = ItemAttributesSerializer(data=data)
+        if serializer.is_valid():
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "INSERT INTO item_attributes (item_id, attr_name, attr_value) VALUES (%s, %s, %s)",
+                    [key, serializer.validated_data['attr_name'], serializer.validated_data['attr_value']]
+                )
+                return Response(serializer.data, status=201)
+        else:
+            return Response({
+                "message": "Item Attribute creation failed",
+                "errors": serializer.errors
+            }, status=400)
+    except Exception as e:
+        logger.error(f"Item Attribute creation failed: {e}")
+        return Response({
+            "message": "Item Attribute creation failed",
+            "errors": str(e)
+        }, status=400)
 # ======================================ITEM ATTRIBUTES========================
 
 
