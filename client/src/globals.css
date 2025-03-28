@@ -9,17 +9,17 @@
 }
 
 @font-face {
-font-family: 'Maven Pro';
-src: url('../public/fonts/MavenPro-Bold.otf') format('opentype');
-font-weight: 600;
-font-style: normal;
+    font-family: 'Maven Pro';
+    src: url('../public/fonts/MavenPro-Bold.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
 }
 
 @font-face {
-font-family: 'Oxygen';
-src: url('../public/fonts/Oxygen-Bold.otf') format('opentype');
-font-weight: 600;
-font-style: normal;
+    font-family: 'Oxygen';
+    src: url('../public/fonts/Oxygen-Bold.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
 } */
 
 :root{
@@ -38,48 +38,46 @@ font-style: normal;
     --space-sm: clamp(0.9375rem, 0.8275rem + 0.4695vw, 1.25rem);
 }
 
-
-h1{
+h1, h2, h3, h4 {
     font-family: "Oxygen", sans-serif;
+}
+p, label, button, main {
+    font-family: "Maven Pro", sans-serif;
+}
+h1{
     font-size: var(--text-heading-1);
     color: var(--color-white);
     font-weight:600;
 }
 h2{
-    font-family: "Oxygen", sans-serif;
     font-size: var(--text-heading-2);
     font-weight:600;
 }
 h3{
-    font-family: "Oxygen", sans-serif;
     font-size: var(--text-heading-3);
     font-weight:600;
 }
 h4{
-    font-family: "Oxygen", sans-serif;
     font-size: var(--text-heading-4);
     font-weight:400;
 }
 p{
-    font-family: "Maven Pro", sans-serif;
     font-size: var(--text-base);
     font-weight:400;
 }
 label{
-    font-family: "Maven Pro", sans-serif;
     font-size: var(--text-base-lg);
     font-weight:400;
 }
 input{
-    color: var(--color-shadow);
-    border: var(--color-shadow) 2px solid;
+    color: var(--color-white);
+    border: var(--color-white) 2px solid;
 }
 input:focus{
     outline: var(--color-highlight) 1px solid;
     border: var(--color-highlight) 2px solid;
 }
 button{
-    font-family: "Maven Pro", sans-serif;
     font-size: var(--text-base);
     font-weight:400;
 }
@@ -89,7 +87,6 @@ hr{
     width: 100%;
 }
 main {
-    font-family: 'Maven Pro', sans-serif;
     line-height: 1;
     color: var(--color-white);
     box-sizing: border-box
@@ -124,7 +121,7 @@ rgb(50, 111, 107) 58%,
   var(--color-highlight) 95%);
 }
 .card{
-    background-color: var(--color-white);
-    color: var(--color-shadow);
+    background-color: var(--color-shadow);
+    color: var(--color-white);
     border-radius: 8px;
 }

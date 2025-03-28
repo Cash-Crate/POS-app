@@ -1,7 +1,6 @@
 import React from 'react'
 import Navbar from '../components/Navbar'
-import { useState } from 'react'
-import { useEffect } from 'react'
+import { useState, useEffect  } from 'react'
 
 const Items = () => {
   const [items, setItems] = useState([])

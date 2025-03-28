@@ -1,5 +1,5 @@
-import logo from '../../public/CashCrateLogo.webp'
-import { motion } from "framer-motion"
+import logo from '/CashCrateLogo.webp'
+import { motion } from "motion/react"
 
 const Home = () => {
   return (

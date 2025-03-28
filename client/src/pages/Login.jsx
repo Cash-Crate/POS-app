@@ -1,6 +1,6 @@
-import image from '../../public/CashCrateLogo.webp'
+import image from '/CashCrateLogo.webp'
 import { useState } from "react"
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 
 const Login = () => {
   const [isActive, setActive] = useState(true);
