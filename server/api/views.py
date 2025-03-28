@@ -1,4 +1,3 @@
-from rest_framework import status
 from django.db.models import F
 import logging
 
@@ -36,19 +35,31 @@ def create_user(req):
     }, status=400)
 
 
-@api_view(['DELETE', 'GET'])
-def delete_user(req, key):
+@api_view(['DELETE', 'GET', 'PUT'])
+def user_by_id(req, key):
     try:
         user = Users.objects.get(pk=key)
     except Users.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(status=404)
+
+    if req.method == 'PUT':
+        serializer = UsersSerializer(user, data=req.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=200)
+
+        logger.error(f"User update failed: {serializer.errors}")
+        return Response({
+            'error': serializer.errors
+        }, status=400),
 
     if req.method == 'DELETE':
         user.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-    elif req.method == 'GET':
+        return Response(status=204)
+
+    if req.method == 'GET':
         serializer = UsersSerializer(user)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=200)
 
 
 @api_view(['GET'])
@@ -135,8 +146,8 @@ def create_item(req):
     }, status=400)
 
 
-@api_view(['PUT', 'DELETE'])
-def update_item(req, key):
+@api_view(['PUT', 'DELETE', 'GET'])
+def item_by_id(req, key):
     try:
 
         item = Items.objects.get(pk=key)
@@ -144,7 +155,6 @@ def update_item(req, key):
         return Response(status=404)
 
     if req.method == 'PUT':
-
         serializer = ItemsSerializer(item, data=req.data)
         if serializer.is_valid():
             serializer.save()
@@ -160,7 +170,7 @@ def update_item(req, key):
         item.delete()
         return Response(status=204)
 
-    elif req.method == 'GET':
+    if req.method == 'GET':
         serializer = ItemsSerializer(item)
         return Response(serializer.data, status=200)
 # ======================================ITEMS==================================
