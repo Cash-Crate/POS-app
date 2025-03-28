@@ -4,13 +4,12 @@ import logging
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .models import Users, Items, LoginsLoggin, ItemTypes
-from .serializer import UsersSerializer, ItemsSerializer, ItemTypesSerializer
+from .models import Users, Items, LoginsLoggin, ItemTypes, CrudLogging
+from .serializer import UsersSerializer, ItemsSerializer, ItemTypesSerializer, CrudSerializer
 
 logger = logging.getLogger(__name__)
 
 
-# Create your views here.
 # ======================================USERS==================================
 @api_view(['GET'])
 def get_users(req):
@@ -174,3 +173,28 @@ def item_by_id(req, key):
         serializer = ItemsSerializer(item)
         return Response(serializer.data, status=200)
 # ======================================ITEMS==================================
+
+
+# ======================================CRUD LOGGINGS==========================
+@api_view(['GET'])
+def get_crud_logs(req):
+    crudLogs = CrudLogging.objects.all()
+    serializedCrudLogs = CrudSerializer(crudLogs, many=True).data
+    return Response(serializedCrudLogs)
+
+
+@api_view(['POST'])
+def create_crud_log(req):
+    data = req.data
+    serializer = CrudSerializer(data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=201)
+
+    logger.error(f"Crud Log creation failed: {serializer.errors}")
+
+    return Response({
+        "message": "Crud Log creation failed",
+        "errors": serializer.errors
+    }, status=400)
+# ======================================CRUD LOGGINGS==========================
