@@ -39,14 +39,14 @@ INSERT INTO items (item_name, description, item_type, item_image, price) VALUES
 ('Action Figure', 'Collectible toy', 5, 'action_figure.jpg', 30.00);
 
 -- Insert dummy item attributes
-INSERT INTO item_attributes (item_type, item_id, attr_name, attr_value) VALUES
-(1, 1, 'Brand', 'Asus'),
-(1, 1, 'CPU', 'Intel Core i7 11th Gen'),
-(1, 1, 'Model', 'ROG'),
-(2, 2, 'Size', 'M'),
-(3, 3, 'Author', 'J.K. Rowling'),
-(4, 4, 'Material', 'Leather'),
-(5, 5, 'Series', 'Marvel');
+INSERT INTO item_attributes (item_id, attr_name, attr_value) VALUES
+(1, 'Brand', 'Asus'),
+(1, 'CPU', 'Intel Core i7 11th Gen'),
+(1, 'Model', 'ROG'),
+(2, 'Size', 'M'),
+(3, 'Author', 'J.K. Rowling'),
+(4, 'Material', 'Leather'),
+(5, 'Series', 'Marvel');
 
 -- Insert dummy one-time transactions
 INSERT INTO onetime_trans (user_id, item_count, cost_total) VALUES
