@@ -33,6 +33,7 @@
     --color-primary: #2E414D;
     --color-highlight: #3BDEB2;
     --color-white: #FAFCFC;
+    --color-black: #000000;
     --color-danger: #C62323;
     --space-md: clamp(1rem, 0.6479rem + 1.5023vw, 2rem);
     --space-sm: clamp(0.9375rem, 0.8275rem + 0.4695vw, 1.25rem);
@@ -73,23 +74,23 @@ input{
     color: var(--color-white);
     border: var(--color-white) 2px solid;
 }
-input:focus{
+.input:focus{
     outline: var(--color-highlight) 1px solid;
-    border: var(--color-highlight) 2px solid;
 }
 button{
     font-size: var(--text-base);
     font-weight:400;
 }
 hr{
-    background-color: var(--color-highlight);
-    height: 2px;
+    color: var(--color-highlight);
+    border: #3BDEB2 1px solid;
     width: 100%;
 }
 main {
     line-height: 1;
     color: var(--color-white);
-    box-sizing: border-box
+    box-sizing: border-box;
+    color: var(--color-black);
 }
 .head{
     background-color: var(--color-shadow);
@@ -123,5 +124,8 @@ rgb(50, 111, 107) 58%,
 .card{
     background-color: var(--color-shadow);
     color: var(--color-white);
+    background-color: var(--color-shadow);
+    color: var(--color-white);
     border-radius: 8px;
 }
+

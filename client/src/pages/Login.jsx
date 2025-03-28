@@ -20,7 +20,7 @@ const Login = () => {
           <form action="POST" className='flex flex-col gap-2.5'>
             <div className='flex flex-col gap-2'>
               <label htmlFor="Email">Username</label>
-              <motion.input whileTap={{ scale: 0.95 }} type="text" placeholder="your@email.com" className="input p-2 border-2 rounded-lg bg-hif" required/>
+              <motion.input whileTap={{ scale: 0.95 }} type="text" placeholder="your@email.com" className="input p-2 border-2 rounded-lg" required/>
             </div>
             <div className='flex flex-col gap-2'>
               <label htmlFor="password">Password</label>
