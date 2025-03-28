@@ -203,7 +203,28 @@
 		},
 		{
 			"name": "CRUD Logging",
-			"item": []
+			"item": [
+				{
+					"name": "GET ALL CRUD",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/api/crud/",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"crud",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
