@@ -70,12 +70,17 @@ label{
     font-size: var(--text-base-lg);
     font-weight:400;
 }
-input{
+.input{
     color: var(--color-white);
     border: var(--color-white) 2px solid;
 }
 .input:focus{
-    outline: var(--color-highlight) 1px solid;
+    border: none ;
+    outline: var(--color-highlight) 2px solid;
+}
+input:-webkit-autofill, input:-webkit-autofill:active {
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: var(--color-highlight);
 }
 button{
     font-size: var(--text-base);
@@ -91,6 +96,20 @@ main {
     color: var(--color-white);
     box-sizing: border-box;
     color: var(--color-black);
+}
+.scroll::-webkit-scrollbar{
+    display: none;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+thead{
+    border-radius: 20px;
+}
+table td, table th{
+    border: none;
+}
+table th{
+    font-size: var(--text-base-lg);
 }
 .head{
     background-color: var(--color-shadow);

@@ -4,13 +4,13 @@ import search from '../../public/search.svg'
 import { motion } from "motion/react"
 import { useEffect, useState } from "react";
 
-const CustomerLogs = () => {
-    const [logins, setLogins] = useState([]);
+const ActionLogs = () => {
+    const [actions, setCrud] = useState([]);
     
       useEffect(() => {
-        fetch("http://localhost:8000/api/logins/") 
+        fetch("http://localhost:8000/api/crud/") 
           .then((response) => response.json())
-          .then((data) => setLogins(data))
+          .then((data) => setCrud(data))
           .catch((error) => console.error("Error fetching data:", error));
       }, []);
     return (
@@ -27,14 +27,14 @@ const CustomerLogs = () => {
                     </div>
                     <div>    
                         <ul className='flex gap-2.5 items-center'>
-                            <motion.li whileTap={{ scale: 0.95 }} className='btn-highlight w-full md:w-40 py-2.5 rounded-lg'>
+                            <motion.li  whileTap={{ scale: 0.95 }} className='btn-dark w-full md:w-40 py-2.5 rounded-lg'>
                                 <Link to="/customerlog" className=''>
                                     <button className=' w-full'>Customer Logs</button>
                                 </Link>
                             </motion.li>
-                            <motion.li whileTap={{ scale: 0.95 }} className='btn-dark w-full md:w-40  py-2.5 rounded-lg'>
+                            <motion.li  whileTap={{ scale: 0.95 }}  className='btn-highlight w-full md:w-40  py-2.5 rounded-lg'>
                                 <Link to="/actionlog" className=''>
-                                    <button  className='w-full'>Action Logs</button>
+                                    <button whileTap={{ scale: 0.95 }} className='w-full'>Action Logs</button>
                                 </Link>
                             </motion.li>
                         </ul>
@@ -45,15 +45,11 @@ const CustomerLogs = () => {
                             <thead className="-hidden">
                                 <tr className="btn-dark text-center">
                                     {[
-                                        "Email",
-                                        "Logged In",
-                                        "Logged Out",
-                                        "IP Address",
-                                        "Device",
-                                        "Browser",
-                                        "CPU",
-                                        "Host",
-                                        "Origin",
+                                        "Action ID",
+                                        "User ID",
+                                        "Date",
+                                        "Operation",
+                                        "Request With",
                                     ].map((header, index, arr) => (
                                         <th key={index} className={`border px-4 py-2 text-center 
                                             ${index === 0 ? 'rounded-tl-lg' : ''} 
@@ -64,17 +60,13 @@ const CustomerLogs = () => {
                                 </tr>
                             </thead>
                             <tbody className='space-y-20'>
-                                {logins.map((login) => (
-                                    <tr key={login.email}>
-                                        <td className="border px-4 py-2 text-center">{login.email}</td>
-                                        <td className="border px-4 py-2 text-center">{login.login_at}</td>
-                                        <td className="border px-4 py-2 text-center">{login.logout_at || "—"}</td>
-                                        <td className="border px-4 py-2 text-center">{login.ip_address}</td>
-                                        <td className="border px-4 py-2 text-center">{login.device_type}</td>
-                                        <td className="border px-4 py-2 text-center">{login.browser}</td>
-                                        <td className="border px-4 py-2 text-center">{login.cpu_arch}</td>
-                                        <td className="border px-4 py-2 text-center">{login.host}</td>
-                                        <td className="border px-4 py-2 text-center">{login.origin}</td>
+                                {actions.map((crud) => (
+                                    <tr key={crud.action_id}>
+                                        <td className="border px-4 py-2 text-center">{crud.action_id}</td>
+                                        <td className="border px-4 py-2 text-center">{crud.user_id}</td>
+                                        <td className="border px-4 py-2 text-center">{crud.action_at}</td>
+                                        <td className="border px-4 py-2 text-center">{crud.action_taken}</td>
+                                        <td className="border px-4 py-2 text-center">{crud.x_requested_with}</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -86,5 +78,5 @@ const CustomerLogs = () => {
     );
   };
   
-  export default CustomerLogs;
+  export default ActionLogs;
   
