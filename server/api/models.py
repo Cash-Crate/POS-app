@@ -123,7 +123,9 @@ class ItemAttributes(models.Model):
         db_table = "item_attributes"
         managed = False
         constraints = [
-            models.UniqueConstraint(fields=["item_type", "item_id"],
+            models.UniqueConstraint(fields=["item_type",
+                                            "item_id",
+                                            "attr_name"],
                                     name="unique_item_attributes")
         ]
 

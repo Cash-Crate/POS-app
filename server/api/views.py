@@ -4,7 +4,7 @@ import logging
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .models import Users, Items, LoginsLoggin, ItemTypes, CrudLogging
+from .models import Users, Items, LoginsLoggin, ItemTypes, CrudLogging, ItemAttributes
 from .serializer import UsersSerializer, ItemsSerializer, ItemTypesSerializer, CrudSerializer
 
 logger = logging.getLogger(__name__)
@@ -111,9 +111,7 @@ def get_items(req):
     items = Items.objects.select_related('item_type')\
         .prefetch_related('itemattributes_set')\
         .annotate(
-            item_type_name=F('item_type__item_type_name'),
-            item_attr=F('itemattributes__attr_name'),
-            attr_value=F('itemattributes__attr_value'))\
+            item_type_name=F('item_type__item_type_name'))\
         .values(
         'item_id',
         'item_type_name',
@@ -121,12 +119,25 @@ def get_items(req):
         'item_desc',
         'item_image',
         'price',
-        'item_attr',
-        'attr_value',
         'quantity'
     )  #.filter(item_attr='Brand') // for filtering in case
 
-    return Response(list(items))
+    item_attrs = ItemAttributes.objects.values('item_id', 'attr_name', 'attr_value')
+    attrs_dict = {}
+    for attr in item_attrs:
+        item_id = attr['item_id']
+        if item_id not in attrs_dict:
+            attrs_dict[item_id] = {}
+        attrs_dict[item_id][attr['attr_name']] = attr['attr_value']
+
+    result = []
+    for item in items:
+        item_with_attrs = item.copy()
+        if item['item_id'] in attrs_dict:
+            item_with_attrs.update(attrs_dict[item['item_id']])
+        result.append(item_with_attrs)
+
+    return Response(list(result))
 
 
 @api_view(['POST'])
@@ -148,8 +159,10 @@ def create_item(req):
 @api_view(['PUT', 'DELETE', 'GET'])
 def item_by_id(req, key):
     try:
-
-        item = Items.objects.get(pk=key)
+        item = Items.objects.select_related('item_type')\
+            .annotate(
+            item_type_name=F('item_type__item_type_name')
+        ).get(pk=key)
     except Items.DoesNotExist:
         return Response(status=404)
 
@@ -170,8 +183,23 @@ def item_by_id(req, key):
         return Response(status=204)
 
     if req.method == 'GET':
-        serializer = ItemsSerializer(item)
-        return Response(serializer.data, status=200)
+        item_attrs = ItemAttributes.objects.filter(item_id=key)\
+            .values('attr_name', 'attr_value')
+
+        item_dict = {
+            'item_id': item.pk,
+            'item_name': item.item_name,
+            'item_desc': item.item_desc,
+            'item_image': item.item_image,
+            'price': item.price,
+            'quantity': item.quantity,
+            'item_type_name': item.item_type_name
+        }
+
+        for attr in item_attrs:
+            item_dict[attr['attr_name']] = attr['attr_value']
+
+        return Response(item_dict, status=200)
 # ======================================ITEMS==================================
 
 

@@ -48,7 +48,7 @@ CREATE TABLE items (
 CREATE TABLE item_attributes (
     item_type INTEGER NOT NULL REFERENCES item_types(item_type_id),
     item_id INTEGER NOT NULL REFERENCES items(item_id),
-    PRIMARY KEY(item_type, item_id),
+    PRIMARY KEY(item_type, item_id, attr_name),
     attr_name TEXT NOT NULL,
     attr_value TEXT NOT NULL
 )

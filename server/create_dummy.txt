@@ -41,6 +41,8 @@ INSERT INTO items (item_name, description, item_type, item_image, price) VALUES
 -- Insert dummy item attributes
 INSERT INTO item_attributes (item_type, item_id, attr_name, attr_value) VALUES
 (1, 1, 'Brand', 'Asus'),
+(1, 1, 'CPU', 'Intel Core i7 11th Gen'),
+(1, 1, 'Model', 'ROG'),
 (2, 2, 'Size', 'M'),
 (3, 3, 'Author', 'J.K. Rowling'),
 (4, 4, 'Material', 'Leather'),
