@@ -6,8 +6,8 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Documentation from './pages/Documentation';
 import ProductsTable from './pages/Products';
-import CustomerLogs from './pages/customerlog';
-import ActionLogs from './pages/actionlog';
+import CustomerLogs from './pages/Customerlog';
+import ActionLogs from './pages/Actionlog';
 import './App.css';
 
 function App() {
