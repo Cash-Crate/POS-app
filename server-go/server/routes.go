@@ -24,7 +24,10 @@ func ServeHttp() {
 	fmt.Printf("Listening at port %s\n", PORT)
 
 	mux.HandleFunc("/", handlers.GetRoot)
-	mux.HandleFunc("/api/users/", handlers.GetUsers)
+	mux.HandleFunc("GET /api/users", handlers.GetUsers)
+	mux.HandleFunc("GET /api/users/", handlers.GetUserByID)
+	mux.HandleFunc("POST /api/users/create", handlers.CreateUser)
+	mux.HandleFunc("DELETE /api/users/", handlers.DeleteUser)
 
 	if err := http.ListenAndServe(PORT, handler); err != nil {
 		log.Fatal(err)
