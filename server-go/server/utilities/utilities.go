@@ -54,7 +54,7 @@ func IsEmailInDB(email string, ut string) bool {
 		log.Fatalf("Invalid user type")
 	}
 	if err != nil {
-		log.Fatalf("Error checking if email is in database: %v", err)
+		log.Fatalf("Email is in database: %v", err)
 	}
 	defer rows.Close()
 
@@ -68,4 +68,16 @@ func IsEmailInDB(email string, ut string) bool {
 		}
 	}
 	return false
+}
+
+func IsItemTypeInDB(itemType string) bool {
+	var exists bool
+
+	err := db.DB.QueryRow(`SELECT EXISTS(SELECT
+		1 FROM item_types WHERE item_type_name = $1)`, itemType).Scan(&exists)
+	if err != nil {
+		log.Fatalf("Error checking if item type exists: %v", err)
+		return false
+	}
+	return exists
 }
