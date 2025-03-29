@@ -1,7 +1,6 @@
 package utilities
 
 import (
-	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -34,47 +33,25 @@ func IsEmailValid (email string) bool {
 }
 
 func IsEmailInDB(email string, ut string) bool {
-	var rows *sql.Rows
-	var err error
-
+	var exists bool
 	ut = strings.ToLower(ut)
 
-	switch ut {
-	case "admin":
-		rows, err = db.DB.Query(`SELECT
-			email
-			FROM users
-			WHERE email = $1`, email)
-	case "staff":
-		rows, err = db.DB.Query(`SELECT
-			email
-			FROM users
-			WHERE email = $1`, email)
-	default:
-		log.Fatalf("Invalid user type")
-	}
-	if err != nil {
-		log.Fatalf("Email is in database: %v", err)
-	}
-	defer rows.Close()
+	query := "SELECT EXISTS(SELECT 1 FROM users WHERE email = $1)"
 
-	for rows.Next() {
-		var dbEmail string
-		if err := rows.Scan(&dbEmail); err != nil {
-			log.Println(err)
-		}
-		if dbEmail == email {
-			return true
-		}
+	err := db.DB.QueryRow(query, email).Scan(&exists)
+	if err != nil {
+		log.Printf("Error checking email existence: %v", err)
+		return false
 	}
-	return false
+	return exists
 }
 
 func IsItemTypeInDB(itemType string) bool {
 	var exists bool
 
 	err := db.DB.QueryRow(`SELECT EXISTS(SELECT
-		1 FROM item_types WHERE item_type_name = $1)`, itemType).Scan(&exists)
+		1 FROM item_types WHERE item_type_name = $1)`,
+		itemType).Scan(&exists)
 	if err != nil {
 		log.Fatalf("Error checking if item type exists: %v", err)
 		return false
