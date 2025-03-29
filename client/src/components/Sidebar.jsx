@@ -12,14 +12,14 @@ const Sidebar = () => {
                     <div className='flex flex-col gap-10'>
                         <img src={image} alt="Cash Crate Logo" className="aspect-square w-17.5 lg:w-full"/>
                         <ul className='hidden lg:flex flex-col gap-5 text-black'>
-                            <li className='text-xl'><Link to="/">Dashboard</Link></li>
+                            <li className='text-xl'><Link to="/dashboard">Dashboard</Link></li>
                             <li className='text-xl'><Link to="/products">Products</Link></li>
                             <li className='text-xl'><Link to="/documentation">Documentation</Link></li>
                             <li className='text-xl'><Link to="/customerlog">Logs</Link></li>
                         </ul>
                         <ul className='lg:hidden flex flex-col gap-5 text-black items-center'>
                             <li className='text-xl'>
-                                <Link to="/"><img src={dashboard} alt="Dashboard Logo" className="aspect-square w-8"/></Link>
+                                <Link to="/dashboard"><img src={dashboard} alt="Dashboard Logo" className="aspect-square w-8"/></Link>
                             </li>
                             <li className='text-xl'>
                                 <Link to="/products"><img src={products} alt="Products Logo" className="aspect-square w-8"/></Link>
