@@ -16,29 +16,45 @@ class _HomeScreenState extends State<HomeScreen> {
   late List<int> quantities;
   Map<String, int> cart = {};
   TextEditingController searchController = TextEditingController();
-  List<Product> filteredProducts = List.from(products);
+  List<Product> filteredProducts = [];
   bool isSearchExpanded = false;
   String selectedCategory = "All";
+  bool isLoading = true;
+  List<String> categories = ["All"];
+  List<Product> products = [];
 
   @override
   void initState() {
     super.initState();
-    quantities = List<int>.filled(products.length, 1);
+    _loadProducts();
   }
 
   void updateCart() {
     setState(() {});
   }
 
-  void filterProducts(String query) {
-    setState(() {
-      filteredProducts = products.where((product) {
-        bool matchesSearch = query.isEmpty || product.name.toLowerCase().contains(query.toLowerCase());
-        bool matchesCategory = selectedCategory == "All" || product.category == selectedCategory;
-        return matchesSearch && matchesCategory;
-      }).toList();
-    });
-  }
+
+  void _loadCategories() {
+  // Extract unique categories from fetched products
+  final Set<String> uniqueCategories = products.map((p) => p.category).toSet();
+
+  // Update the categories list
+  setState(() {
+    categories = ["All", ...uniqueCategories];
+  });
+}
+
+ void filterProducts(String query) {
+  setState(() {
+    filteredProducts = products.where((product) {
+      bool matchesSearch = query.isEmpty || product.name.toLowerCase().contains(query.toLowerCase());
+      bool matchesCategory = selectedCategory == "All" || product.category == selectedCategory;
+      return matchesSearch && matchesCategory;
+    }).toList();
+  });
+}
+
+
 
   void filterByCategory(String category) {
     setState(() {
@@ -46,6 +62,25 @@ class _HomeScreenState extends State<HomeScreen> {
       filterProducts(searchController.text);
     });
   }
+   Future<void> _loadProducts() async {
+    try {
+      List<Product> fetchedProducts = await fetchProducts(); // Fetch from API
+      setState(() {
+        products = List.from(fetchedProducts); // Save products
+        filteredProducts = List.from(fetchedProducts);
+        quantities = List<int>.filled(filteredProducts.length, 1);
+        isLoading = false; // Stop loading when data is fetched
+      });
+
+      _loadCategories(); // <--- Load categories after products are fetched
+    } catch (e) {
+      print("Error fetching products: $e");
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -100,27 +135,26 @@ class _HomeScreenState extends State<HomeScreen> {
                           alignment: Alignment.centerLeft, 
                           width: double.maxFinite, 
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start, // Ensure left alignment
-                            children: ["All", "Burgers", "Fries", "Rice Meals", "Drinks"]
-                                .map((category) => Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                                      child: ChoiceChip(
-                                        label: Text(
-                                          category,
-                                          style: TextStyle(
-                                            color: selectedCategory == category 
-                                                ? Colors.white 
-                                                : Color(0xFF3BDEB2), 
-                                          ),
-                                        ),
-                                        selected: selectedCategory == category,
-                                        selectedColor: Color(0xFF176B5D), 
-                                        backgroundColor: Color(0xFF1F3745), 
-                                        onSelected: (_) => filterByCategory(category),
-                                      ),
-                                    ))
-                                .toList(),
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: categories.map((category) => Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                              child: ChoiceChip(
+                                label: Text(
+                                  category,
+                                  style: TextStyle(
+                                    color: selectedCategory == category 
+                                        ? Colors.white 
+                                        : Color(0xFF3BDEB2), 
+                                  ),
+                                ),
+                                selected: selectedCategory == category,
+                                selectedColor: Color(0xFF176B5D), 
+                                backgroundColor: Color(0xFF1F3745), 
+                                onSelected: (_) => filterByCategory(category),
+                              ),
+                            )).toList(),
                           ),
+
                         ),
                       ),
                     ),
@@ -235,7 +269,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   });
                                 },
                               ),
-                      ),
+                        ),
                       IconButton(
                         icon: const Icon(Icons.shopping_cart, color: Colors.white),
                         onPressed: () {

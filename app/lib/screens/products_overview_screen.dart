@@ -1,13 +1,32 @@
 import 'package:flutter/material.dart';
 import '../widgets/left_panel.dart';
 import '../models/products.dart';
+import 'create_product_screen.dart';
 
 class ProductsOverviewScreen extends StatefulWidget {
+  
   @override
   _ProductsOverviewScreenState createState() => _ProductsOverviewScreenState();
 }
 
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
+  List<Product> products = [];
+  @override
+  void initState() {
+    super.initState();
+    _loadProducts();
+  }
+
+  Future<void> _loadProducts() async {
+    try {
+      List<Product> fetchedProducts = await fetchProducts();
+      setState(() {
+        products = fetchedProducts;
+      });
+    } catch (e) {
+      print("Error fetching products: $e");
+    }
+  }
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   TextEditingController searchController = TextEditingController();
   bool isSearchExpanded = false;
@@ -23,6 +42,8 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   void editProduct(String name) {
     // Edit product logic
   }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -105,8 +126,15 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
                                                 ),
                                                 child: IconButton(
                                                   icon: Icon(Icons.add, color: Color(0xFF1F3745)),
-                                                  onPressed: () {
-                                                    // Add product logic
+                                                  onPressed: () async {
+                                                    final result = await Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(builder: (context) => CreateProductScreen()),
+                                                    );
+
+                                                    if (result == true) {
+                                                      fetchProducts(); // Refresh product list after adding
+                                                    }
                                                   },
                                                 ),
                                               )
@@ -121,12 +149,17 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
                                             DataCell(
                                               Padding(
                                                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                                child: Image.asset(
-                                                  product.image,
-                                                  width: 50,
-                                                  height: 50,
-                                                  fit: BoxFit.cover,
-                                                ),
+                                                child: product.image.startsWith("http") // 🔍 Check if it's an API image
+                                                    ? Image.network(
+                                                        product.image,
+                                                        width: 50,
+                                                        height: 50,
+                                                        fit: BoxFit.cover,
+                                                        errorBuilder: (context, error, stackTrace) {
+                                                          return Image.asset("assets/images/placeholder.jpg", width: 50, height: 50);
+                                                        },
+                                                      )
+                                                    : Image.asset(product.image, width: 50, height: 50, fit: BoxFit.cover),
                                               ),
                                             ),
                                             DataCell(Text(product.name)),
@@ -239,6 +272,3 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
     );
   }
 }
-
-
-//Products_overview_screen

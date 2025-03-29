@@ -6,13 +6,30 @@ class RightPanel extends StatefulWidget {
   final VoidCallback onUpdate;
 
   const RightPanel({super.key, required this.cart, required this.onUpdate});
-
+  
   @override
   _RightPanelState createState() => _RightPanelState();
 }
 
 class _RightPanelState extends State<RightPanel> {
+  List<Product> products = [];
   @override
+    void initState() {
+      super.initState();
+      _loadProducts();
+    }
+
+    Future<void> _loadProducts() async {
+      try {
+        List<Product> fetchedProducts = await fetchProducts();
+        setState(() {
+          products = fetchedProducts;
+        });
+      } catch (e) {
+        print("Error fetching products: $e");
+      }
+    }
+
   Widget build(BuildContext context) {
     double totalPrice = widget.cart.entries.fold(0, (sum, entry) {
       Product? product = products.firstWhere(
