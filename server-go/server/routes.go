@@ -29,6 +29,8 @@ func ServeHttp() {
 	mux.HandleFunc("POST /api/users/create", handlers.CreateUser)
 	mux.HandleFunc("DELETE /api/users/", handlers.DeleteUser)
 
+	mux.HandleFunc("GET /api/logins", handlers.GetLogins)
+
 	if err := http.ListenAndServe(PORT, handler); err != nil {
 		log.Fatal(err)
 	}
