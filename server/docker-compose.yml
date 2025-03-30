@@ -1,8 +1,0 @@
-version: '3'
-services:
-  server:
-    image: 891377178047.dkr.ecr.ap-southeast-1.amazonaws.com/server:latest
-    container_name: server
-    ports:
-      - "8000:8000"
-    restart: always
