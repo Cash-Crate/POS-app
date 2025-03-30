@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 const CustomerLogs = () => {
     const [logins, setLogins] = useState([]);
+    const [searchQuery, setSearchQuery] = useState("");
     
       useEffect(() => {
         fetch("http://localhost:8000/api/logins/") 
@@ -13,6 +14,21 @@ const CustomerLogs = () => {
           .then((data) => setLogins(data))
           .catch((error) => console.error("Error fetching data:", error));
       }, []);
+
+    const filteredItems = logins.filter((login) => {
+    const query = searchQuery.toLowerCase();
+        return(
+            login.email?.toLowerCase().includes(query) ||
+            login.ip_address?.toLowerCase().includes(query) ||
+            login.device_type?.toLowerCase().includes(query) ||
+            login.ip_address?.toLowerCase().includes(query) ||
+            login.browser?.toLowerCase().includes(query) ||
+            login.cpu_arch?.toLowerCase().includes(query) ||
+            login.host?.toLowerCase().includes(query) ||
+            login.origin?.toLowerCase().includes(query) 
+        );
+    });
+
     return (
       <main className="h-screen w-screen overflow-hidden">
             <div className="flex flex-row h-full w-screen">
@@ -21,8 +37,8 @@ const CustomerLogs = () => {
                     <header className='flex flex-col gap-5'>
                     <div className='flex justify-center'>
                         <div className='flex flex-row gap-2 btn-dark py-2.5 px-2.5 w-full md:w-[60%] rounded-3xl'>
-                            <img src={search} alt="search-icon" className="aspect-square h-5"/>
-                            <input id="search" className="btn-dark w-full outline-none" type="search" name="search-bar" placeholder="Search"></input>
+                            <img src={search} id="search" alt="search-icon" className="aspect-square h-5"/>
+                            <input className="btn-dark w-full outline-none" type="search" placeholder="Search" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
                         </div>
                     </div>
                     <div>    
@@ -64,7 +80,7 @@ const CustomerLogs = () => {
                                 </tr>
                             </thead>
                             <tbody className='space-y-20'>
-                                {logins.map((login) => (
+                                {filteredItems.map((login) => (
                                     <tr key={login.email}>
                                         <td className="border px-4 py-2 text-center">{login.email}</td>
                                         <td className="border px-4 py-2 text-center">{login.login_at}</td>
