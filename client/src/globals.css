@@ -158,5 +158,9 @@ rgb(50, 111, 107) 58%,
     display: flex;
     flex-direction: column;
     border-radius: 8px;
+    overflow: hidden;
+}
+.dashboard .data tr td{
+    padding: 0.75rem 0 ;
 }
 

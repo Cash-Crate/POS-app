@@ -1,7 +1,33 @@
 import { main } from "motion/react-client";
+import { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 
 const Dashboard = () => {
+    const [lowStock, setStocks] = useState([]);
+    const [prodRank, setProdRank] = useState([]);
+    const [graphData, setGraph] = useState([]);
+
+    useEffect(() => {
+        // fetch("http://localhost:8000/api/ ")    api for low stocks
+        //     .then((response) => response.json())
+        //     .then((data) => setStocks(data))
+        //     .catch((error) => console.error("Error fetching low stock data:", error));
+    }, []);
+
+    useEffect(() => {
+        // fetch("http://localhost:8000/api/ ")    api for product ranking
+        //     .then((response) => response.json())
+        //     .then((data) => setProdRank(data))
+        //     .catch((error) => console.error("Error fetching product rank data:", error));
+    }, []);
+
+    useEffect(() => {
+        // fetch("http://localhost:8000/api/ ")    api for sales graph
+        //     .then((response) => response.json())
+        //     .then((data) => setGraph(data))
+        //     .catch((error) => console.error("Error fetching graph data:", error));
+    }, []);
+    
     return (
         <main className="h-screen w-screen overflow-hidden">
             <div className="flex flex-row h-full w-screen">
@@ -47,8 +73,27 @@ const Dashboard = () => {
 
                 <div className="dashboard p-2.5 md:p-5 gap-2 row-span-2 sm:col-span-3 sm:row-span-2 xl:col-span-2">
                     <h4>
-                        Out of Stock
+                        Low Stock
                     </h4>
+                    <div className="relative data h-full ">
+                        <table className="w-full grid">
+                            <thead className="">
+                                <tr>
+                                    <th className="text-lg text-left">Product</th>
+                                    <th className="text-center">Stock</th>
+                                </tr>
+                            </thead>
+                            <tbody className="mt-2 overflow-y-scroll    ">
+                                <tr><td>prd 1</td><td className="text-center">10</td></tr>
+                                <tr><td>prd 1</td><td className="text-center">10</td></tr>
+                                <tr><td>prd 1</td><td className="text-center">10</td></tr>
+                                <tr><td>prd 1</td><td className="text-center">10</td></tr>
+                                <tr><td>prd 1</td><td className="text-center">10</td></tr>
+                                <tr><td>prd 1</td><td className="text-center">10</td></tr>
+                                <tr><td>prd 1</td><td className="text-center">10</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
             </section>
