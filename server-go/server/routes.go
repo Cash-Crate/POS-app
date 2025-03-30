@@ -42,6 +42,10 @@ func ServeHttp() {
 	mux.HandleFunc("PUT /api/items/{id}/{quantity}", handlers.SellItem)
 	mux.HandleFunc("DELETE /api/items/{id}", handlers.DeleteItem)
 
+	mux.HandleFunc("GET /api/items/attrs/{id}", handlers.GetItemAttrs)
+	mux.HandleFunc("POST /api/items/attrs/create/{id}", handlers.CreateItemAttrs)
+	mux.HandleFunc("PUT /api/items/attrs/{id}/{name}", handlers.UpdateItemAttr)
+
 	mux.HandleFunc("GET /api/crud", handlers.GetCrudActions)
 
 	if err := http.ListenAndServe(PORT, handler); err != nil {

@@ -97,7 +97,7 @@ func UpdateItem(res http.ResponseWriter, req *http.Request) {
         })
         return
     }
-    res.WriteHeader(http.StatusCreated)
+    res.WriteHeader(http.StatusNoContent)
     json.NewEncoder(res).Encode(util.OkResponse{
         Message: fmt.Sprintf("Item updated successfully. %d rows affected", rows),
     })

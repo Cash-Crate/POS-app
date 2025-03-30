@@ -19,7 +19,7 @@ func GetItemAttrsQuery(id int64) (*sql.Rows, error) {
 	return rows, nil
 }
 
-func CreateItemAttrsQuery(item_attrs *models.ItemAttrs, id int64) (error) {
+func CreateItemAttrQuery(item_attrs *models.ItemAttrs, id int64) (error) {
 	_, err := db.DB.Exec(`INSERT INTO item_attributes(
 		item_id,
 		attr_name,
@@ -32,4 +32,17 @@ func CreateItemAttrsQuery(item_attrs *models.ItemAttrs, id int64) (error) {
 		return err
 	}
 	return nil
+}
+
+func UpdateItemAttrQuery(name, value string, id int64) (int64, error) {
+	res, err := db.DB.Exec(`UPDATE item_attributes
+		SET attr_value = $1
+		WHERE item_id = $2 
+		AND attr_name = $3`, value, id, name)
+	if err != nil {
+		return 0, err
+	}
+
+	rows, err := res.RowsAffected()
+	return rows, nil
 }
