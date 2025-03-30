@@ -9,7 +9,7 @@ const ActionLogs = () => {
     const [searchQuery, setSearchQuery] = useState("");
     
       useEffect(() => {
-        fetch("http://localhost:8000/api/crud/") 
+        fetch("http://localhost:3000/api/crud") 
           .then((response) => response.json())
           .then((data) => setCrud(data))
           .catch((error) => console.error("Error fetching data:", error));

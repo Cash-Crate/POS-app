@@ -7,9 +7,9 @@ import { useEffect, useState } from "react";
 const CustomerLogs = () => {
     const [logins, setLogins] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
-    
+
       useEffect(() => {
-        fetch("http://localhost:8000/api/logins/") 
+        fetch("http://localhost:3000/api/logins") 
           .then((response) => response.json())
           .then((data) => setLogins(data))
           .catch((error) => console.error("Error fetching data:", error));
@@ -19,9 +19,8 @@ const CustomerLogs = () => {
     const query = searchQuery.toLowerCase();
         return(
             login.email?.toLowerCase().includes(query) ||
-            login.ip_address?.toLowerCase().includes(query) ||
+            login.ip_addr?.toLowerCase().includes(query) ||
             login.device_type?.toLowerCase().includes(query) ||
-            login.ip_address?.toLowerCase().includes(query) ||
             login.browser?.toLowerCase().includes(query) ||
             login.cpu_arch?.toLowerCase().includes(query) ||
             login.host?.toLowerCase().includes(query) ||
@@ -84,8 +83,8 @@ const CustomerLogs = () => {
                                     <tr key={login.email}>
                                         <td className="border px-4 py-2 text-center">{login.email}</td>
                                         <td className="border px-4 py-2 text-center">{login.login_at}</td>
-                                        <td className="border px-4 py-2 text-center">{login.logout_at || "—"}</td>
-                                        <td className="border px-4 py-2 text-center">{login.ip_address}</td>
+                                        <td className="border px-4 py-2 text-center">{login.logout_at == "0001-01-01 00:00:00" ? "none" : login.logout_at}</td>
+                                        <td className="border px-4 py-2 text-center">{login.ip_addr}</td>
                                         <td className="border px-4 py-2 text-center">{login.device_type}</td>
                                         <td className="border px-4 py-2 text-center">{login.browser}</td>
                                         <td className="border px-4 py-2 text-center">{login.cpu_arch}</td>

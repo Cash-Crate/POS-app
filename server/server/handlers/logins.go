@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -24,12 +25,12 @@ func GetLogins(res http.ResponseWriter, req *http.Request) {
 	var logins []models.LoginResponse
 	for rows.Next() {
 		var login models.LoginResponse
+		var logout sql.NullTime
 
 		if err := rows.Scan(
-			&login.Login_id,
-			&login.User_id,
+			&login.Email,
 			&login.Login_at,
-			&login.Logout_at,
+			&logout,
 			&login.Ip_addr,
 			&login.Device_type,
 			&login.Browser,
@@ -40,7 +41,7 @@ func GetLogins(res http.ResponseWriter, req *http.Request) {
 				fmt.Sprintf("Could not decode request body %s", err))
 			return
 		}
-
+		login.Logout_at = logout.Time.Format("2006-01-02 15:04:05")
 		logins = append(logins, login)
 	}
 	json.NewEncoder(res).Encode(logins)

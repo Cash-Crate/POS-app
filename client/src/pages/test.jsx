@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar';
 
 function Test() {
   //const API_BASE_URL = "https://api.cashcrate.shop";
-  const API_BASE_URL = "http://localhost:8000";
+  const API_BASE_URL = "http://localhost:3000";
 
   const [users, setUsers] = useState([]);
   const [name, setName] = useState("");

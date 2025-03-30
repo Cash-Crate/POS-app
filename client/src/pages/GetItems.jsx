@@ -11,7 +11,7 @@ const Items = () => {
 
   async function getItems() {
     try {
-      const res = await fetch('http://localhost:8000/api/items/')
+      const res = await fetch('http://localhost:3000/api/items')
       const data = await res.json()
       setItems(data)
     } catch (error) {
