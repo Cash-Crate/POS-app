@@ -174,51 +174,51 @@ func CreateItemQuery(item *models.ItemRequest) (int, error) {
 }
 
 func UpdateItemQuery(item *models.ItemRequest, id int64) (int64, error) {
-    var existingItem models.ItemRequest
-    err := db.DB.QueryRow(`SELECT item_name, description, item_type, item_image, price, quantity 
+	var existingItem models.ItemRequest
+	err := db.DB.QueryRow(`SELECT item_name, description, item_type, item_image, price, quantity 
                           FROM items WHERE item_id = $1`, id).Scan(
-        &existingItem.Item_name,
-        &existingItem.Description,
-        &existingItem.Item_type,
-        &existingItem.Item_image,
-        &existingItem.Price,
-        &existingItem.Quantity,
-    )
-    if err != nil {
-        return 0, err
-    }
+		&existingItem.Item_name,
+		&existingItem.Description,
+		&existingItem.Item_type,
+		&existingItem.Item_image,
+		&existingItem.Price,
+		&existingItem.Quantity,
+	)
+	if err != nil {
+		return 0, err
+	}
 
-    updatedName := existingItem.Item_name
-    if item.Item_name != "" {
-        updatedName = item.Item_name
-    }
+	updatedName := existingItem.Item_name
+	if item.Item_name != "" {
+		updatedName = item.Item_name
+	}
 
-    updatedDescription := existingItem.Description
-    if item.Description != "" {
-        updatedDescription = item.Description
-    }
+	updatedDescription := existingItem.Description
+	if item.Description != "" {
+		updatedDescription = item.Description
+	}
 
-    updatedType := existingItem.Item_type
-    if item.Item_type != 0 {
-        updatedType = item.Item_type
-    }
+	updatedType := existingItem.Item_type
+	if item.Item_type != 0 {
+		updatedType = item.Item_type
+	}
 
-    updatedImage := existingItem.Item_image
-    if item.Item_image != "" {
-        updatedImage = item.Item_image
-    }
+	updatedImage := existingItem.Item_image
+	if item.Item_image != "" {
+		updatedImage = item.Item_image
+	}
 
-    updatedPrice := existingItem.Price
-    if item.Price != 0 {
-        updatedPrice = item.Price
-    }
+	updatedPrice := existingItem.Price
+	if item.Price != 0 {
+		updatedPrice = item.Price
+	}
 
-    updatedQuantity := existingItem.Quantity
-    if item.Quantity != 0 {
-        updatedQuantity = item.Quantity
-    }
+	updatedQuantity := existingItem.Quantity
+	if item.Quantity != 0 {
+		updatedQuantity = item.Quantity
+	}
 
-    result, err := db.DB.Exec(`UPDATE items
+	result, err := db.DB.Exec(`UPDATE items
         SET item_name = $1,
         description = $2,
         item_type = $3,
@@ -227,18 +227,18 @@ func UpdateItemQuery(item *models.ItemRequest, id int64) (int64, error) {
         quantity = $6
         WHERE item_id = $7
         RETURNING item_id`,
-        updatedName,
-        updatedDescription,
-        updatedType,
-        updatedImage,
-        updatedPrice,
-        updatedQuantity,
-        id)
-    if err != nil {
-        return 0, err
-    }
-    rows, err := result.RowsAffected()
-    return rows, err
+		updatedName,
+		updatedDescription,
+		updatedType,
+		updatedImage,
+		updatedPrice,
+		updatedQuantity,
+		id)
+	if err != nil {
+		return 0, err
+	}
+	rows, err := result.RowsAffected()
+	return rows, err
 }
 
 func SellItemQuery(id, quantity int64) (int64, error) {
@@ -248,6 +248,15 @@ func SellItemQuery(id, quantity int64) (int64, error) {
 		RETURNING item_id`,
 		id,
 		quantity)
+	if err != nil {
+		return 0, err
+	}
+	rows, err := result.RowsAffected()
+	return rows, err
+}
+
+func DeleteItemQuery(id int64) (int64, error) {
+	result, err := db.DB.Exec(`DELETE FROM items WHERE item_id = $1`, id)
 	if err != nil {
 		return 0, err
 	}

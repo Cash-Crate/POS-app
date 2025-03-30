@@ -138,3 +138,33 @@ func SellItem(res http.ResponseWriter, req *http.Request) {
 		Message: fmt.Sprintf("Item sold successfully. %d rows affected", rows),
 	})
 }
+
+func DeleteItem(res http.ResponseWriter, req *http.Request) {
+	res.Header().Set("Content-Type", "application/json")
+	r := req.PathValue("id")
+	id, err := strconv.ParseInt(r, 10, 64)
+	if err != nil || id == 0 {
+		util.ErrorRes(res, http.StatusBadRequest,
+			fmt.Sprintf("Could not parse id %s", err))
+		return
+	}
+
+	rows, err := q.DeleteItemQuery(id)
+	if err != nil {
+		util.ErrorRes(res, http.StatusInternalServerError,
+			fmt.Sprintf("Could not delete item: %s", err))
+		log.Println(err)
+		return
+	}
+
+	if rows == 0 {
+		json.NewEncoder(res).Encode(util.ErrorResponse{
+			Error: "Item not found",
+		})
+		return
+	}
+
+	json.NewEncoder(res).Encode(util.OkResponse{
+		Message: fmt.Sprintf("Item deleted successfully. %d rows affected", rows),
+	})
+}
