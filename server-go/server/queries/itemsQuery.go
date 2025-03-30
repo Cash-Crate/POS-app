@@ -144,6 +144,35 @@ func GetItemByIDQuery(id int64) (models.ItemWithAttrs, error) {
 	return item, nil
 }
 
+func CreateItemQuery(item *models.ItemRequest) (int, error) {
+	var insertedId int
+
+	err := db.DB.QueryRow(`INSERT INTO items(
+		item_name,
+		description,
+		item_type,
+		item_image,
+		price,
+		quantity) VALUES (
+		$1,
+		$2,
+		$3,
+		$4,
+		$5,
+		$6) RETURNING item_id`,
+		item.Item_name,
+		item.Description,
+		item.Item_type,
+		item.Item_image,
+		item.Price,
+		item.Quantity).Scan(&insertedId)
+	if err != nil {
+		return 0, err
+	}
+
+	return insertedId, nil
+}
+
 // select it.item_type_name as item_type, i.item_id, i.item_name as name, i.description, i.item_image as image, i.price, i.quantity, ia.attr_name, ia.attr_value from items i join item_types it on it.item_type_id = i.item_type join item_attributes ia on ia.item_id = i.item_id;
 // func GetItemByIDQuery(id int64) (models.ItemResponse, error) {
 // 	var item models.ItemResponse

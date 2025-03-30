@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/Cash-Crate/POS-app/server/models"
 	q "github.com/Cash-Crate/POS-app/server/queries"
 	util "github.com/Cash-Crate/POS-app/server/utilities"
 )
@@ -41,4 +42,27 @@ func GetItemByID(res http.ResponseWriter, req *http.Request) {
 	}
 
 	json.NewEncoder(res).Encode(item)
+}
+
+func CreateItem(res http.ResponseWriter, req *http.Request) {
+	res.Header().Set("Content-Type", "application/json")
+	var item *models.ItemRequest
+	err := json.NewDecoder(req.Body).Decode(&item)
+	if err != nil {
+		util.ErrorRes(res, http.StatusInternalServerError,
+			fmt.Sprintf("Could not decode request body %s", err))
+		return
+	}
+
+	insertedId, err := q.CreateItemQuery(item)
+	if err != nil {
+		util.ErrorRes(res, http.StatusInternalServerError,
+			fmt.Sprintf("Could not add item to database %s", err))
+		return
+	}
+
+	res.WriteHeader(http.StatusCreated)
+	json.NewEncoder(res).Encode(util.OkResponse{
+		Message: fmt.Sprintf("Item %d", insertedId),
+	})
 }

@@ -37,6 +37,7 @@ func ServeHttp() {
 
 	mux.HandleFunc("GET /api/items", handlers.GetItems)
 	mux.HandleFunc("GET /api/items/{id}", handlers.GetItemByID)
+	mux.HandleFunc("POST /api/items/create", handlers.CreateItem)
 
 	if err := http.ListenAndServe(PORT, handler); err != nil {
 		log.Fatal(err)
