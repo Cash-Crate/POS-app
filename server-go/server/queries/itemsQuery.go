@@ -173,6 +173,88 @@ func CreateItemQuery(item *models.ItemRequest) (int, error) {
 	return insertedId, nil
 }
 
+func UpdateItemQuery(item *models.ItemRequest, id int64) (int64, error) {
+    var existingItem models.ItemRequest
+    err := db.DB.QueryRow(`SELECT item_name, description, item_type, item_image, price, quantity 
+                          FROM items WHERE item_id = $1`, id).Scan(
+        &existingItem.Item_name,
+        &existingItem.Description,
+        &existingItem.Item_type,
+        &existingItem.Item_image,
+        &existingItem.Price,
+        &existingItem.Quantity,
+    )
+    if err != nil {
+        return 0, err
+    }
+
+    updatedName := existingItem.Item_name
+    if item.Item_name != "" {
+        updatedName = item.Item_name
+    }
+
+    updatedDescription := existingItem.Description
+    if item.Description != "" {
+        updatedDescription = item.Description
+    }
+
+    updatedType := existingItem.Item_type
+    if item.Item_type != 0 {
+        updatedType = item.Item_type
+    }
+
+    updatedImage := existingItem.Item_image
+    if item.Item_image != "" {
+        updatedImage = item.Item_image
+    }
+
+    updatedPrice := existingItem.Price
+    if item.Price != 0 {
+        updatedPrice = item.Price
+    }
+
+    updatedQuantity := existingItem.Quantity
+    if item.Quantity != 0 {
+        updatedQuantity = item.Quantity
+    }
+
+    result, err := db.DB.Exec(`UPDATE items
+        SET item_name = $1,
+        description = $2,
+        item_type = $3,
+        item_image = $4,
+        price = $5,
+        quantity = $6
+        WHERE item_id = $7
+        RETURNING item_id`,
+        updatedName,
+        updatedDescription,
+        updatedType,
+        updatedImage,
+        updatedPrice,
+        updatedQuantity,
+        id)
+    if err != nil {
+        return 0, err
+    }
+    rows, err := result.RowsAffected()
+    return rows, err
+}
+
+func SellItemQuery(id, quantity int64) (int64, error) {
+	result, err := db.DB.Exec(`UPDATE items
+		SET quantity = quantity - $2
+		WHERE item_id = $1
+		RETURNING item_id`,
+		id,
+		quantity)
+	if err != nil {
+		return 0, err
+	}
+	rows, err := result.RowsAffected()
+	return rows, err
+}
+
 // select it.item_type_name as item_type, i.item_id, i.item_name as name, i.description, i.item_image as image, i.price, i.quantity, ia.attr_name, ia.attr_value from items i join item_types it on it.item_type_id = i.item_type join item_attributes ia on ia.item_id = i.item_id;
 // func GetItemByIDQuery(id int64) (models.ItemResponse, error) {
 // 	var item models.ItemResponse
