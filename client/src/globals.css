@@ -56,11 +56,11 @@ h2{
 }
 h3{
     font-size: var(--text-heading-3);
-    font-weight:600;
+    font-weight:800;
 }
 h4{
     font-size: var(--text-heading-4);
-    font-weight:400;
+    font-weight:600;
 }
 p{
     font-size: var(--text-base);
@@ -97,6 +97,9 @@ main {
     box-sizing: border-box;
     color: var(--color-black);
 }
+.scroll{
+    scroll-behavior: smooth;
+}
 .scroll::-webkit-scrollbar{
     display: none;
     scrollbar-width: none;
@@ -128,6 +131,9 @@ table th{
     color: var(--color-shadow);
     border: #000000 2px solid;
 }
+.btn-danger{
+    background-color: var(--color-danger);
+}
 .btn-outline{
     background-color: transparent;
     color: var(--color-highlight);
@@ -146,5 +152,15 @@ rgb(50, 111, 107) 58%,
     background-color: var(--color-shadow);
     color: var(--color-white);
     border-radius: 8px;
+}
+.dashboard{
+    background-color: var(--color-white);
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.dashboard .data tr td{
+    padding: 0.75rem 0 ;
 }
 
