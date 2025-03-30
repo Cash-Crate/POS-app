@@ -7,7 +7,10 @@ import (
 	db "github.com/Cash-Crate/POS-app/server/database"
 )
 
+// TODO: MAKE THE LOGIN TIMES BETTER LOOKING
+
 func GetLoginsQuery() (*sql.Rows, error) {
+
 	rows, err := db.DB.Query(`SELECT
 		login_id,
 		user_id,
