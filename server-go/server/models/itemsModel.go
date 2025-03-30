@@ -1,37 +1,24 @@
 package models
 
-import "database/sql"
-
 type ItemResponse struct {
-	Item_id     int           `json:"item_id"`
-	Item_name   string        `json:"item_name"`
-	Description string        `json:"description"`
-	Item_type   int           `json:"item_type"`
-	Item_image  string        `json:"item_image"`
-	Price       float64       `json:"price"`
-	Quantity    sql.NullInt64 `json:"quantity"`
+	Item_id     int     `json:"item_id"`
+	Item_name   string  `json:"item_name"`
+	Description string  `json:"description"`
+	Item_type   int     `json:"item_type"`
+	Item_image  string  `json:"item_image"`
+	Price       float64 `json:"price"`
+	Quantity    int     `json:"quantity"`
 }
 
-// type ItemWithAttrs struct {
-// 	Item_type   string        `json:"item_type"`
-// 	Item_id     int           `json:"item_id"`
-// 	Item_name   string        `json:"item_name"`
-// 	Description string        `json:"description"`
-// 	Item_image  string        `json:"item_image"`
-// 	Price       float64       `json:"price"`
-// 	Quantity    sql.NullInt64 `json:"quantity"`
-// 	Attrs       []ItemAttributes
-// }
-
 type ItemWithAttrs struct {
-	Item_type   string            `json:"item_type"`
-	Item_id     int               `json:"item_id"`
-	Item_name   string            `json:"item_name"`
-	Description string            `json:"description"`
-	Item_image  string            `json:"item_image"`
-	Price       float64           `json:"price"`
-	Quantity    sql.NullInt64     `json:"quantity"`
-	Attributes  map[string]string `json:"-"`
+	Item_id     int              `json:"item_id"`
+	Item_name   string           `json:"item_name"`
+	Description string           `json:"description"`
+	Item_image  string           `json:"item_image"`
+	Price       float64          `json:"price"`
+	Quantity    int              `json:"quantity"`
+	Item_type   string           `json:"item_type"`
+	Attrs       []ItemAttributes `json:"attributes"`
 }
 
 type ItemAttributes struct {
