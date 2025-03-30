@@ -73,10 +73,11 @@ INSERT INTO recurring_trans_payment (trans_id, payment_rcvd) VALUES
 (5, 60.00);
 
 -- Insert dummy bought items
-INSERT INTO bought_items (item_id, onetime_trans_id, num_item, items_cost) VALUES
-(1, 1, 1, 1200.00),
-(2, 2, 1, 20.00),
-(3, 3, 3, 45.00),
-(4, 4, 1, 500.00),
-(5, 5, 2, 60.00);
+insert into bought_items(item_id, onetime_trans_id, num_item, items_cost) values
+(24, 1, 1, 1200),
+(33, 1, 1, 50),
+(25, 1, 1, 20),
+(26, 3, 3, 45),
+(27, 4, 1, 500),
+(28, 5, 2, 60);
 
