@@ -24,7 +24,7 @@ func CreateSchema() {
 
 	_, err = database.DB.Exec(`CREATE TABLE IF NOT EXISTS logins_logging (
 		login_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-		user_id INTEGER NOT NULL REFERENCES users(user_id),
+		user_id INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
 		login_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		logout_at TIMESTAMP,
 		ip_addr INET NOT NULL,
@@ -40,7 +40,7 @@ func CreateSchema() {
 
 	_, err = database.DB.Exec(`CREATE TABLE IF NOT EXISTS crud_logging (
 		action_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-		user_id INTEGER NOT NULL REFERENCES users(user_id),
+		user_id INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
 		action_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		action_taken TEXT NOT NULL,
 		x_requested_with TEXT NOT NULL
@@ -71,7 +71,7 @@ func CreateSchema() {
 	}
 
 	_, err = database.DB.Exec(`CREATE TABLE IF NOT EXISTS item_attributes (
-		item_id INTEGER NOT NULL REFERENCES items(item_id),
+		item_id INTEGER NOT NULL REFERENCES items(item_id) ON DELETE CASCADE,
 		PRIMARY KEY(item_id, attr_name),
 		attr_name TEXT NOT NULL,
 		attr_value TEXT NOT NULL
@@ -83,7 +83,7 @@ func CreateSchema() {
 	_, err = database.DB.Exec(`CREATE TABLE IF NOT EXISTS onetime_trans (
 		trans_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 		trans_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		user_id INTEGER NOT NULL REFERENCES users(user_id),
+		user_id INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
 		item_count INTEGER NOT NULL,
 		cost_total NUMERIC(10,2) NOT NULL
 		)`)
@@ -99,14 +99,14 @@ func CreateSchema() {
 		end_date TIMESTAMP,
 		month_fee NUMERIC(10,2),
 		year_fee NUMERIC(10,2),
-		user_id INTEGER NOT NULL REFERENCES users(user_id)
+		user_id INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE 
 		)`)
 	if err != nil {
 		log.Fatalf("Failed to create table: %v", err)
 	}
 
 	_, err = database.DB.Exec(`CREATE TABLE IF NOT EXISTS recurring_trans_payment (
-		trans_id INTEGER NOT NULL REFERENCES recurring_trans(trans_id),
+		trans_id INTEGER NOT NULL REFERENCES recurring_trans(trans_id) ON DELETE CASCADE,
 		payment_rcvd NUMERIC(10,2) NOT NULL,
 		date_rcvd TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		)`)
