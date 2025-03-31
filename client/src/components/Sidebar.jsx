@@ -23,6 +23,14 @@ const Sidebar = () => {
                 throw new Error('No refresh token available')
             }
 
+            await fetchWithAuth(`http://localhost:3000/api/logins/${localStorage.getItem("loginID")}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                }
+            )
+
             const res = await fetchWithAuth('http://localhost:3000/api/logout', {
                 method: 'POST',
                 headers: {
@@ -39,6 +47,7 @@ const Sidebar = () => {
             localStorage.removeItem('accessToken')
             localStorage.removeItem('refreshToken')
             localStorage.removeItem('expiresAt')
+            localStorage.removeItem('loginID')
             localStorage.removeItem('userID')
 
             window.location.href = '/login'

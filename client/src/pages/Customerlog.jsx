@@ -81,7 +81,7 @@ const CustomerLogs = () => {
                             </thead>
                             <tbody className='space-y-20'>
                                 {filteredItems.map((login) => (
-                                    <tr key={login.email}>
+                                    <tr key={login.login_id}>
                                         <td className="border px-4 py-2 text-center">{login.email}</td>
                                         <td className="border px-4 py-2 text-center">{login.login_at}</td>
                                         <td className="border px-4 py-2 text-center">{login.logout_at == "0001-01-01 00:00:00" ? "none" : login.logout_at}</td>

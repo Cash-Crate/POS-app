@@ -1,6 +1,7 @@
 package models
 
 type LoginResponse struct {
+	Login_id    int    `json:"login_id"`
 	Email       string `json:"email"`
 	Login_at    string `json:"login_at"`
 	Logout_at   string `json:"logout_at"`
@@ -25,5 +26,5 @@ type LoginsRequest struct {
 type UserLogins struct {
 	AccessToken  string `json:"accessToken"`
 	RefreshToken string `json:"refreshToken"`
-	UserID       string    `json:"user_id"`
+	UserID       string `json:"user_id"`
 }

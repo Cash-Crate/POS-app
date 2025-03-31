@@ -21,7 +21,7 @@ const ActionLogs = () => {
         return(
             crud.user_id.toString().includes(query) ||
             crud.action_taken?.toLowerCase().includes(query) ||
-            crud.x_requested_with?.toLowerCase().includes(query) 
+            crud.item?.toLowerCase().includes(query) 
         );
     });
 
@@ -78,7 +78,7 @@ const ActionLogs = () => {
                                         <td className="border px-4 py-2 text-center">{crud.user_id}</td>
                                         <td className="border px-4 py-2 text-center">{crud.action_at}</td>
                                         <td className="border px-4 py-2 text-center">{crud.action_taken}</td>
-                                        <td className="border px-4 py-2 text-center">{crud.x_requested_with}</td>
+                                        <td className="border px-4 py-2 text-center">{crud.item}</td>
                                     </tr>
                                 ))}
                             </tbody>

@@ -65,7 +65,7 @@ const Login = () => {
 
   const getUserID = async (user_id) => {
     try {
-      await fetchWithAuth('http://localhost:3000/api/logins/create', {
+      const res = await fetchWithAuth('http://localhost:3000/api/logins/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -74,6 +74,9 @@ const Login = () => {
           user_id,
         })
       })
+      const data = await res.json()
+      localStorage.setItem('loginID', data.login_id)
+
     } catch (err) {
       console.error('Error getting user ID:', err);
     }

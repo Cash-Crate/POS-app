@@ -34,6 +34,7 @@ func GetLogins(res http.ResponseWriter, req *http.Request) {
 		var log_in time.Time
 
 		if err := rows.Scan(
+			&login.Login_id,
 			&login.Email,
 			&log_in,
 			&logout,
@@ -104,7 +105,7 @@ func PostLogin(res http.ResponseWriter, req *http.Request) {
 	user.Host = req.Host
 	user.Origin = req.Header.Get("Origin")
 
-	err = q.CreateLoginsQuery(user)
+	id, err := q.CreateLoginsQuery(user)
 	if err != nil {
 		util.ErrorRes(res, http.StatusInternalServerError,
 			fmt.Sprintf("Could not create logins in database %s", err))
@@ -124,7 +125,25 @@ func PostLogin(res http.ResponseWriter, req *http.Request) {
 	// 	"user_origin": user.Origin,
 	// })
 	res.WriteHeader(http.StatusCreated)
-	json.NewEncoder(res).Encode(util.OkResponse{
-		Message: "Successfully logged log in",
+	json.NewEncoder(res).Encode(map[string]int{
+		"login_id": id,
 	})
+}
+
+func PutLogin(res http.ResponseWriter, req *http.Request) {
+	res.Header().Set("Content-Type", "application/json")
+	r := req.PathValue("id")
+	id, err := strconv.Atoi(r)
+	if err != nil {
+		util.ErrorRes(res, http.StatusBadRequest,
+			"Bad Request cannot parsed id")
+		return
+	}
+
+	err = q.UpdateLoginsQuery(id)
+	if err != nil {
+		util.ErrorRes(res, http.StatusInternalServerError,
+			fmt.Sprintf("Error updating: %v", err))
+		return
+	}
 }
