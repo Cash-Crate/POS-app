@@ -11,15 +11,14 @@ func GetItemsQuery() ([]models.ItemWithAttrs, error) {
 	var items []models.ItemWithAttrs
 
 	rows, err := db.DB.Query(`SELECT
-		i.item_id,
-		i.item_name,
-		i.description,
-		i.item_image,
-		i.price,
-		i.quantity,
-		it.item_type_name as item_type
-		FROM items i
-		JOIN item_types it ON it.item_type_id = i.item_type`)
+		item_id,
+		item_name,
+		description,
+		item_image,
+		price,
+		quantity,
+		item_type
+		FROM items`)
 	if err != nil {
 		return nil, err
 	}
@@ -89,15 +88,14 @@ func GetItemByIDQuery(id int64) (models.ItemWithAttrs, error) {
 	var dbQuan sql.NullInt64
 
 	itemErr := db.DB.QueryRow(`SELECT
-		i.item_id,
-		i.item_name,
-		i.description,
-		i.item_image,
-		i.price,
-		i.quantity,
-		it.item_type_name as item_type
-		FROM items i
-		JOIN item_types it ON it.item_type_id = i.item_type
+		item_id,
+		item_name,
+		description,
+		item_image,
+		price,
+		quantity,
+		item_type
+		FROM items
 		WHERE i.item_id = $1`, id).Scan(
 		&item.Item_id,
 		&item.Item_name,
@@ -199,7 +197,7 @@ func UpdateItemQuery(item *models.ItemRequest, id int64) (int64, error) {
 	}
 
 	updatedType := existingItem.Item_type
-	if item.Item_type != 0 {
+	if item.Item_type != "" {
 		updatedType = item.Item_type
 	}
 
