@@ -1,5 +1,5 @@
 const addProduct = async () => {
-    const response = await fetch("http://localhost:8000/api/items/create/",
+    const response = await fetch("http://localhost:3000/api/items/create",
         {method: "POST",headers:{"Content-Type": "application/json"},body: JSON.stringify(newItem)
     });
     const addedItem = await response.json();

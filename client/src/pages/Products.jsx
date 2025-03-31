@@ -22,7 +22,7 @@ const ProductsTable = () => {
 
     const [newItem, setNewItem] = useState({
         item_name: "",
-        item_desc: "",
+        description: "",
         item_image: "",
         price: "",
         quantity: "",
@@ -30,7 +30,7 @@ const ProductsTable = () => {
     });
     
     useEffect(() => {
-        fetch("http://localhost:8000/api/items/") 
+        fetch("http://localhost:3000/api/items") 
         .then((response) => response.json())
         .then((data) => setProducts(data))
         .catch((error) => console.error("Error fetching data:", error));
@@ -55,7 +55,7 @@ const ProductsTable = () => {
     const deleteItem = async () => {
         if (!deleteItemId) return;
         try {
-            await fetch(`http://localhost:8000/api/items/${deleteItemId}`, { method: "DELETE" });
+            await fetch(`http://localhost:3000/api/items/${deleteItemId}`, { method: "DELETE" });
             setProducts((prevItems) => prevItems.filter(item => item.item_id !== deleteItemId));
             openDeleteModal(false);
             setDeleteItemId(null);
@@ -67,12 +67,12 @@ const ProductsTable = () => {
 
     const filteredItems = items.filter((item) => {
         const query = searchQuery.toLowerCase();
-        const typeMatch = selectedType === "All" || item.item_type_name === selectedType;
+        const typeMatch = selectedType === "All" || item.item_type === selectedType;
 
         return typeMatch && (
             item.item_name?.toLowerCase().includes(query) ||
-            item.item_desc?.toLowerCase().includes(query) ||
-            item.item_type_name?.toLowerCase().includes(query)
+            item.description?.toLowerCase().includes(query) ||
+            item.item_type?.toLowerCase().includes(query)
         );
     });
     
@@ -128,16 +128,16 @@ const ProductsTable = () => {
                         </thead>
                         <tbody>
                             {filteredItems.map((item) => (
-                                <tr key={item.item_id} id={item.item_type_name}>
+                                <tr key={item.item_id} id={item.item_type}>
                                     <td className="border px-4 py-2 text-center ">{item.item_id}</td>
                                     <td className="border px-4 py-2 text-center">{item.item_name}</td>
-                                    <td className="border px-4 py-2 text-center">{item.item_desc}</td>
+                                    <td className="border px-4 py-2 text-center">{item.description}</td>
                                     <td className="border px-4 py-2 text-center">
                                         <img src={item.item_image} alt={item.item_name} className='aspect-square object-cover w-20' />
                                     </td>
                                     <td className="border px-4 py-2 text-center">{item.price}</td>
                                     <td className="border px-4 py-2 text-center">{item.quantity}</td>
-                                    <td className="border px-4 py-2 text-center">{item.item_type_name}</td>
+                                    <td className="border px-4 py-2 text-center">{item.item_type}</td>
                                     <td className="border px-4 py-2">{prodAttr[item.item_id]?.join(", ") || "None"}</td>
                                     <td className="border px-4 py-2"> 
                                         <div className='flex justify-center gap-2'>
@@ -163,7 +163,7 @@ const ProductsTable = () => {
                     <h3>Add</h3>  
                     <div className="flex flex-col gap-3">
                         <input type="text" placeholder="Name" className="border p-2 rounded" value={newItem.item_name} onChange={(e) => setNewItem({ ...newItem, item_name: e.target.value })}/>
-                        <input type="text" placeholder="Description" className="border p-2 rounded" value={newItem.item_desc} onChange={(e) => setNewItem({ ...newItem, item_desc: e.target.value })}/>
+                        <input type="text" placeholder="Description" className="border p-2 rounded" value={newItem.description} onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}/>
                         <input type="text" placeholder="Image URL"  className="border p-2 rounded" value={newItem.item_image} onChange={(e) => setNewItem({ ...newItem, item_image: e.target.value })}/>
                         <input type="number" placeholder="Price" className="border p-2 rounded" value={newItem.price} onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}/>
                         <input type="number" placeholder="Quantity" className="border p-2 rounded" value={newItem.quantity} onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })}/>
@@ -188,7 +188,7 @@ const ProductsTable = () => {
                     <h3>Edit</h3>
                     <div className="flex flex-col gap-3">
                         <input type="text" placeholder="Name" className="border p-2 rounded" value={editItem.item_name} onChange={(e) => setEditItem({ ...editItem, item_name: e.target.value })}/>
-                        <input type="text" placeholder="Description" className="border p-2 rounded" value={editItem.item_desc} onChange={(e) => setEditItem({ ...editItem, item_desc: e.target.value })}/>
+                        <input type="text" placeholder="Description" className="border p-2 rounded" value={editItem.description} onChange={(e) => setEditItem({ ...editItem, description: e.target.value })}/>
                         <input type="text" placeholder="Image URL" className="border p-2 rounded" value={editItem.item_image} onChange={(e) => setEditItem({ ...editItem, item_image: e.target.value })}/>
                         <input type="number" placeholder="Price" className="border p-2 rounded" value={editItem.price} onChange={(e) => setEditItem({ ...editItem, price: parseFloat(e.target.value) })}/>
                         <input type="number" placeholder="Quantity" className="border p-2 rounded" value={editItem.quantity} onChange={(e) => setEditItem({ ...editItem, quantity: parseInt(e.target.value) })}/>
