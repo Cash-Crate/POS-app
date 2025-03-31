@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../services/login_service.dart';
 
 class EditProductScreen extends StatefulWidget {
   final int productId;  // Add productId as a parameter
@@ -63,11 +64,20 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
 
   // Handle the update request
+// Handle the update request
 Future<void> updateProduct() async {
   final url = Uri.parse('http://localhost:3000/api/items/${widget.productId}');  
 
   if (selectedCategoryName == null) {
     print("Please select a valid category");
+    return;
+  }
+
+  // Fetch the access token
+  String? token = await LoginService.getAccessToken(); // Or fetch from SharedPreferences
+
+  if (token == null || token.isEmpty) {
+    print("No access token found");
     return;
   }
 
@@ -82,7 +92,10 @@ Future<void> updateProduct() async {
 
   final response = await http.put(
     url,
-    headers: {'Content-Type': 'application/json'},
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',  // Add the Authorization header
+    },
     body: jsonEncode(productData),
   );
 
@@ -97,9 +110,9 @@ Future<void> updateProduct() async {
     // Handle failed response
   }
 
-  
   Navigator.pop(context, true); 
 }
+
 
 
 

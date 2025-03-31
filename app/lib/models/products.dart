@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import '../services/login_service.dart';
 
 class Product {
   final int id; 
@@ -37,18 +39,32 @@ class Product {
 
 }
 
+
+
 // Add the fetchProducts() function to fetch data from the API
 Future<List<Product>> fetchProducts() async {
-  const String apiUrl = "http://localhost:3000/api/items";
-  
-  final response = await http.get(Uri.parse(apiUrl));
-  
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? token = await LoginService.getAccessToken(); // ✅ Call with class name
+
+  if (token == null || token.isEmpty) {
+    throw Exception("No access token found");
+  }
+
+  final response = await http.get(
+    Uri.parse('http://localhost:3000/api/items'),
+    headers: {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    },
+  );
+
   if (response.statusCode == 200) {
-    List<dynamic> data = json.decode(response.body);
-    return data.map((json) => Product.fromJson(json)).toList();
+    final List<dynamic> productList = jsonDecode(response.body);
+    return productList.map((json) => Product.fromJson(json)).toList();
   } else {
     throw Exception("Failed to load products. Status code: ${response.statusCode}");
   }
 }
+
 
 

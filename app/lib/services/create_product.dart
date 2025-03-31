@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../services/login_service.dart';
 
 class CreateProductScreen extends StatefulWidget {
   @override
@@ -55,35 +56,46 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
   }
 
   Future<void> addProduct() async {
-    final url = Uri.parse('http://localhost:3000/api/items/create');
+  final url = Uri.parse('http://localhost:3000/api/items/create');
 
-    
-    if (selectedCategoryName == null) {
-      print("Please select a valid category");
-      return;
-    }
-
-    final Map<String, dynamic> productData = {
-      'item_name': itemName,
-      'description': itemDesc,
-      'item_image': imageUrl,
-      'price': price,
-      'quantity': quantity,
-      'item_type': selectedCategoryName, 
-    };
-
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(productData),
-    );
-
-    if (response.statusCode == 201) {
-      Navigator.pop(context, true);
-    } else {
-      print("Failed to add product: ${response.body}");
-    }
+  if (selectedCategoryName == null) {
+    print("Please select a valid category");
+    return;
   }
+
+  // Fetch the access token
+  String? token = await LoginService.getAccessToken(); // Or fetch from SharedPreferences
+
+  if (token == null || token.isEmpty) {
+    print("No access token found");
+    return;
+  }
+
+  final Map<String, dynamic> productData = {
+    'item_name': itemName,
+    'description': itemDesc,
+    'item_image': imageUrl,
+    'price': price,
+    'quantity': quantity,
+    'item_type': selectedCategoryName,
+  };
+
+  final response = await http.post(
+    url,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',  // Add the Authorization header
+    },
+    body: jsonEncode(productData),
+  );
+
+  if (response.statusCode == 201) {
+    Navigator.pop(context, true);
+  } else {
+    print("Failed to add product: ${response.body}");
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {

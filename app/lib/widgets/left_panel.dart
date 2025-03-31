@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import '../services/login_service.dart';
 
 class LeftPanel extends StatefulWidget {
   const LeftPanel({super.key});
@@ -83,35 +84,46 @@ class _LeftPanelState extends State<LeftPanel> {
           const Divider(),
 
           _buildListTile(
-            icon: Icons.settings,
-            label: "Settings",
-            route: "/settings",
+            icon: Icons.logout, 
+            label: "logout",
+            route: "/logout",  
             currentRoute: currentRoute,
           ),
+
         ],
       ),
     );
   }
 
   Widget _buildListTile({
-    required IconData icon,
-    required String label,
-    required String route,
-    required String currentRoute,
-  }) {
-    bool isCurrentScreen = currentRoute == route; 
+  required IconData icon,
+  required String label,
+  required String route,
+  required String currentRoute,
+}) {
+  bool isCurrentScreen = currentRoute == route;
 
-    return ListTile(
-      title: _isCollapsed ? null : Text(label, overflow: TextOverflow.ellipsis),
-      leading: Icon(icon, color: isCurrentScreen ? Colors.grey : Colors.black54),
-      onTap: isCurrentScreen
-          ? null 
-          : () {
+  return ListTile(
+    title: _isCollapsed ? null : Text(label, overflow: TextOverflow.ellipsis),
+    leading: Icon(icon, color: isCurrentScreen ? Colors.grey : Colors.black54),
+    onTap: isCurrentScreen
+        ? null
+        : () async {
+            if (label == "logout") {
+              // Log out the user
+              await LoginService.logout();
+
+              // bring back to login screen once logged out
+              Navigator.pushReplacementNamed(context, '/login');
+            } else {
+              // Navigate to the route for other items
               Navigator.pushReplacementNamed(context, route);
-            },
-      enabled: !isCurrentScreen, 
-    );
-  }
+            }
+          },
+    enabled: !isCurrentScreen,
+  );
+}
+
 
   Widget _buildExpansionTile({
     required IconData icon,
