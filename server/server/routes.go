@@ -1,11 +1,18 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"strings"
 
 	"github.com/Cash-Crate/POS-app/server/handlers"
+	"github.com/Cash-Crate/POS-app/server/middleware"
+	"github.com/Cash-Crate/POS-app/server/models"
+	util "github.com/Cash-Crate/POS-app/server/utilities"
+	jwtutil "github.com/kittipat1413/go-common/util/jwt"
 	"github.com/rs/cors"
 )
 
@@ -20,35 +27,80 @@ func ServeHttp() {
 		AllowCredentials: true,
 	}
 
-	handler := cors.New(corsOpts).Handler(mux)
+	signingKey := []byte(os.Getenv("SIGNING_KEY"))
+	if len(signingKey) == 0 {
+		log.Fatalf("Warning: SIGNING_KEY not set or empty")
+		panic("Warning: SIGNING_KEY not set or empty")
+	}
+
+	corsHandler := cors.New(corsOpts).Handler(mux)
 	fmt.Printf("Listening at port %s\n", PORT)
 
 	mux.HandleFunc("/", handlers.GetRoot)
-	mux.HandleFunc("GET /api/users", handlers.GetUsers)
-	mux.HandleFunc("GET /api/users/", handlers.GetUserByID)
-	mux.HandleFunc("POST /api/users/create", handlers.CreateUser)
-	mux.HandleFunc("DELETE /api/users/", handlers.DeleteUser)
+	mux.HandleFunc("POST /api/login", handlers.Login)
+	mux.HandleFunc("POST /api/refresh", handlers.RefreshToken)
 
-	mux.HandleFunc("GET /api/logins", handlers.GetLogins)
+	jwtProtected := func(handler http.HandlerFunc) http.HandlerFunc {
+		return func(w http.ResponseWriter, r *http.Request) {
+			authHeader := r.Header.Get("Authorization")
+			if authHeader == "" {
+				util.ErrorRes(w, http.StatusUnauthorized, "Authorization header required")
+				return
+			}
 
-	mux.HandleFunc("GET /api/itemtypes", handlers.GetItemTypes)
-	mux.HandleFunc("POST /api/itemtypes/create", handlers.CreateItemType)
-	// mux.HandleFunc("DELETE /api/itemtypes", handlers.DeleteItemTypes)
+			bearerPrefix := "Bearer "
+			if !strings.HasPrefix(authHeader, bearerPrefix) {
+				util.ErrorRes(w, http.StatusUnauthorized, "Invalid authorization format")
+				return
+			}
+			tokenString := strings.TrimPrefix(authHeader, bearerPrefix)
 
-	mux.HandleFunc("GET /api/items", handlers.GetItems)
-	mux.HandleFunc("GET /api/items/{id}", handlers.GetItemByID)
-	mux.HandleFunc("POST /api/items/create", handlers.CreateItem)
-	mux.HandleFunc("PUT /api/items/{id}", handlers.UpdateItem)
-	mux.HandleFunc("PUT /api/items/{id}/{quantity}", handlers.SellItem)
-	mux.HandleFunc("DELETE /api/items/{id}", handlers.DeleteItem)
+			manager, err := jwtutil.NewJWTManager(jwtutil.HS256, signingKey)
+			if err != nil {
+				log.Printf("Failed to create JWTManager: %v", err)
+				util.ErrorRes(w, http.StatusInternalServerError, "Authentication service unavailable")
+				return
+			}
 
-	mux.HandleFunc("GET /api/items/attrs/{id}", handlers.GetItemAttrs)
-	mux.HandleFunc("POST /api/items/attrs/create/{id}", handlers.CreateItemAttrs)
-	mux.HandleFunc("PUT /api/items/attrs/{id}/{name}", handlers.UpdateItemAttr)
+			claims := &models.MyCustomClaims{}
+			err = manager.ParseAndValidateToken(r.Context(), tokenString, claims)
 
-	mux.HandleFunc("GET /api/crud", handlers.GetCrudActions)
+			if err != nil {
+				log.Printf("Invalid token: %v", err)
+				util.ErrorRes(w, http.StatusUnauthorized, "Invalid or expired token")
+				return
+			}
 
-	if err := http.ListenAndServe(PORT, handler); err != nil {
+			if claims.TokenType != "access" {
+				util.ErrorRes(w, http.StatusUnauthorized, "Invalid token type")
+				return
+			}
+
+			ctx := context.WithValue(r.Context(), middleware.UserIDKey, claims.UserID)
+			handler(w, r.WithContext(ctx))
+		}
+	}
+
+	mux.HandleFunc("GET /api/users", jwtProtected(handlers.GetUsers))
+	mux.HandleFunc("GET /api/users/", jwtProtected(handlers.GetUserByID))
+	mux.HandleFunc("POST /api/users/create", jwtProtected(handlers.CreateUser))
+	mux.HandleFunc("DELETE /api/users/", jwtProtected(handlers.DeleteUser))
+	mux.HandleFunc("GET /api/logins", jwtProtected(handlers.GetLogins))
+	mux.HandleFunc("GET /api/itemtypes", jwtProtected(handlers.GetItemTypes))
+	mux.HandleFunc("POST /api/itemtypes/create", jwtProtected(handlers.CreateItemType))
+	// mux.HandleFunc("DELETE /api/itemtypes", jwtProtected(handlers.DeleteItemTypes))
+	mux.HandleFunc("GET /api/items", jwtProtected(handlers.GetItems))
+	mux.HandleFunc("GET /api/items/{id}", jwtProtected(handlers.GetItemByID))
+	mux.HandleFunc("POST /api/items/create", jwtProtected(handlers.CreateItem))
+	mux.HandleFunc("PUT /api/items/{id}", jwtProtected(handlers.UpdateItem))
+	mux.HandleFunc("PUT /api/items/{id}/{quantity}", jwtProtected(handlers.SellItem))
+	mux.HandleFunc("DELETE /api/items/{id}", jwtProtected(handlers.DeleteItem))
+	mux.HandleFunc("GET /api/items/attrs/{id}", jwtProtected(handlers.GetItemAttrs))
+	mux.HandleFunc("POST /api/items/attrs/create/{id}", jwtProtected(handlers.CreateItemAttrs))
+	mux.HandleFunc("PUT /api/items/attrs/{id}/{name}", jwtProtected(handlers.UpdateItemAttr))
+	mux.HandleFunc("GET /api/crud", jwtProtected(handlers.GetCrudActions))
+
+	if err := http.ListenAndServe(PORT, corsHandler); err != nil {
 		log.Fatal(err)
 	}
 }

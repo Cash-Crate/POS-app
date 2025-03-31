@@ -50,8 +50,7 @@ func CreateSchema() {
 	}
 
 	_, err = database.DB.Exec(`CREATE TABLE IF NOT EXISTS item_types (
-		item_type_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-		item_type_name TEXT NOT NULL
+		item_type_name TEXT NOT NULL PRIMARY KEY
 		) `)
 	if err != nil {
 		log.Fatalf("Failed to create table: %v", err)
@@ -61,7 +60,7 @@ func CreateSchema() {
 		item_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 		item_name TEXT NOT NULL,
 		description TEXT,
-		item_type INTEGER NOT NULL REFERENCES item_types(item_type_id),
+		item_type TEXT NOT NULL REFERENCES item_types(item_type_name),
 		item_image TEXT,
 		price NUMERIC(10,2) NOT NULL,
 		quantity INT NOT NULL
