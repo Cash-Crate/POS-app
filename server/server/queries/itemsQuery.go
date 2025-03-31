@@ -96,7 +96,7 @@ func GetItemByIDQuery(id int64) (models.ItemWithAttrs, error) {
 		quantity,
 		item_type
 		FROM items
-		WHERE i.item_id = $1`, id).Scan(
+		WHERE item_id = $1`, id).Scan(
 		&item.Item_id,
 		&item.Item_name,
 		&item.Description,
