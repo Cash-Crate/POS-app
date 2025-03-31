@@ -9,7 +9,6 @@ import (
 
 func GetItemTypesQuery() (*sql.Rows, error) {
 	rows, err := db.DB.Query(`SELECT
-		item_type_id,
 		item_type_name
 		FROM item_types`)
 	if err != nil {

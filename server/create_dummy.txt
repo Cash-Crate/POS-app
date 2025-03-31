@@ -32,11 +32,11 @@ INSERT INTO item_types (item_type_name) VALUES
 
 -- Insert dummy items
 INSERT INTO items (item_name, description, item_type, item_image, price, quantity) VALUES
-('Laptop', 'Gaming laptop', 1, 'laptop.jpg', 1200.00, 0),
-('T-shirt', 'Cotton T-shirt', 2, 'tshirt.jpg', 20.00, 0),
-('Novel', 'Bestselling book', 3, 'novel.jpg', 15.00, 0),
-('Sofa', 'Comfortable sofa', 4, 'sofa.jpg', 500.00, 0),
-('Action Figure', 'Collectible toy', 5, 'action_figure.jpg', 30.00, 0);
+('Laptop', 'Gaming laptop', 'Electronics', 'laptop.jpg', 1200.00, 0),
+('T-shirt', 'Cotton T-shirt', 'Clothing', 'tshirt.jpg', 20.00, 0),
+('Novel', 'Bestselling book', 'Books', 'novel.jpg', 15.00, 0),
+('Sofa', 'Comfortable sofa', 'Furniture', 'sofa.jpg', 500.00, 0),
+('Action Figure', 'Collectible toy', 'Toys', 'action_figure.jpg', 30.00, 0);
 
 -- Insert dummy item attributes
 INSERT INTO item_attributes (item_id, attr_name, attr_value) VALUES

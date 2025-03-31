@@ -25,7 +25,6 @@ func GetItemTypes(res http.ResponseWriter, req *http.Request) {
 	for rows.Next() {
 		var itemType models.ItemType
 		if err := rows.Scan(
-			&itemType.Item_type_id,
 			&itemType.Item_type_name); err != nil {
 			util.ErrorRes(res, http.StatusInternalServerError,
 				fmt.Sprintf("Could not decode request body %s", err))
