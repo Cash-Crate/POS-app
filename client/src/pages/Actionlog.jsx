@@ -52,19 +52,19 @@ const ActionLogs = () => {
                             </ul>
                         </div>
                     </header>
-                    <div className='scroll flex flex-nowrap overflow-x-auto'>
-                        <table className="w-full border-separate border-spacing-0">
-                            <thead className="-hidden">
+                    <div className='grid w-full overflow-auto'>
+                        <table >
+                            <thead >
                                 <tr className="btn-dark text-center">
+                                    <th className="table-data btn-dark sticky left-0 rounded-tl-lg z-10 whitespace-nowrap">
+                                        User ID
+                                    </th>
                                     {[
-                                        "Action ID",
-                                        "User ID",
                                         "Date",
                                         "Operation",
                                         "Item",
                                     ].map((header, index, arr) => (
-                                        <th key={index} className={`border px-4 py-2 text-center 
-                                            ${index === 0 ? 'rounded-tl-lg' : ''} 
+                                        <th key={index} className={`table-data whitespace-nowrap 
                                             ${index === arr.length - 1 ? 'rounded-tr-lg' : ''}`}>
                                             {header}
                                         </th>
@@ -74,11 +74,10 @@ const ActionLogs = () => {
                             <tbody className='space-y-20'>
                                 {filteredItems.map((crud) => (
                                     <tr key={crud.action_id}>
-                                        <td className="border px-4 py-2 text-center">{crud.action_id}</td>
-                                        <td className="border px-4 py-2 text-center">{crud.user_id}</td>
-                                        <td className="border px-4 py-2 text-center">{crud.action_at}</td>
-                                        <td className="border px-4 py-2 text-center">{crud.action_taken}</td>
-                                        <td className="border px-4 py-2 text-center">{crud.item}</td>
+                                        <td className="table-data sticky left-0 bg-white">{crud.user_id}</td>
+                                        <td className="table-data">{crud.action_at}</td>
+                                        <td className="table-data">{crud.action_taken}</td>
+                                        <td className="table-data">{crud.item}</td>
                                     </tr>
                                 ))}
                             </tbody>

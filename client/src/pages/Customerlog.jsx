@@ -56,12 +56,14 @@ const CustomerLogs = () => {
                         </ul>
                     </div>
                     </header>
-                    <div className='scroll flex flex-nowrap overflow-x-auto'>
-                        <table className="w-full border-separate border-spacing-0">
-                            <thead className="-hidden">
+                    <div className='grid w-full overflow-auto'>
+                        <table>
+                            <thead>
                                 <tr className="btn-dark text-center">
+                                    <th className="table-data btn-dark sticky left-0 rounded-tl-lg z-10 whitespace-nowrap">
+                                        Email
+                                    </th>
                                     {[
-                                        "Email",
                                         "Logged In",
                                         "Logged Out",
                                         "IP Address",
@@ -71,8 +73,7 @@ const CustomerLogs = () => {
                                         "Host",
                                         "Origin",
                                     ].map((header, index, arr) => (
-                                        <th key={index} className={`border px-4 py-2 text-center 
-                                            ${index === 0 ? 'rounded-tl-lg' : ''} 
+                                        <th key={index} className={`table-datawhitespace-nowrap 
                                             ${index === arr.length - 1 ? 'rounded-tr-lg' : ''}`}>
                                             {header}
                                         </th>
@@ -81,16 +82,16 @@ const CustomerLogs = () => {
                             </thead>
                             <tbody className='space-y-20'>
                                 {filteredItems.map((login) => (
-                                    <tr key={login.login_id}>
-                                        <td className="border px-4 py-2 text-center">{login.email}</td>
-                                        <td className="border px-4 py-2 text-center">{login.login_at}</td>
-                                        <td className="border px-4 py-2 text-center">{login.logout_at == "0001-01-01 00:00:00" ? "none" : login.logout_at}</td>
-                                        <td className="border px-4 py-2 text-center">{login.ip_addr}</td>
-                                        <td className="border px-4 py-2 text-center">{login.device_type}</td>
-                                        <td className="border px-4 py-2 text-center">{login.browser}</td>
-                                        <td className="border px-4 py-2 text-center">{login.cpu_arch}</td>
-                                        <td className="border px-4 py-2 text-center">{login.host}</td>
-                                        <td className="border px-4 py-2 text-center">{login.origin}</td>
+                                    <tr key={login.email}>
+                                        <td className="table-data sticky left-0 bg-white">{login.email}</td>
+                                        <td className="table-data">{login.login_at}</td>
+                                        <td className="table-data">{login.logout_at == "0001-01-01 00:00:00" ? "none" : login.logout_at}</td>
+                                        <td className="table-data">{login.ip_addr}</td>
+                                        <td className="table-data">{login.device_type}</td>
+                                        <td className="table-data">{login.browser}</td>
+                                        <td className="table-data">{login.cpu_arch}</td>
+                                        <td className="table-data">{login.host}</td>
+                                        <td className="table-data">{login.origin}</td>
                                     </tr>
                                 ))}
                             </tbody>
