@@ -1,7 +1,11 @@
+import 'package:app/services/edit_product.dart';
 import 'package:flutter/material.dart';
 import '../widgets/left_panel.dart';
 import '../models/products.dart';
-import 'create_product_screen.dart';
+import '../services/create_product.dart';
+import '../services/delete_product.dart';
+
+
 
 class ProductsOverviewScreen extends StatefulWidget {
   
@@ -37,13 +41,6 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
       products.removeWhere((product) => product.name == name);
     });
   }
-
-  // Edit product function 
-  void editProduct(String name) {
-    // Edit product logic
-  }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +130,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
                                                     );
 
                                                     if (result == true) {
-                                                      fetchProducts(); // Refresh product list after adding
+                                                      fetchProducts(); 
                                                     }
                                                   },
                                                 ),
@@ -149,7 +146,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
                                             DataCell(
                                               Padding(
                                                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                                child: product.image.startsWith("http") // 🔍 Check if it's an API image
+                                                child: product.image.startsWith("http") 
                                                     ? Image.network(
                                                         product.image,
                                                         width: 50,
@@ -174,13 +171,67 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
                                                     mainAxisSize: MainAxisSize.min,
                                                     children: [
                                                     IconButton(
-                                                        icon: Icon(Icons.edit, color: Colors.blue),
-                                                        onPressed: () => editProduct(product.id.toString()), 
-                                                      ),
+                                                      icon: Icon(Icons.edit, color: Colors.blue),
+                                                      onPressed: () async {
+                                                        final result = await Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (context) => EditProductScreen(productId: product.id) 
+                                                          ),
+                                                        );
+
+                                                        if (result == true) {
+                                                          fetchProducts();
+                                                        }
+                                                      },
+                                                    ),
+
                                                     IconButton(
-                                                        icon: Icon(Icons.delete, color: Colors.red),
-                                                        onPressed: () => deleteProduct(product.name), 
-                                                      ),
+                                                      icon: Icon(Icons.delete, color: Colors.red),
+                                                      onPressed: () {
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (context) {
+                                                            return AlertDialog(
+                                                              title: Text('Delete Product'),
+                                                              content: Text('Are you sure you want to delete ${product.name}?'),
+                                                              actions: <Widget>[
+                                                                TextButton(
+                                                                  onPressed: () async {
+                                                                    bool success = await DeleteProductService.deleteProduct(product.id); 
+
+                                                                    Navigator.pop(context); 
+
+                                                                    if (success) {
+                                                                      ScaffoldMessenger.of(context).showSnackBar(
+                                                                        SnackBar(content: Text("Product deleted successfully")),
+                                                                      );
+
+                                                                      // Refresh UI once the product is deleted
+                                                                      setState(() {
+                                                                        products.removeWhere((p) => p.id == product.id);
+                                                                      });
+                                                                    } else {
+                                                                      ScaffoldMessenger.of(context).showSnackBar(
+                                                                        SnackBar(content: Text("Failed to delete product")),
+                                                                      );
+                                                                    }
+                                                                  },
+                                                                  child: Text('Yes'),
+                                                                ),
+                                                                TextButton(
+                                                                  onPressed: () {
+                                                                    Navigator.pop(context); 
+                                                                  },
+                                                                  child: Text('No'),
+                                                                ),
+                                                              ],
+                                                            );
+                                                          },
+                                                        );
+                                                      },
+                                                    ),
+
                                                     ],
                                                   ),
                                                 ),
@@ -223,14 +274,14 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
                       },
                     ),
 
-                    // Search Field with Expansion Logic
+                    
                     isSearchExpanded
                         ? Expanded(
                             child: Container(
                               padding: EdgeInsets.symmetric(horizontal: 8),
                               child: TextField(
                                 controller: searchController,
-                                autofocus: true, // Automatically focuses on the search field
+                                autofocus: true, 
                                 decoration: InputDecoration(
                                   hintText: "Search...",
                                   hintStyle: TextStyle(color: Color(0xFF3BDEB2)),

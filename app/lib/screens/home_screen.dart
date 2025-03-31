@@ -63,23 +63,25 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
    Future<void> _loadProducts() async {
-    try {
-      List<Product> fetchedProducts = await fetchProducts(); // Fetch from API
-      setState(() {
-        products = List.from(fetchedProducts); // Save products
-        filteredProducts = List.from(fetchedProducts);
-        quantities = List<int>.filled(filteredProducts.length, 1);
-        isLoading = false; // Stop loading when data is fetched
-      });
+  try {
+    List<Product> fetchedProducts = await fetchProducts();
+    print("Fetched products: $fetchedProducts"); // Debug print
+    setState(() {
+      products = List.from(fetchedProducts);
+      filteredProducts = List.from(fetchedProducts);
+      quantities = List<int>.filled(filteredProducts.length, 1);
+      isLoading = false;
+    });
 
-      _loadCategories(); // <--- Load categories after products are fetched
-    } catch (e) {
-      print("Error fetching products: $e");
-      setState(() {
-        isLoading = false;
-      });
-    }
+    _loadCategories(); 
+  } catch (e) {
+    print("Error fetching products: $e"); 
+    setState(() {
+      isLoading = false;
+    });
   }
+}
+
 
 
   @override
@@ -154,7 +156,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             )).toList(),
                           ),
-
                         ),
                       ),
                     ),

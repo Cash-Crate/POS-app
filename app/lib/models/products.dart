@@ -5,6 +5,7 @@ class Product {
   final int id; 
   final String name;
   final double price;
+  final String description;
   final String image;
   final String category;
 
@@ -12,6 +13,7 @@ class Product {
     required this.id, 
     required this.name,
     required this.price,
+    required this.description,
     required this.image,
     required this.category,
   });
@@ -24,11 +26,12 @@ class Product {
   return Product(
       id: json["item_id"] ?? 0,
       name: json["item_name"] ?? "No Name",
+      description: json['description'] ?? '',
       price: (json["price"] as num?)?.toDouble() ?? 0.0,
       image: hasValidImage
-          ? "http://localhost:8000/uploads/$imageUrl"
+          ? "http://localhost:3000/uploads/$imageUrl"
           : "assets/images/placeholder.jpg", // ✅ Use placeholder if missing
-      category: json["item_type_name"] ?? "Uncategorized",
+      category: json["item_type"] ?? "Uncategorized",
     );
   }
 
@@ -36,7 +39,7 @@ class Product {
 
 // Add the fetchProducts() function to fetch data from the API
 Future<List<Product>> fetchProducts() async {
-  const String apiUrl = "http://localhost:8000/api/items/";
+  const String apiUrl = "http://localhost:3000/api/items";
   
   final response = await http.get(Uri.parse(apiUrl));
   

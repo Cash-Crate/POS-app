@@ -1,0 +1,180 @@
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+class CreateProductScreen extends StatefulWidget {
+  @override
+  _CreateProductScreenState createState() => _CreateProductScreenState();
+}
+
+class _CreateProductScreenState extends State<CreateProductScreen> {
+  final _formKey = GlobalKey<FormState>();
+
+  String itemName = '';
+  String itemDesc = '';
+  double price = 0.0;
+  int quantity = 1;
+  String imageUrl = '';
+  
+  // List of categories 
+  final List<Map<String, String>> categories = [
+    {"name": "Electronics"},
+    {"name": "Clothing"},
+    {"name": "Books"},
+    {"name": "Furniture"},
+    {"name": "Toy"},
+    {"name": "Beverages"},
+  ];
+
+  String? selectedCategoryName; 
+
+  // List for attributes
+  List<Map<String, String>> attributes = [];
+  TextEditingController attrNameController = TextEditingController();
+  TextEditingController attrValueController = TextEditingController();
+
+  // Add attribute
+  void addAttribute() {
+    if (attrNameController.text.isNotEmpty && attrValueController.text.isNotEmpty) {
+      setState(() {
+        attributes.add({
+          "attr_name": attrNameController.text,
+          "attr_value": attrValueController.text
+        });
+        attrNameController.clear();
+        attrValueController.clear();
+      });
+    }
+  }
+
+  // Remove attribute
+  void removeAttribute(int index) {
+    setState(() {
+      attributes.removeAt(index);
+    });
+  }
+
+  Future<void> addProduct() async {
+    final url = Uri.parse('http://localhost:3000/api/items/create');
+
+    
+    if (selectedCategoryName == null) {
+      print("Please select a valid category");
+      return;
+    }
+
+    final Map<String, dynamic> productData = {
+      'item_name': itemName,
+      'description': itemDesc,
+      'item_image': imageUrl,
+      'price': price,
+      'quantity': quantity,
+      'item_type': selectedCategoryName, 
+    };
+
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(productData),
+    );
+
+    if (response.statusCode == 201) {
+      Navigator.pop(context, true);
+    } else {
+      print("Failed to add product: ${response.body}");
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Add Product'), backgroundColor: Colors.white),
+      body: Container(
+        color: Colors.white,
+        child: Center(
+          child: Card(
+            elevation: 5,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            child: SizedBox(
+              width: 400, // Adjust width for a smaller form
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Product Name Field
+                      TextFormField(
+                        decoration: InputDecoration(labelText: 'Product Name'),
+                        onChanged: (value) => itemName = value,
+                        validator: (value) => value!.isEmpty ? 'Please enter a product name' : null,
+                      ),
+
+                      // Description Field
+                      TextFormField(
+                        decoration: InputDecoration(labelText: 'Description'),
+                        onChanged: (value) => itemDesc = value,
+                        validator: (value) => value!.isEmpty ? 'Please enter a description' : null,
+                      ),
+
+                      TextFormField(
+                        decoration: InputDecoration(labelText: 'Image URL'),
+                        onChanged: (value) => imageUrl = value,
+                        validator: (value) => value!.isEmpty ? 'Please enter an image URL' : null,
+                      ),
+
+                      // Price Field
+                      TextFormField(
+                        decoration: InputDecoration(labelText: 'Price'),
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) => price = double.tryParse(value) ?? 0.0,
+                        validator: (value) =>
+                            (value!.isEmpty || double.tryParse(value) == null) ? 'Enter a valid price' : null,
+                      ),
+
+                      // Quantity Field
+                      TextFormField(
+                        decoration: InputDecoration(labelText: 'Quantity'),
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) => quantity = int.tryParse(value) ?? 1,
+                        validator: (value) =>
+                            (value!.isEmpty || int.tryParse(value) == null) ? 'Enter a valid quantity' : null,
+                      ),
+
+                    
+                      DropdownButtonFormField<String>(
+                        decoration: InputDecoration(labelText: 'Category'),
+                        value: selectedCategoryName,
+                        onChanged: (value) => setState(() => selectedCategoryName = value),
+                        items: categories.map((category) {
+                          return DropdownMenuItem<String>(
+                            value: category["name"],
+                            child: Text(category["name"]!),
+                          );
+                        }).toList(),
+                        validator: (value) => value == null ? 'Select a category' : null,
+                      ),
+
+                      SizedBox(height: 20),
+
+                      // Add Product Button
+                      ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            addProduct();
+                          }
+                        },
+                        child: Text('Add Product'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

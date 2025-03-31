@@ -34,7 +34,7 @@ class _RightPanelState extends State<RightPanel> {
     double totalPrice = widget.cart.entries.fold(0, (sum, entry) {
       Product? product = products.firstWhere(
         (p) => p.name == entry.key,
-        orElse: () => Product(id: 0, name: "Unknown", price: 0, image: "", category: "Uncategorized"),
+        orElse: () => Product(id: 0, name: "Unknown", price: 0, image: "", category: "Uncategorized", description: ""),
       );
       return sum + (product.price * entry.value);
     });
@@ -55,7 +55,7 @@ class _RightPanelState extends State<RightPanel> {
                     children: widget.cart.entries.map((entry) {
                       Product? product = products.firstWhere(
                         (p) => p.name == entry.key,
-                        orElse: () => Product(id: 0, name: "Unknown", price: 0, image: "", category: "Uncategorized"),
+                        orElse: () => Product(id: 0, name: "Unknown", price: 0, image: "", category: "Uncategorized", description: ""),
                       );
 
                       return Card(
