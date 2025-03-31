@@ -72,3 +72,32 @@ export const fetchWithAuth = async (url, options = {}) => {
         headers
     });
 };
+
+export const logout = async (silent = false) => {
+    try {
+        if (!silent) {
+            const accessToken = localStorage.getItem('accessToken');
+            const refreshToken = localStorage.getItem('refreshToken');
+
+            if (accessToken && refreshToken) {
+                await fetch('http://localhost:3000/api/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify({ refreshToken: refreshToken})
+                })
+            }
+        }
+    } catch (error) {
+        console.error('Error logging out:', error);
+    } finally {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('expiresAt');
+        localStorage.removeItem('userId');
+
+        window.location.href = '/login'
+    }
+}

@@ -26,3 +26,7 @@ type MyCustomClaims struct {
 	UserID    int    `json:"user_id"`
 	TokenType string `json:"token_type"`
 }
+
+var LogoutReq struct {
+	RefreshToken string `json:"refreshToken"`
+}
