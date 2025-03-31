@@ -1,3 +1,4 @@
+import { fetchWithAuth } from '../utils/authUtils'
 import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 
@@ -20,7 +21,7 @@ function Test() {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/users/`);
+      const res = await fetchWithAuth(`${API_BASE_URL}/api/users/`, {});
       const data = await res.json();
       setUsers(data);
     } catch (error) {
@@ -42,7 +43,7 @@ function Test() {
     console.log(userData)
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/users/create/`, {
+      const res = await fetchWithAuth(`${API_BASE_URL}/api/users/create/`, {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData)
@@ -59,7 +60,7 @@ function Test() {
 
   const delUser = async (id, index) => {
     try {
-      await fetch(`${API_BASE_URL}/api/users/${id}/`, { method: "DELETE" });
+      await fetchWithAuth(`${API_BASE_URL}/api/users/${id}/`, { method: "DELETE" });
       setUsers(prev => prev.filter((_, i) => i !== index));
     } catch (error) {
       console.error("Error deleting user:", error);

@@ -1,5 +1,7 @@
+import { fetchWithAuth } from "../utils/authUtils";
+
 const updateProduct = async (editItem, openEditModal) => {
-    const response = await fetch(`http://localhost:3000/api/items/${editItem.item_id}`, {
+    const response = await fetchWithAuth(`http://localhost:3000/api/items/${editItem.item_id}`, {
         method: "PUT",headers: {"Content-Type": "application/json",},
         body: JSON.stringify({
             item_name: editItem.item_name,

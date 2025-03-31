@@ -1,3 +1,4 @@
+import { fetchWithAuth } from '../utils/authUtils'
 import { main } from "motion/react-client";
 import { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
@@ -8,21 +9,21 @@ const Dashboard = () => {
     const [graphData, setGraph] = useState([]);
 
     useEffect(() => {
-        // fetch("http://localhost:3000/api/ ")    api for low stocks
+        // fetchWithAuth("http://localhost:3000/api/ ", {})    api for low stocks
         //     .then((response) => response.json())
         //     .then((data) => setStocks(data))
         //     .catch((error) => console.error("Error fetching low stock data:", error));
     }, []);
 
     useEffect(() => {
-        // fetch("http://localhost:3000/api/ ")    api for product ranking
+        // fetchWithAuth("http://localhost:3000/api/ ", {})    api for product ranking
         //     .then((response) => response.json())
         //     .then((data) => setProdRank(data))
         //     .catch((error) => console.error("Error fetching product rank data:", error));
     }, []);
 
     useEffect(() => {
-        // fetch("http://localhost:3000/api/ ")    api for sales graph
+        // fetchWithAuth("http://localhost:3000/api/ ", {})    api for sales graph
         //     .then((response) => response.json())
         //     .then((data) => setGraph(data))
         //     .catch((error) => console.error("Error fetching graph data:", error));
