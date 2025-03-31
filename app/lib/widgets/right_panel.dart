@@ -30,6 +30,7 @@ class _RightPanelState extends State<RightPanel> {
       }
     }
 
+  @override
   Widget build(BuildContext context) {
     double totalPrice = widget.cart.entries.fold(0, (sum, entry) {
       Product? product = products.firstWhere(
@@ -38,7 +39,6 @@ class _RightPanelState extends State<RightPanel> {
       );
       return sum + (product.price * entry.value);
     });
-
     return Container(
       width: 250,
       color: Colors.white,
@@ -57,7 +57,6 @@ class _RightPanelState extends State<RightPanel> {
                         (p) => p.name == entry.key,
                         orElse: () => Product(id: 0, name: "Unknown", price: 0, image: "", category: "Uncategorized", description: ""),
                       );
-
                       return Card(
                         elevation: 2,
                         margin: const EdgeInsets.symmetric(vertical: 8),
@@ -83,9 +82,7 @@ class _RightPanelState extends State<RightPanel> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(product.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                                    Text("\₱${product.price.toStringAsFixed(2)}",
-                                        // style: const TextStyle(color: Colors.green)
-                                        ),
+                                    Text("₱${product.price.toStringAsFixed(2)}"),
                                   ],
                                 ),
                               ),
@@ -93,13 +90,13 @@ class _RightPanelState extends State<RightPanel> {
                                 children: [
                                   IconButton(
                                     icon: Container(
-                                      width: 14, // Smaller container
+                                      width: 14, 
                                       height: 14,
                                       decoration: BoxDecoration(
-                                        color: Color(0xFF1F3745), // Background color
+                                        color: Color(0xFF1F3745), 
                                         shape: BoxShape.circle,
                                       ),
-                                      child: Icon(Icons.remove, color: Color(0xFF3BDEB2), size: 10), // Smaller icon
+                                      child: Icon(Icons.remove, color: Color(0xFF3BDEB2), size: 10), 
                                     ),
                                     onPressed: () {
                                       setState(() {
@@ -114,16 +111,16 @@ class _RightPanelState extends State<RightPanel> {
                                     padding: EdgeInsets.zero, 
                                     constraints: BoxConstraints(), 
                                   ),
-                                  Text(entry.value.toString(), style: const TextStyle(fontSize: 14)), // Slightly smaller text
+                                  Text(entry.value.toString(), style: const TextStyle(fontSize: 14)), 
                                   IconButton(
                                     icon: Container(
                                       width: 14, // Same small size
                                       height: 14,
                                       decoration: BoxDecoration(
-                                        color: Color(0xFF1F3745), // Background color
+                                        color: Color(0xFF1F3745), 
                                         shape: BoxShape.circle,
                                       ),
-                                      child: Icon(Icons.add, color: Color(0xFF3BDEB2), size: 10), // Smaller icon
+                                      child: Icon(Icons.add, color: Color(0xFF3BDEB2), size: 10), 
                                     ),
                                     onPressed: () {
                                       setState(() {
@@ -131,8 +128,8 @@ class _RightPanelState extends State<RightPanel> {
                                         widget.onUpdate();
                                       });
                                     },
-                                    padding: EdgeInsets.zero, // No extra spacing
-                                    constraints: BoxConstraints(), // Tight constraints
+                                    padding: EdgeInsets.zero, 
+                                    constraints: BoxConstraints(), 
                                   ),
                                 ],
 

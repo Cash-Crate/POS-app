@@ -32,7 +32,7 @@ class Product {
       price: (json["price"] as num?)?.toDouble() ?? 0.0,
       image: hasValidImage
           ? "http://localhost:3000/uploads/$imageUrl"
-          : "assets/images/placeholder.jpg", // ✅ Use placeholder if missing
+          : "assets/images/placeholder.jpg", 
       category: json["item_type"] ?? "Uncategorized",
     );
   }
@@ -41,10 +41,10 @@ class Product {
 
 
 
-// Add the fetchProducts() function to fetch data from the API
+// fetch data from the API
 Future<List<Product>> fetchProducts() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  String? token = await LoginService.getAccessToken(); // ✅ Call with class name
+  String? token = await LoginService.getAccessToken(); 
 
   if (token == null || token.isEmpty) {
     throw Exception("No access token found");

@@ -35,52 +35,52 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
   void _loadCategories() {
-  // Extract unique categories from fetched products
-  final Set<String> uniqueCategories = products.map((p) => p.category).toSet();
+    // Extract unique categories from fetched products
+    final Set<String> uniqueCategories = products.map((p) => p.category).toSet();
 
-  // Update the categories list
-  setState(() {
-    categories = ["All", ...uniqueCategories];
-  });
-}
+    // Update the categories list
+    setState(() {
+      categories = ["All", ...uniqueCategories];
+    });
+  }
 
- void filterProducts(String query) {
-  setState(() {
-    filteredProducts = products.where((product) {
-      bool matchesSearch = query.isEmpty || product.name.toLowerCase().contains(query.toLowerCase());
-      bool matchesCategory = selectedCategory == "All" || product.category == selectedCategory;
-      return matchesSearch && matchesCategory;
-    }).toList();
-  });
-}
+  void filterProducts(String query) {
+    setState(() {
+      filteredProducts = products.where((product) {
+        bool matchesSearch = query.isEmpty || product.name.toLowerCase().contains(query.toLowerCase());
+        bool matchesCategory = selectedCategory == "All" || product.category == selectedCategory;
+        return matchesSearch && matchesCategory;
+      }).toList();
+    });
+  }
 
 
 
   void filterByCategory(String category) {
-    setState(() {
-      selectedCategory = category;
-      filterProducts(searchController.text);
-    });
-  }
-   Future<void> _loadProducts() async {
-  try {
-    List<Product> fetchedProducts = await fetchProducts();
-    print("Fetched products: $fetchedProducts"); // Debug print
-    setState(() {
-      products = List.from(fetchedProducts);
-      filteredProducts = List.from(fetchedProducts);
-      quantities = List<int>.filled(filteredProducts.length, 1);
-      isLoading = false;
-    });
+      setState(() {
+        selectedCategory = category;
+        filterProducts(searchController.text);
+      });
+    }
+    Future<void> _loadProducts() async {
+    try {
+      List<Product> fetchedProducts = await fetchProducts();
+      print("Fetched products: $fetchedProducts"); // Debug print
+      setState(() {
+        products = List.from(fetchedProducts);
+        filteredProducts = List.from(fetchedProducts);
+        quantities = List<int>.filled(filteredProducts.length, 1);
+        isLoading = false;
+      });
 
-    _loadCategories(); 
-  } catch (e) {
-    print("Error fetching products: $e"); 
-    setState(() {
-      isLoading = false;
-    });
+      _loadCategories(); 
+    } catch (e) {
+      print("Error fetching products: $e"); 
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
-}
 
 
 
@@ -98,6 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
           appBar: isTablet
               ? AppBar(
                   backgroundColor: Colors.white,
+                  automaticallyImplyLeading: false,  
                   title: SizedBox(
                     width: 450,
                     height: 45,

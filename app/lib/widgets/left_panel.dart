@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import '../services/login_service.dart';
 
 class LeftPanel extends StatefulWidget {
@@ -21,18 +20,18 @@ class _LeftPanelState extends State<LeftPanel> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    bool isTablet = screenWidth >= 900; // Only apply collapsibility on tablets
+    bool isTablet = screenWidth >= 900; 
     String currentRoute = ModalRoute.of(context)?.settings.name ?? "";
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
-      width: isTablet ? (_isCollapsed ? 60 : 200) : 200, // Collapse only for tablets
+      width: isTablet ? (_isCollapsed ? 60 : 200) : 200,
       color: const Color.fromARGB(255, 255, 255, 255),
       padding: const EdgeInsets.all(8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (isTablet) // Show the toggle button only on tablets
+          if (isTablet) 
             Align(
               alignment: Alignment.centerRight,
               child: IconButton(
@@ -46,8 +45,8 @@ class _LeftPanelState extends State<LeftPanel> {
           Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
-              child: SvgPicture.asset(
-                "assets/images/sample-logo.svg",
+              child: Image.asset(
+                "assets/images/CashCrateLogo.jpg",
                 width: _isCollapsed ? 40 : 60,
                 height: _isCollapsed ? 40 : 60,
               ),

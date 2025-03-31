@@ -64,7 +64,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
   }
 
   // Fetch the access token
-  String? token = await LoginService.getAccessToken(); // Or fetch from SharedPreferences
+  String? token = await LoginService.getAccessToken(); 
 
   if (token == null || token.isEmpty) {
     print("No access token found");
@@ -84,7 +84,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
     url,
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',  // Add the Authorization header
+      'Authorization': 'Bearer $token', 
     },
     body: jsonEncode(productData),
   );
@@ -100,15 +100,19 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Add Product'), backgroundColor: Colors.white),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,  
+      ),
       body: Container(
         color: Colors.white,
         child: Center(
           child: Card(
-            elevation: 5,
+            color: Colors.white,
+            elevation: 10,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             child: SizedBox(
-              width: 400, // Adjust width for a smaller form
+              width: 400, 
               child: Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Form(
@@ -116,6 +120,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      Text("Add Product", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                       // Product Name Field
                       TextFormField(
                         decoration: InputDecoration(labelText: 'Product Name'),
@@ -154,30 +159,61 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
                             (value!.isEmpty || int.tryParse(value) == null) ? 'Enter a valid quantity' : null,
                       ),
 
-                    
                       DropdownButtonFormField<String>(
-                        decoration: InputDecoration(labelText: 'Category'),
+                        decoration: InputDecoration(
+                          labelText: 'Category',
+                          filled: true,  
+                          fillColor: Colors.white,  
+                          border: OutlineInputBorder(),  
+                        ),
+                        dropdownColor: Colors.white,  
                         value: selectedCategoryName,
                         onChanged: (value) => setState(() => selectedCategoryName = value),
                         items: categories.map((category) {
                           return DropdownMenuItem<String>(
                             value: category["name"],
-                            child: Text(category["name"]!),
+                            child: Text(
+                              category["name"]!,
+                              style: TextStyle(color: Colors.black),
+                            ),
                           );
                         }).toList(),
                         validator: (value) => value == null ? 'Select a category' : null,
                       ),
 
+
                       SizedBox(height: 20),
 
-                      // Add Product Button
-                      ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            addProduct();
-                          }
-                        },
-                        child: Text('Add Product'),
+                      // buttons section
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF1F3745),
+                              foregroundColor: Color(0xFF3BDEB2),
+                              side: BorderSide(color: Colors.black),
+                            ),
+                            child: Text('Cancel'),
+                          ),
+
+                          ElevatedButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                addProduct();
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF3BDEB2),
+                              foregroundColor: Color(0xFF1F3745),
+                              side: BorderSide(color: Colors.black),
+                            ),
+                            child: Text('Add'),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -189,4 +225,5 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
       ),
     );
   }
+
 }

@@ -64,67 +64,68 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
 
   // Handle the update request
-// Handle the update request
-Future<void> updateProduct() async {
-  final url = Uri.parse('http://localhost:3000/api/items/${widget.productId}');  
+  Future<void> updateProduct() async {
+    final url = Uri.parse('http://localhost:3000/api/items/${widget.productId}');  
 
-  if (selectedCategoryName == null) {
-    print("Please select a valid category");
-    return;
+    if (selectedCategoryName == null) {
+      print("Please select a valid category");
+      return;
+    }
+
+    // Fetch the access token
+    String? token = await LoginService.getAccessToken(); 
+
+    if (token == null || token.isEmpty) {
+      print("No access token found");
+      return;
+    }
+
+    final Map<String, dynamic> productData = {
+      'item_name': itemName,
+      'description': itemDesc,
+      'item_image': imageUrl,
+      'price': price,
+      'quantity': quantity,
+      'item_type': selectedCategoryName, 
+    };
+
+    final response = await http.put(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',  
+      },
+      body: jsonEncode(productData),
+    );
+
+    // Check the full response
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    // Show success message
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Product updated successfully")));
+    } else {
+      // Handle failed response
+    }
+
+    Navigator.pop(context, true); 
   }
-
-  // Fetch the access token
-  String? token = await LoginService.getAccessToken(); // Or fetch from SharedPreferences
-
-  if (token == null || token.isEmpty) {
-    print("No access token found");
-    return;
-  }
-
-  final Map<String, dynamic> productData = {
-    'item_name': itemName,
-    'description': itemDesc,
-    'item_image': imageUrl,
-    'price': price,
-    'quantity': quantity,
-    'item_type': selectedCategoryName, 
-  };
-
-  final response = await http.put(
-    url,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',  // Add the Authorization header
-    },
-    body: jsonEncode(productData),
-  );
-
-  // Check the full response
-  print('Response status: ${response.statusCode}');
-  print('Response body: ${response.body}');
-
-  // Show success message
-  if (response.statusCode == 200) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Product updated successfully")));
-  } else {
-    // Handle failed response
-  }
-
-  Navigator.pop(context, true); 
-}
-
-
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Edit Product'), backgroundColor: Colors.white),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+        ),
       body: Container(
         color: Colors.white,
         child: Center(
           child: Card(
-            elevation: 5,
+            color: Colors.white,
+            elevation: 10,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             child: SizedBox(
               width: 400, 
@@ -135,6 +136,7 @@ Future<void> updateProduct() async {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      Text("Update Product", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                       // Product Name Field
                       TextFormField(
                         initialValue: itemName,
@@ -182,11 +184,19 @@ Future<void> updateProduct() async {
                       // Category Dropdown
                       DropdownButtonFormField<String>(
                         value: selectedCategoryName,
-                        decoration: InputDecoration(labelText: 'Category'),
+                        decoration: InputDecoration(
+                          labelText: 'Category',
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder()
+                        ),
+                        dropdownColor: Colors.white,
                         items: categories.map((category) {
                           return DropdownMenuItem<String>(
-                            value: category["name"],
-                            child: Text(category["name"]!),
+                              value: category["name"],
+                              child: Text(category["name"]!,
+                              style: TextStyle(color: Colors.black),
+                            ),
                           );
                         }).toList(),
                         onChanged: (value) {
@@ -200,14 +210,34 @@ Future<void> updateProduct() async {
                       SizedBox(height: 20),
 
                       // Update Product Button
-                      ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            updateProduct();
-                          }
-                        },
-                        child: Text('Update Product'),
-                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF1F3745),
+                              foregroundColor: Color(0xFF3BDEB2),
+                            ),
+                            child: Text("Cancel"),
+                          ),
+
+                          ElevatedButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                updateProduct();
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Color(0xFF1F3745),
+                              backgroundColor: Color(0xFF3BDEB2),
+                            ),
+                            child: Text('Update'),
+                          ),
+                        ],
+                      )
                     ],
                   ),
                 ),

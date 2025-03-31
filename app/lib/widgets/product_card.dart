@@ -102,7 +102,7 @@ class _ProductCardState extends State<ProductCard> {
             ),
             IconButton(
               icon: CircleAvatar(
-                radius: 10, // Keeps the size small
+                radius: 10, 
                 backgroundColor: Color(0xFF1F3745), 
                 child: Icon(Icons.add, color: Color(0xFF3BDEB2), size: 14), 
               ),
@@ -131,7 +131,7 @@ class _ProductCardState extends State<ProductCard> {
         ),
 
         Text(
-          "\₱${widget.product.price.toStringAsFixed(2)}",
+          "₱${widget.product.price.toStringAsFixed(2)}",
           style: const TextStyle(fontSize: 14, color: Colors.green),
         ),
         SizedBox(height: isTablet ? 75 : 10),
