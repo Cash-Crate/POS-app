@@ -1,5 +1,3 @@
-import { Link } from 'react-router-dom';
-import test from '../../public/test.jpg';
 import Sidebar from '../components/Sidebar';
 import search from '../../public/search.svg';
 import add from '../../public/add.svg';
@@ -9,6 +7,7 @@ import addProduct from '../components/AddProduct';
 import updateProduct from '../components/EditProduct';
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
+import { fetchWithAuth } from '../utils/authUtils';
 
 const ProductsTable = () => {
     const [items, setProducts] = useState([]);
@@ -30,7 +29,7 @@ const ProductsTable = () => {
     });
     
     useEffect(() => {
-        fetch("http://localhost:3000/api/items") 
+        fetchWithAuth("http://localhost:3000/api/items", {})
         .then((response) => response.json())
         .then((data) => setProducts(data))
         .catch((error) => console.error("Error fetching data:", error));
@@ -55,7 +54,7 @@ const ProductsTable = () => {
     const deleteItem = async () => {
         if (!deleteItemId) return;
         try {
-            await fetch(`http://localhost:3000/api/items/${deleteItemId}`, { method: "DELETE" });
+            await fetchWithAuth(`http://localhost:3000/api/items/${deleteItemId}`, { method: "DELETE" });
             setProducts((prevItems) => prevItems.filter(item => item.item_id !== deleteItemId));
             openDeleteModal(false);
             setDeleteItemId(null);

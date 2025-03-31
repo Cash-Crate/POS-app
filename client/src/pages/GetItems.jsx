@@ -1,3 +1,4 @@
+import { fetchWithAuth } from '../utils/authUtils'
 import React from 'react'
 import Navbar from '../components/Navbar'
 import { useState, useEffect  } from 'react'
@@ -11,7 +12,7 @@ const Items = () => {
 
   async function getItems() {
     try {
-      const res = await fetch('http://localhost:3000/api/items')
+      const res = await fetchWithAuth('http://localhost:3000/api/items', {})
       const data = await res.json()
       setItems(data)
     } catch (error) {

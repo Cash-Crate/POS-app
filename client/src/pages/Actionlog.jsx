@@ -1,3 +1,4 @@
+import { fetchWithAuth } from '../utils/authUtils'
 import { Link } from 'react-router-dom';
 import Sidebar from '../components/Sidebar'
 import search from '../../public/search.svg'
@@ -9,7 +10,7 @@ const ActionLogs = () => {
     const [searchQuery, setSearchQuery] = useState("");
     
       useEffect(() => {
-        fetch("http://localhost:3000/api/crud") 
+        fetchWithAuth("http://localhost:3000/api/crud", {}) 
           .then((response) => response.json())
           .then((data) => setCrud(data))
           .catch((error) => console.error("Error fetching data:", error));
