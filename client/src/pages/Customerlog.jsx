@@ -45,7 +45,7 @@ const CustomerLogs = () => {
                         <ul className='flex gap-2.5 items-center'>
                             <motion.li whileTap={{ scale: 0.95 }} className='btn-highlight w-full md:w-40 py-2.5 rounded-lg'>
                                 <Link to="/customerlog" className=''>
-                                    <button className=' w-full'>Customer Logs</button>
+                                    <button className=' w-full'>Logins Logs</button>
                                 </Link>
                             </motion.li>
                             <motion.li whileTap={{ scale: 0.95 }} className='btn-dark w-full md:w-40  py-2.5 rounded-lg'>

@@ -61,7 +61,7 @@ const ActionLogs = () => {
                                         "User ID",
                                         "Date",
                                         "Operation",
-                                        "Request With",
+                                        "Item",
                                     ].map((header, index, arr) => (
                                         <th key={index} className={`border px-4 py-2 text-center 
                                             ${index === 0 ? 'rounded-tl-lg' : ''} 
