@@ -81,6 +81,7 @@ func ServeHttp() {
 		}
 	}
 
+	mux.HandleFunc("POST /api/logins/create", jwtProtected(handlers.PostLogin))
 	mux.HandleFunc("GET /api/users", jwtProtected(handlers.GetUsers))
 	mux.HandleFunc("GET /api/users/", jwtProtected(handlers.GetUserByID))
 	mux.HandleFunc("POST /api/users/create", jwtProtected(handlers.CreateUser))

@@ -40,8 +40,6 @@ function Test() {
       role: role
     };
 
-    console.log(userData)
-
     try {
       const res = await fetchWithAuth(`${API_BASE_URL}/api/users/create/`, {
         method: "POST",
