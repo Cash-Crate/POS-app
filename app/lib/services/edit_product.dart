@@ -4,7 +4,7 @@ import 'dart:convert';
 import '../services/login_service.dart';
 
 class EditProductScreen extends StatefulWidget {
-  final int productId;  // Add productId as a parameter
+  final int productId;  
 
   EditProductScreen({required this.productId});
 
@@ -15,44 +15,91 @@ class EditProductScreen extends StatefulWidget {
 class _EditProductScreenState extends State<EditProductScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  String itemName = '';
-  String itemDesc = '';
-  double price = 0.0;
-  int quantity = 1;
-  String imageUrl = '';
-  
-  // List of categories 
-  final List<Map<String, String>> categories = [
-    {"name": "Electronics"},
-    {"name": "Clothing"},
-    {"name": "Books"},
-    {"name": "Furniture"},
-    {"name": "Toy"},
-    {"name": "Beverages"},
-  ];
+  // Controllers for form fields
+  TextEditingController itemNameController = TextEditingController();
+  TextEditingController itemDescController = TextEditingController();
+  TextEditingController priceController = TextEditingController();
+  TextEditingController quantityController = TextEditingController();
+  TextEditingController imageUrlController = TextEditingController();
 
+ 
+  // List to store categories>
+  List<Map<String, dynamic>> categories = [];  
   String? selectedCategoryName; 
 
-  // Fetch product data based on productId
+
+  Future<void> fetchCategories() async {
+    final url = Uri.parse('http://localhost:3000/api/itemtypes');
+
+    try {
+      // Fetch the access token
+      String? token = await LoginService.getAccessToken(); 
+
+      if (token == null || token.isEmpty) {
+        print("No access token found");
+        return;
+      }
+
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',  // Include token
+        },
+      );
+
+      if (response.statusCode == 200) {
+        List<dynamic> data = jsonDecode(response.body);
+        
+        setState(() {
+          categories = data.map((item) => {"name": item["item_type_name"]}).toList();
+        });
+        // Debugging logs
+        print("Categories Loaded: $categories"); 
+      } else {
+        print("Failed to load categories: ${response.body}");
+      }
+    } catch (e) {
+      print("Error fetching categories: $e");
+    }
+  }
+
   Future<void> fetchProductDetails() async {
-    final response = await http.get(Uri.parse('http://localhost:3000/api/items/${widget.productId}'));
+    final url = Uri.parse('http://localhost:3000/api/items/${widget.productId}');
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
+    try {
+      String? token = await LoginService.getAccessToken();
+      if (token == null || token.isEmpty) {
+        print("No access token found");
+        return;
+      }
 
-     
-      String categoryName = data['item_type']; 
-      
-      setState(() {
-        itemName = data['item_name'];
-        itemDesc = data['description'];
-        price = data['price'].toDouble();
-        quantity = data['quantity'];
-        imageUrl = data['item_image'];
-        selectedCategoryName = categoryName; 
-      });
-    } else {
-      print("Failed to load product: ${response.body}");
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',  
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+
+        setState(() {
+          itemNameController.text = data['item_name'];
+          itemDescController.text = data['description'];
+          priceController.text = data['price'].toString();
+          quantityController.text = data['quantity'].toString();
+          imageUrlController.text = data['item_image'];
+          selectedCategoryName = data['item_type'];
+        });
+
+        print("Product details loaded successfully.");
+      } else {
+        print("Failed to load product: ${response.body}");
+      }
+    } catch (e) {
+      print("Error fetching product details: $e");
     }
   }
 
@@ -60,10 +107,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
   void initState() {
     super.initState();
     fetchProductDetails(); 
+    fetchCategories();
   }
 
-
-  // Handle the update request
   Future<void> updateProduct() async {
     final url = Uri.parse('http://localhost:3000/api/items/${widget.productId}');  
 
@@ -72,7 +118,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
       return;
     }
 
-    // Fetch the access token
     String? token = await LoginService.getAccessToken(); 
 
     if (token == null || token.isEmpty) {
@@ -81,11 +126,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
 
     final Map<String, dynamic> productData = {
-      'item_name': itemName,
-      'description': itemDesc,
-      'item_image': imageUrl,
-      'price': price,
-      'quantity': quantity,
+      'item_name': itemNameController.text,
+      'description': itemDescController.text,
+      'item_image': imageUrlController.text,
+      'price': double.tryParse(priceController.text) ?? 0.0,
+      'quantity': int.tryParse(quantityController.text) ?? 1,
       'item_type': selectedCategoryName, 
     };
 
@@ -98,20 +143,26 @@ class _EditProductScreenState extends State<EditProductScreen> {
       body: jsonEncode(productData),
     );
 
-    // Check the full response
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
 
-    // Show success message
     if (response.statusCode == 200) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Product updated successfully")));
     } else {
-      // Handle failed response
+      // Handle error
     }
-
-    Navigator.pop(context, true); 
+    Navigator.pop(context, true);
   }
 
+  @override
+  void dispose() {
+    itemNameController.dispose();
+    itemDescController.dispose();
+    priceController.dispose();
+    quantityController.dispose();
+    imageUrlController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +170,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
-        ),
+      ),
       body: Container(
         color: Colors.white,
         child: Center(
@@ -137,46 +188,42 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text("Update Product", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+
                       // Product Name Field
                       TextFormField(
-                        initialValue: itemName,
+                        controller: itemNameController,
                         decoration: InputDecoration(labelText: 'Product Name'),
-                        onChanged: (value) => itemName = value,
                         validator: (value) => value!.isEmpty ? 'Please enter a product name' : null,
                       ),
 
                       // Description Field
                       TextFormField(
-                        initialValue: itemDesc,
+                        controller: itemDescController,
                         decoration: InputDecoration(labelText: 'Description'),
-                        onChanged: (value) => itemDesc = value,
                         validator: (value) => value!.isEmpty ? 'Please enter a description' : null,
                       ),
 
                       // Image URL Field
                       TextFormField(
-                        initialValue: imageUrl,
+                        controller: imageUrlController,
                         decoration: InputDecoration(labelText: 'Image URL'),
-                        onChanged: (value) => imageUrl = value,
                         validator: (value) => value!.isEmpty ? 'Please enter an image URL' : null,
                       ),
 
                       // Price Field
                       TextFormField(
-                        initialValue: price.toString(),
+                        controller: priceController,
                         decoration: InputDecoration(labelText: 'Price'),
                         keyboardType: TextInputType.number,
-                        onChanged: (value) => price = double.tryParse(value) ?? 0.0,
                         validator: (value) =>
                             (value!.isEmpty || double.tryParse(value) == null) ? 'Enter a valid price' : null,
                       ),
 
                       // Quantity Field
                       TextFormField(
-                        initialValue: quantity.toString(),
+                        controller: quantityController,
                         decoration: InputDecoration(labelText: 'Quantity'),
                         keyboardType: TextInputType.number,
-                        onChanged: (value) => quantity = int.tryParse(value) ?? 1,
                         validator: (value) =>
                             (value!.isEmpty || int.tryParse(value) == null) ? 'Enter a valid quantity' : null,
                       ),
@@ -209,7 +256,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
                       SizedBox(height: 20),
 
-                      // Update Product Button
+                      // Buttons
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [

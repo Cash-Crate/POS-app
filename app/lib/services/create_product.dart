@@ -18,16 +18,51 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
   String imageUrl = '';
   
   // List of categories 
-  final List<Map<String, String>> categories = [
-    {"name": "Electronics"},
-    {"name": "Clothing"},
-    {"name": "Books"},
-    {"name": "Furniture"},
-    {"name": "Toy"},
-    {"name": "Beverages"},
-  ];
-
+  List<Map<String, dynamic>> categories = [];
   String? selectedCategoryName; 
+
+  @override
+  void initState() {
+    super.initState();
+    fetchCategories();
+  }
+
+  Future<void> fetchCategories() async {
+  final url = Uri.parse('http://localhost:3000/api/itemtypes');
+
+  try {
+    // Fetch the access token
+    String? token = await LoginService.getAccessToken(); 
+
+    if (token == null || token.isEmpty) {
+      print("No access token found");
+      return;
+    }
+
+    final response = await http.get(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',  // Include token
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      
+      setState(() {
+        categories = data.map((item) => {"name": item["item_type_name"]}).toList();
+      });
+
+      print("Categories Loaded: $categories"); // Debugging log
+    } else {
+      print("Failed to load categories: ${response.body}");
+    }
+  } catch (e) {
+    print("Error fetching categories: $e");
+  }
+}
+
 
   // List for attributes
   List<Map<String, String>> attributes = [];
