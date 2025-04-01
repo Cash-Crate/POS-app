@@ -44,7 +44,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
         url,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',  // Include token
+          'Authorization': 'Bearer $token',
         },
       );
 
