@@ -7,38 +7,37 @@ class LoginService {
 
   // LOGIN FUNCTION
   static Future<bool> login(String email, String password) async {
-    final url = Uri.parse('$baseUrl/login');
+      final url = Uri.parse('$baseUrl/login');
 
-    try {
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'email': email,
-          'password': password,
-        }),
-      );
+      try {
+        final response = await http.post(
+          url,
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({
+            'email': email,
+            'password': password,
+          }),
+        );
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('accessToken', data['accessToken']);
-        await prefs.setString('refreshToken', data['refreshToken']);
-        await prefs.setString('userID', data['user_id'].toString());
-
-        // Store expiration time (15 minutes from now)
-        final expiresAt = DateTime.now().add(Duration(minutes: 15)).toIso8601String();
-        await prefs.setString('expiresAt', expiresAt);
-
-        // Log user session
-        await logUserSession(data['user_id'].toString());
-
-        return true;
-      } else {
-        return false;
-      }
-    } catch (e) {
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      print("Login successful, response data: $data");
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('accessToken', data['accessToken']);
+      await prefs.setString('refreshToken', data['refreshToken']);
+      await prefs.setString('userID', data['user_id'].toString());
+      print("Stored userID in SharedPreferences: ${data['user_id']}");
+      // Ensure expiration time is set correctly
+      final expiresAt = DateTime.now().add(Duration(minutes: 15)).toIso8601String();
+      await prefs.setString('expiresAt', expiresAt);
+      // Log user session
+      await logUserSession(data['user_id'].toString());
+      return true;
+        } else {
+          print("Login failed with status code: ${response.statusCode}");
+          return false;
+        }
+      }catch (e) {
       print("Login error: $e");
       return false;
     }
@@ -46,17 +45,38 @@ class LoginService {
 
   // LOG USER SESSION ON LOGIN
   static Future<void> logUserSession(String userId) async {
-    final url = Uri.parse('$baseUrl/logins/create');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? accessToken = prefs.getString('accessToken');
 
+    if (accessToken == null) {
+      print("No access token found, skipping session log.");
+      return;
+    }
+
+    print("Logging user session with user_id: $userId");
+
+    final url = Uri.parse('$baseUrl/logins/create');
     try {
       final response = await http.post(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
         body: jsonEncode({'user_id': userId}),
       );
 
+      print("Log user session response status: ${response.statusCode}");
+      print("Log user session response body: ${response.body}");
+
       if (response.statusCode == 201) {
-        print("User session logged successfully");
+        final data = jsonDecode(response.body);
+        String loginId = data['login_id'].toString();
+
+        // Store login_id for logout use
+        await prefs.setString('loginID', loginId);
+
+        print("User session logged successfully with login_id: $loginId");
       } else {
         print("Failed to log user session: ${response.body}");
       }
@@ -64,6 +84,8 @@ class LoginService {
       print("Error logging user session: $e");
     }
   }
+
+
 
   // CHECK IF TOKEN IS EXPIRED
   static Future<bool> isTokenExpired() async {
@@ -129,27 +151,51 @@ class LoginService {
     return prefs.getString('accessToken');
   }
 
-  // LOGOUT FUNCTION
   static Future<void> logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? userId = prefs.getString('userID');
 
-    if (userId != null) {
-      await removeUserSession(userId);
+    // Retrieve login_id instead of user_id
+    String? loginId = prefs.getString('loginID');
+    print("Login ID before logout: $loginId");
+
+    if (loginId != null) {
+      await removeUserSession(loginId);
     }
 
-    await prefs.clear();
+    await prefs.remove('accessToken');
+    await prefs.remove('refreshToken');
+    await prefs.remove('expiresAt');
+    await prefs.remove('loginID'); // Clear stored login_id
+
+    print("SharedPreferences after logout:");
+    print("Login ID: ${prefs.getString('loginID')}");
   }
 
-  // REMOVE USER SESSION FROM DATABASE ON LOGOUT
-  static Future<void> removeUserSession(String userId) async {
-    final url = Uri.parse('$baseUrl/logins/$userId');
 
+
+  static Future<void> removeUserSession(String loginId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? accessToken = prefs.getString('accessToken');
+
+    if (accessToken == null) {
+      print("No access token found, skipping session removal.");
+      return;
+    }
+
+    print("Removing session for login_id: $loginId");
+
+    final url = Uri.parse('$baseUrl/logins/$loginId');
     try {
-      final response = await http.delete(
+      final response = await http.put(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
       );
+
+      print("Session removal response: ${response.statusCode}");
+      print("Response body: ${response.body}");
 
       if (response.statusCode == 200) {
         print("User session removed successfully");
