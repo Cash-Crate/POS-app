@@ -29,8 +29,6 @@ func Login(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	fmt.Printf("Login attempt - Email: '%s', Password: '%s'\n", login.Email, login.Password)
-
 	userID, err := q.LogInQuery(login.Email, login.Password)
 	if err != nil {
 		util.ErrorRes(res, http.StatusBadRequest,

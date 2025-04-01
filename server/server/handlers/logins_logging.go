@@ -69,8 +69,6 @@ func PostLogin(res http.ResponseWriter, req *http.Request) {
 		log.Printf("Could not decode request body %s", err)
 		return
 	}
-	fmt.Printf("User ID: %v", anyType["user_id"])
-
 	userIDFloat, err := strconv.Atoi(anyType["user_id"].(string))
 
 	userAgent := useragent.Parse(req.UserAgent())
