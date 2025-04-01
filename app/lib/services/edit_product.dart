@@ -21,18 +21,18 @@ class _EditProductScreenState extends State<EditProductScreen> {
   TextEditingController priceController = TextEditingController();
   TextEditingController quantityController = TextEditingController();
   TextEditingController imageUrlController = TextEditingController();
+  TextEditingController attrNameController = TextEditingController(); 
+  TextEditingController attrValueController = TextEditingController(); 
 
 
-  // List to store categories>
+  // List to store categories
   List<Map<String, dynamic>> categories = [];  
   String? selectedCategoryName; 
-
 
   Future<void> fetchCategories() async {
     final url = Uri.parse('http://localhost:3000/api/itemtypes');
 
     try {
-      // Fetch the access token
       String? token = await LoginService.getAccessToken(); 
 
       if (token == null || token.isEmpty) {
@@ -54,7 +54,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
         setState(() {
           categories = data.map((item) => {"name": item["item_type_name"]}).toList();
         });
-        // Debugging logs
         print("Categories Loaded: $categories"); 
       } else {
         print("Failed to load categories: ${response.body}");
@@ -111,7 +110,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
   
   Future<void> updateProduct() async {
-    final url = Uri.parse('http://localhost:3000/api/items/${widget.productId}');  
+    // Update Product Data
+    final productUrl = Uri.parse('http://localhost:3000/api/items/${widget.productId}');  
 
     if (selectedCategoryName == null) {
       print("Please select a valid category");
@@ -134,8 +134,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
       'item_type': selectedCategoryName, 
     };
 
-    final response = await http.put(
-      url,
+    // Update product details first
+    final productResponse = await http.put(
+      productUrl,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',  
@@ -143,16 +144,41 @@ class _EditProductScreenState extends State<EditProductScreen> {
       body: jsonEncode(productData),
     );
 
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
-
-    if (response.statusCode == 200) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Product updated successfully")));
+    if (productResponse.statusCode == 200) {
+      print("Product updated successfully");
     } else {
-      // Handle error
+      print("Failed to update product: ${productResponse.body}");
     }
+
+    // Update Attribute if provided
+    if (attrNameController.text.isNotEmpty && attrValueController.text.isNotEmpty) {
+      final attrUrl = Uri.parse('http://localhost:3000/api/items/attrs/${widget.productId}/${attrNameController.text}');
+      
+      final Map<String, dynamic> attributeData = {
+        'attr_value': attrValueController.text,
+      };
+
+      final attrResponse = await http.put(
+        attrUrl,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode(attributeData),
+      );
+
+      if (attrResponse.statusCode == 200) {
+        print("Attribute updated successfully");
+      } else {
+        print("Failed to update attribute: ${attrResponse.body}");
+      }
+    }
+
+    // Show success message
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Product and attribute updated successfully")));
     Navigator.pop(context, true);
   }
+
 
   @override
   void dispose() {
@@ -161,6 +187,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
     priceController.dispose();
     quantityController.dispose();
     imageUrlController.dispose();
+    attrNameController.dispose();  
+    attrValueController.dispose(); 
     super.dispose();
   }
 
@@ -239,12 +267,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         ),
                         dropdownColor: Colors.white,
                         items: categories.map((category) {
-                          return DropdownMenuItem<String>(
-                              value: category["name"],
-                              child: Text(category["name"]!,
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          );
+                          return DropdownMenuItem<String>(value: category["name"], child: Text(category["name"]));
                         }).toList(),
                         onChanged: (value) {
                           setState(() {
@@ -252,6 +275,20 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           });
                         },
                         validator: (value) => value == null ? 'Please select a category' : null,
+                      ),
+
+                      // New attr_name Field
+                      TextFormField(
+                        controller: attrNameController,
+                        decoration: InputDecoration(labelText: 'Attribute Name'),
+                        validator: (value) => value!.isEmpty ? 'Please enter an attribute name' : null,
+                      ),
+
+                      // New attr_value Field
+                      TextFormField(
+                        controller: attrValueController,
+                        decoration: InputDecoration(labelText: 'Attribute Value'),
+                        validator: (value) => value!.isEmpty ? 'Please enter an attribute value' : null,
                       ),
 
                       SizedBox(height: 20),

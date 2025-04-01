@@ -7,7 +7,7 @@ class LoginService {
 
   // LOGIN FUNCTION
   static Future<bool> login(String email, String password) async {
-    final url = Uri.parse('http://localhost:3000/api/login');
+    final url = Uri.parse('$baseUrl/login');
 
     try {
       final response = await http.post(
@@ -31,6 +31,9 @@ class LoginService {
         final expiresAt = DateTime.now().add(Duration(minutes: 15)).toIso8601String();
         await prefs.setString('expiresAt', expiresAt);
 
+        // Log user session
+        await logUserSession(data['user_id'].toString());
+
         return true;
       } else {
         return false;
@@ -38,6 +41,27 @@ class LoginService {
     } catch (e) {
       print("Login error: $e");
       return false;
+    }
+  }
+
+  // LOG USER SESSION ON LOGIN
+  static Future<void> logUserSession(String userId) async {
+    final url = Uri.parse('$baseUrl/logins/create');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'user_id': userId}),
+      );
+
+      if (response.statusCode == 201) {
+        print("User session logged successfully");
+      } else {
+        print("Failed to log user session: ${response.body}");
+      }
+    } catch (e) {
+      print("Error logging user session: $e");
     }
   }
 
@@ -57,8 +81,7 @@ class LoginService {
     return DateTime.now().isAfter(expiresAt);
   }
 
-
-  //REFRESH TOKEN FUNCTION
+  // REFRESH TOKEN FUNCTION
   static Future<String?> refreshToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? refreshToken = prefs.getString('refreshToken');
@@ -79,38 +102,62 @@ class LoginService {
       await prefs.setString('accessToken', data['accessToken']);
       await prefs.setString('refreshToken', data['refreshToken']);
 
-      // Update expiration time 15 minutes 
+      // Update expiration time 15 minutes
       DateTime expiresAt = DateTime.now().add(Duration(minutes: 15));
       await prefs.setString('expiresAt', expiresAt.toIso8601String());
 
       return data['accessToken'];
     } else {
-      
       await prefs.clear();
       return null;
     }
   }
 
-  //GET VALID ACCESS TOKEN 
+  // GET VALID ACCESS TOKEN
   static Future<String?> getAccessToken() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-  if (await isTokenExpired()) {
-    String? newAccessToken = await refreshToken();
-    if (newAccessToken == null) {
-      await logout(); 
-      return null;
+    if (await isTokenExpired()) {
+      String? newAccessToken = await refreshToken();
+      if (newAccessToken == null) {
+        await logout();
+        return null;
+      }
+      return newAccessToken;
     }
-    return newAccessToken;
+
+    return prefs.getString('accessToken');
   }
-
-  return prefs.getString('accessToken');
-}
-
 
   // LOGOUT FUNCTION
   static Future<void> logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userId = prefs.getString('userID');
+
+    if (userId != null) {
+      await removeUserSession(userId);
+    }
+
     await prefs.clear();
+  }
+
+  // REMOVE USER SESSION FROM DATABASE ON LOGOUT
+  static Future<void> removeUserSession(String userId) async {
+    final url = Uri.parse('$baseUrl/logins/$userId');
+
+    try {
+      final response = await http.delete(
+        url,
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        print("User session removed successfully");
+      } else {
+        print("Failed to remove user session: ${response.body}");
+      }
+    } catch (e) {
+      print("Error removing user session: $e");
+    }
   }
 }

@@ -10,7 +10,7 @@ class Product {
   final String description;
   final String image;
   final String category;
-  final int quantity; // Add this field for quantity
+  final int quantity; 
 
   Product({
     required this.id, 
@@ -19,7 +19,7 @@ class Product {
     required this.description,
     required this.image,
     required this.category,
-    this.quantity = 0, // Default quantity to 0 if not provided
+    this.quantity = 0, 
   });
 
   // Factory method to convert JSON to Product
@@ -33,7 +33,7 @@ class Product {
       description: json['description'] ?? '',
       price: (json["price"] as num?)?.toDouble() ?? 0.0,
       image: hasValidImage
-          ? "http://localhost:3000/uploads/$imageUrl" //change this to image API
+          ? "http://localhost:3000/uploads/$imageUrl" 
           : "assets/images/placeholder.jpg", 
       category: json["item_type"] ?? "Uncategorized",
       quantity: json["quantity"] ?? 0, 
