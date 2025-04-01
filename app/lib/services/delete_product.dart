@@ -11,7 +11,6 @@ class DeleteProductService {
       print("No access token found");
       return false;
     }
-
     final response = await http.delete(
       url,
       headers: {
@@ -19,7 +18,6 @@ class DeleteProductService {
         'Authorization': 'Bearer $token',  
       },
     );
-
     return response.statusCode == 200;
   }
 }

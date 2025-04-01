@@ -25,7 +25,6 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isLoading = true;
   List<String> categories = ["All"];
   List<Product> products = [];
-
   Future<void> checkUserSession() async {
     bool expired = await LoginService.isTokenExpired();
     print("Is token expired? $expired");
@@ -39,23 +38,18 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
   }
-
   @override
   void initState() {
     super.initState();
     _loadProducts();
     checkUserSession(); 
-   
     Timer.periodic(Duration(minutes: 5), (timer) {
       checkUserSession();
     });
   }
-
   void updateCart() {
     setState(() {});
   }
-
-
   void _loadCategories() {
     // Extract unique categories from fetched products
     final Set<String> uniqueCategories = products.map((p) => p.category).toSet();
@@ -76,36 +70,30 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-
-
   void filterByCategory(String category) {
     setState(() {
       selectedCategory = category;
       filterProducts(searchController.text);
     });
   }
-  Future<void> _loadProducts() async {
+  void _loadProducts() async {
     try {
       List<Product> fetchedProducts = await fetchProducts();
-      print("Fetched products: $fetchedProducts"); 
       setState(() {
-        products = List.from(fetchedProducts);
-        filteredProducts = List.from(fetchedProducts);
+        products = fetchedProducts.where((p) => p.quantity > 0).toList(); 
+        filteredProducts = List.from(products);
         quantities = List<int>.filled(filteredProducts.length, 1);
         isLoading = false;
       });
 
-      _loadCategories(); 
+      _loadCategories();
     } catch (e) {
-      print("Error fetching products: $e"); 
+      print("Error fetching products: $e");
       setState(() {
         isLoading = false;
       });
     }
   }
-
-
-
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -138,6 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         filled: true,
                         fillColor: const Color(0xFF1F3745),
                       ),
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                   centerTitle: true,

@@ -7,7 +7,6 @@ class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
-
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -40,10 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
         errorMessage = "Invalid email or password";
       });
     }
-
-
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

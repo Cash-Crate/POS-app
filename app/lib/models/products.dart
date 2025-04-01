@@ -41,8 +41,6 @@ class Product {
   }
 }
 
-
-
 // fetch data from the API
 Future<List<Product>> fetchProducts() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -67,30 +65,3 @@ Future<List<Product>> fetchProducts() async {
     throw Exception("Failed to load products. Status code: ${response.statusCode}");
   }
 }
-
-// Future<List<Product>> fetchProducts() async {
-//   SharedPreferences prefs = await SharedPreferences.getInstance();
-//   String? token = await LoginService.getAccessToken(); 
-
-//   if (token == null || token.isEmpty) {
-//     throw Exception("No access token found");
-//   }
-
-//   final response = await http.get(
-//     Uri.parse('http://localhost:3000/api/items'),
-//     headers: {
-//       'Authorization': 'Bearer $token',
-//       'Content-Type': 'application/json',
-//     },
-//   );
-
-//   if (response.statusCode == 200) {
-//     final List<dynamic> productList = jsonDecode(response.body);
-//     return productList.map((json) => Product.fromJson(json)).toList();
-//   } else {
-//     throw Exception("Failed to load products. Status code: ${response.statusCode}");
-//   }
-// }
-
-
-

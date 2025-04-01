@@ -106,6 +106,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
                         filled: true,
                         fillColor: const Color(0xFF1F3745),
                       ),
+                    style: TextStyle(color: Colors.white),
                     ),
                   ),
                   centerTitle: true,
@@ -306,7 +307,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
                                   autofocus: true,
                                   decoration: InputDecoration(
                                     hintText: "Search...",
-                                    hintStyle: TextStyle(color: Color(0xFF3BDEB2)),
+                                    hintStyle: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
                                     prefixIcon: const Icon(Icons.search, color: Color(0xFF3BDEB2)),
                                     suffixIcon: IconButton(
                                       icon: const Icon(Icons.close, color: Colors.white),
@@ -322,7 +323,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
                                       borderSide: BorderSide.none,
                                     ),
                                     filled: true,
-                                    fillColor: const Color(0xFF1F3745),
+                                    fillColor: const Color.fromARGB(255, 255, 255, 255),
                                   ),
                                 ),
                               ),

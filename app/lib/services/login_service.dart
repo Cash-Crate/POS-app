@@ -8,7 +8,6 @@ class LoginService {
   // LOGIN FUNCTION
   static Future<bool> login(String email, String password) async {
     final url = Uri.parse('$baseUrl/login');
-
     try {
       final response = await http.post(
         url,
@@ -18,7 +17,6 @@ class LoginService {
           'password': password,
         }),
       );
-
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         print("Login successful, response data: $data");
@@ -44,7 +42,6 @@ class LoginService {
       return false;
     }
   }
-
   // LOG USER SESSION ON LOGIN
   static Future<void> logUserSession(String userId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -54,7 +51,6 @@ class LoginService {
       print("No access token found, skipping session log.");
       return;
     }
-
     print("Logging user session with user_id: $userId");
 
     final url = Uri.parse('$baseUrl/logins/create');
@@ -101,7 +97,6 @@ class LoginService {
 
     return DateTime.now().isAfter(expiresAt);
   }
-
   // REFRESH TOKEN FUNCTION
   static Future<String?> refreshToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -133,7 +128,6 @@ class LoginService {
       return null;
     }
   }
-
   // GET VALID ACCESS TOKEN
   static Future<String?> getAccessToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -31,37 +31,50 @@ class _RightPanelState extends State<RightPanel> {
       print("Error fetching products: $e");
     }
   }
-
   Future<void> _placeOrder() async {
-    // Loop through the cart and update the inventory for each item
+    bool allItemsSuccessful = true; 
+    List<int> soldOutItems = []; 
+
     for (var entry in widget.cart.entries) {
       Product? product = products.firstWhere(
         (p) => p.name == entry.key,
         orElse: () => Product(id: 0, name: "Unknown", price: 0, image: "", category: "Uncategorized", description: ""),
       );
+
       int itemId = product.id;
       int quantity = entry.value;
 
-      // Call the API to update the item quantity
       bool success = await ProductService.sellItem(itemId, quantity);
+
       if (success) {
-        print("Successfully updated item quantity for $itemId");
+        if (product.quantity - quantity <= 0) {
+          soldOutItems.add(itemId); 
+        }
       } else {
-        print("Failed to update item quantity for $itemId");
+        allItemsSuccessful = false;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Not enough stock for ${product.name}."),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     }
-
-    // Clear the cart and update the UI
     setState(() {
-      widget.cart.clear();
+      for (int id in soldOutItems) {
+        products.removeWhere((p) => p.id == id);
+      }
+      widget.cart.clear(); 
     });
 
     widget.onUpdate();
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Order placed!")),
-    );
+    
+    if (allItemsSuccessful) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Order placed successfully!")),
+      );
+    }
   }
-
   @override
   Widget build(BuildContext context) {
     double totalPrice = widget.cart.entries.fold(0, (sum, entry) {
@@ -188,7 +201,7 @@ class _RightPanelState extends State<RightPanel> {
           ElevatedButton(
             onPressed: widget.cart.isEmpty
                 ? null
-                : _placeOrder, // Place order by calling the _placeOrder method
+                : _placeOrder,
             style: ElevatedButton.styleFrom(
               backgroundColor: widget.cart.isEmpty ? Colors.grey : Color(0xFF3BDEB2),
               minimumSize: const Size(double.infinity, 50),

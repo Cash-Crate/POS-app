@@ -7,16 +7,13 @@ class LeftPanel extends StatefulWidget {
   @override
   State<LeftPanel> createState() => _LeftPanelState();
 }
-
 class _LeftPanelState extends State<LeftPanel> {
-  bool _isCollapsed = false; // Default to expanded
-
+  bool _isCollapsed = false; 
   void _toggleSidebar() {
     setState(() {
       _isCollapsed = !_isCollapsed;
     });
   }
-
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;

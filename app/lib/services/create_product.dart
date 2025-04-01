@@ -43,7 +43,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
         url,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',  // Include token
+          'Authorization': 'Bearer $token',  
         },
       );
 
@@ -153,7 +153,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
 
             addAttribute(itemId);
 
-            // Ensure the widget is still mounted before calling setState
+           
             if (mounted) {
               setState(() {
               });
