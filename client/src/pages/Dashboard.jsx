@@ -111,7 +111,7 @@ const Dashboard = () => {
             <div className="flex flex-row h-screen w-screen overflow-hidden ">
                 <Sidebar />
                 <section className="bg-gray-200 w-full p-4 md:p-8 overflow-y-auto"> 
-                    <div className='grid lg:grid-cols-2 gap-2.5 xl:h-full'>
+                    <div className='grid lg:grid-cols-2 gap-2.5'>
                         <div className="dashboard p-2.5 md:p-5 justify-center gap-2 "> 
                             <h4 className="text-xl">
                             Today's Sales
