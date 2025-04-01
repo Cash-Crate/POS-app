@@ -1,8 +1,6 @@
 package queries
 
 import (
-	"errors"
-
 	db "github.com/Cash-Crate/POS-app/server/database"
 )
 
@@ -15,10 +13,6 @@ func LogInQuery(email, password string) (int, error) {
 		Scan(&userID, &userRole)
 	if err != nil {
 		return 0, err
-	}
-
-	if userRole != "admin" {
-		return 0, errors.New("Unauthorized")
 	}
 
 	return userID, nil
