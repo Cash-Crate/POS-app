@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '/models/products.dart';
+import '../services/sell_items.dart'; // Import the product service
 
 class RightPanel extends StatefulWidget {
   final Map<String, int> cart;
@@ -13,22 +14,53 @@ class RightPanel extends StatefulWidget {
 
 class _RightPanelState extends State<RightPanel> {
   List<Product> products = [];
-  @override
-    void initState() {
-      super.initState();
-      _loadProducts();
-    }
 
-    Future<void> _loadProducts() async {
-      try {
-        List<Product> fetchedProducts = await fetchProducts();
-        setState(() {
-          products = fetchedProducts;
-        });
-      } catch (e) {
-        print("Error fetching products: $e");
+  @override
+  void initState() {
+    super.initState();
+    _loadProducts();
+  }
+
+  Future<void> _loadProducts() async {
+    try {
+      List<Product> fetchedProducts = await fetchProducts();
+      setState(() {
+        products = fetchedProducts;
+      });
+    } catch (e) {
+      print("Error fetching products: $e");
+    }
+  }
+
+  Future<void> _placeOrder() async {
+    // Loop through the cart and update the inventory for each item
+    for (var entry in widget.cart.entries) {
+      Product? product = products.firstWhere(
+        (p) => p.name == entry.key,
+        orElse: () => Product(id: 0, name: "Unknown", price: 0, image: "", category: "Uncategorized", description: ""),
+      );
+      int itemId = product.id;
+      int quantity = entry.value;
+
+      // Call the API to update the item quantity
+      bool success = await ProductService.sellItem(itemId, quantity);
+      if (success) {
+        print("Successfully updated item quantity for $itemId");
+      } else {
+        print("Failed to update item quantity for $itemId");
       }
     }
+
+    // Clear the cart and update the UI
+    setState(() {
+      widget.cart.clear();
+    });
+
+    widget.onUpdate();
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Order placed!")),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +71,7 @@ class _RightPanelState extends State<RightPanel> {
       );
       return sum + (product.price * entry.value);
     });
+
     return Container(
       width: 250,
       color: Colors.white,
@@ -132,7 +165,6 @@ class _RightPanelState extends State<RightPanel> {
                                     constraints: BoxConstraints(), 
                                   ),
                                 ],
-
                               ),
                             ],
                           ),
@@ -156,15 +188,7 @@ class _RightPanelState extends State<RightPanel> {
           ElevatedButton(
             onPressed: widget.cart.isEmpty
                 ? null
-                : () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Order placed!")),
-                    );
-                    setState(() {
-                      widget.cart.clear();
-                      widget.onUpdate();
-                    });
-                  },
+                : _placeOrder, // Place order by calling the _placeOrder method
             style: ElevatedButton.styleFrom(
               backgroundColor: widget.cart.isEmpty ? Colors.grey : Color(0xFF3BDEB2),
               minimumSize: const Size(double.infinity, 50),

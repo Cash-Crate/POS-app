@@ -28,41 +28,40 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
   }
 
   Future<void> fetchCategories() async {
-  final url = Uri.parse('http://localhost:3000/api/itemtypes');
+    final url = Uri.parse('http://localhost:3000/api/itemtypes');
 
-  try {
-    // Fetch the access token
-    String? token = await LoginService.getAccessToken(); 
+    try {
+      // Fetch the access token
+      String? token = await LoginService.getAccessToken(); 
 
-    if (token == null || token.isEmpty) {
-      print("No access token found");
-      return;
+      if (token == null || token.isEmpty) {
+        print("No access token found");
+        return;
+      }
+
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',  // Include token
+        },
+      );
+
+      if (response.statusCode == 200) {
+        List<dynamic> data = jsonDecode(response.body);
+        
+        setState(() {
+          categories = data.map((item) => {"name": item["item_type_name"]}).toList();
+        });
+
+        print("Categories Loaded: $categories"); // Debugging log
+      } else {
+        print("Failed to load categories: ${response.body}");
+      }
+    } catch (e) {
+      print("Error fetching categories: $e");
     }
-
-    final response = await http.get(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',  // Include token
-      },
-    );
-
-    if (response.statusCode == 200) {
-      List<dynamic> data = jsonDecode(response.body);
-      
-      setState(() {
-        categories = data.map((item) => {"name": item["item_type_name"]}).toList();
-      });
-
-      print("Categories Loaded: $categories"); // Debugging log
-    } else {
-      print("Failed to load categories: ${response.body}");
-    }
-  } catch (e) {
-    print("Error fetching categories: $e");
   }
-}
-
 
   // List for attributes
   List<Map<String, String>> attributes = [];
@@ -70,67 +69,114 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
   TextEditingController attrValueController = TextEditingController();
 
   // Add attribute
-  void addAttribute() {
+  void addAttribute(int itemId) async {
+    final url = Uri.parse('http://localhost:3000/api/items/attrs/create/$itemId');
+    
     if (attrNameController.text.isNotEmpty && attrValueController.text.isNotEmpty) {
-      setState(() {
-        attributes.add({
-          "attr_name": attrNameController.text,
-          "attr_value": attrValueController.text
+      final Map<String, String> newAttr = {
+        "attr_name": attrNameController.text,
+        "attr_value": attrValueController.text
+      };
+      String? token = await LoginService.getAccessToken(); 
+      if (token == null || token.isEmpty) {
+        print("No access token found");
+        return;
+      }
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode(newAttr),
+      );
+
+      if (response.statusCode == 201) {
+        var addedAttr = jsonDecode(response.body);
+        print("Attribute added: $addedAttr");
+
+        setState(() {
+          attributes.add(newAttr);
         });
+        // Clear the input fields
         attrNameController.clear();
         attrValueController.clear();
-      });
+      } else {
+        print("Failed to add attribute: ${response.body}");
+      }
     }
   }
+  Future<void> addProduct() async {
+    final url = Uri.parse('http://localhost:3000/api/items/create');
 
-  // Remove attribute
-  void removeAttribute(int index) {
-    setState(() {
-      attributes.removeAt(index);
-    });
+    if (selectedCategoryName == null) {
+      print("Please select a valid category");
+      return;
+    }
+
+    String? token = await LoginService.getAccessToken(); 
+
+    if (token == null || token.isEmpty) {
+      print("No access token found");
+      return;
+    }
+    final Map<String, dynamic> productData = {
+      'item_name': itemName,
+      'description': itemDesc,
+      'item_image': imageUrl,
+      'price': price,
+      'quantity': quantity,
+      'item_type': selectedCategoryName,
+    };
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token', 
+        },
+        body: jsonEncode(productData),
+      );
+
+      if (response.statusCode == 201) {
+        var responseData = jsonDecode(response.body);
+        print("Response Data: $responseData");
+
+        if (responseData.containsKey('message')) {
+          String message = responseData['message'];
+          RegExp regExp = RegExp(r'Item (\d+)');
+          Match? match = regExp.firstMatch(message);
+          
+          if (match != null) {
+            int itemId = int.parse(match.group(1)!);
+            print("Item ID: $itemId");
+
+            addAttribute(itemId);
+
+            // Ensure the widget is still mounted before calling setState
+            if (mounted) {
+              setState(() {
+              });
+            }
+            // Delay navigation slightly kase na ddisaster 
+            Future.delayed(Duration(milliseconds: 200), () {
+              if (mounted) {
+                Navigator.pop(context, true);
+              }
+            });
+          } else {
+            print("Error: item_id not found in the message.");
+          }
+        } else {
+          print("Error: 'message' not found in the response.");
+        }
+      } else {
+        print("Failed to add product: ${response.body}");
+      }
+    } catch (e) {
+      print("Error during product creation: $e");
+    }
   }
-
-Future<void> addProduct() async {
-  final url = Uri.parse('http://localhost:3000/api/items/create');
-
-  if (selectedCategoryName == null) {
-    print("Please select a valid category");
-    return;
-  }
-
-  // Fetch the access token
-  String? token = await LoginService.getAccessToken(); 
-
-  if (token == null || token.isEmpty) {
-    print("No access token found");
-    return;
-  }
-
-  final Map<String, dynamic> productData = {
-    'item_name': itemName,
-    'description': itemDesc,
-    'item_image': imageUrl,
-    'price': price,
-    'quantity': quantity,
-    'item_type': selectedCategoryName,
-  };
-
-  final response = await http.post(
-    url,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token', 
-    },
-    body: jsonEncode(productData),
-  );
-
-  if (response.statusCode == 201) {
-    Navigator.pop(context, true);
-  } else {
-    print("Failed to add product: ${response.body}");
-  }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -216,6 +262,17 @@ Future<void> addProduct() async {
                         validator: (value) => value == null ? 'Select a category' : null,
                       ),
 
+                      SizedBox(height: 20),
+
+                      // Attribute Input Fields
+                      TextFormField(
+                        controller: attrNameController,
+                        decoration: InputDecoration(labelText: 'Attribute Name'),
+                      ),
+                      TextFormField(
+                        controller: attrValueController,
+                        decoration: InputDecoration(labelText: 'Attribute Value'),
+                      ),
 
                       SizedBox(height: 20),
 
@@ -260,5 +317,4 @@ Future<void> addProduct() async {
       ),
     );
   }
-
 }

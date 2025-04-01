@@ -38,9 +38,8 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
     super.initState();
     _loadProducts();
     searchController.addListener(_filterProducts);
-    checkUserSession(); // Run initially
+    checkUserSession();
 
-    // Check session every 10 seconds
     Timer.periodic(Duration(minutes: 5), (timer) {
       checkUserSession();
     });

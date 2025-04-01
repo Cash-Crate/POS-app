@@ -22,7 +22,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   TextEditingController quantityController = TextEditingController();
   TextEditingController imageUrlController = TextEditingController();
 
- 
+
   // List to store categories>
   List<Map<String, dynamic>> categories = [];  
   String? selectedCategoryName; 
@@ -109,7 +109,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     fetchProductDetails(); 
     fetchCategories();
   }
-
+  
   Future<void> updateProduct() async {
     final url = Uri.parse('http://localhost:3000/api/items/${widget.productId}');  
 
