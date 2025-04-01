@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginService {
-  static final String baseUrl = 'http://localhost:3000/api';
+  static final String baseUrl = 'https://api.cashcrate.shop/api';
 
   // LOGIN FUNCTION
   static Future<bool> login(String email, String password) async {

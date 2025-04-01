@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import '../services/login_service.dart';
 class DeleteProductService {
   static Future<bool> deleteProduct(int itemId) async {
-    final url = Uri.parse('http://localhost:3000/api/items/$itemId');
+    final url = Uri.parse('https://api.cashcrate.shop/api/items/$itemId');
 
     // Fetch the access token
     String? token = await LoginService.getAccessToken(); 

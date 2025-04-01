@@ -30,7 +30,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   String? selectedCategoryName; 
 
   Future<void> fetchCategories() async {
-    final url = Uri.parse('http://localhost:3000/api/itemtypes');
+    final url = Uri.parse('https://api.cashcrate.shop/api/itemtypes');
 
     try {
       String? token = await LoginService.getAccessToken(); 
@@ -64,7 +64,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
 
   Future<void> fetchProductDetails() async {
-    final url = Uri.parse('http://localhost:3000/api/items/${widget.productId}');
+    final url = Uri.parse('https://api.cashcrate.shop/api/items/${widget.productId}');
 
     try {
       String? token = await LoginService.getAccessToken();
@@ -111,7 +111,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   
   Future<void> updateProduct() async {
     // Update Product Data
-    final productUrl = Uri.parse('http://localhost:3000/api/items/${widget.productId}');  
+    final productUrl = Uri.parse('https://api.cashcrate.shop/api/items/${widget.productId}');  
 
     if (selectedCategoryName == null) {
       print("Please select a valid category");
@@ -152,7 +152,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
     // Update Attribute if provided
     if (attrNameController.text.isNotEmpty && attrValueController.text.isNotEmpty) {
-      final attrUrl = Uri.parse('http://localhost:3000/api/items/attrs/${widget.productId}/${attrNameController.text}');
+      final attrUrl = Uri.parse('https://api.cashcrate.shop/api/items/attrs/${widget.productId}/${attrNameController.text}');
       
       final Map<String, dynamic> attributeData = {
         'attr_value': attrValueController.text,

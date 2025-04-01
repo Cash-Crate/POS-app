@@ -11,7 +11,7 @@ class ProductService {
       print("No access token found");
       return false;
     }
-    final url = Uri.parse('http://localhost:3000/api/items/$itemId/$quantity'); 
+    final url = Uri.parse('https://api.cashcrate.shop/api/items/$itemId/$quantity'); 
     final response = await http.put(
       url,
       headers: {

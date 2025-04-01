@@ -28,7 +28,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
   }
 
   Future<void> fetchCategories() async {
-    final url = Uri.parse('http://localhost:3000/api/itemtypes');
+    final url = Uri.parse('https://api.cashcrate.shop/api/itemtypes');
 
     try {
       // Fetch the access token
@@ -70,7 +70,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
 
   // Add attribute
   void addAttribute(int itemId) async {
-    final url = Uri.parse('http://localhost:3000/api/items/attrs/create/$itemId');
+    final url = Uri.parse('https://api.cashcrate.shop/api/items/attrs/create/$itemId');
     
     if (attrNameController.text.isNotEmpty && attrValueController.text.isNotEmpty) {
       final Map<String, String> newAttr = {
@@ -107,7 +107,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
     }
   }
   Future<void> addProduct() async {
-    final url = Uri.parse('http://localhost:3000/api/items/create');
+    final url = Uri.parse('https://api.cashcrate.shop/api/items/create');
 
     if (selectedCategoryName == null) {
       print("Please select a valid category");

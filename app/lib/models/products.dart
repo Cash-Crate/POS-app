@@ -33,7 +33,7 @@ class Product {
       description: json['description'] ?? '',
       price: (json["price"] as num?)?.toDouble() ?? 0.0,
       image: hasValidImage
-          ? "http://localhost:3000/uploads/$imageUrl" 
+          ? "https://api.cashcrate.shop/uploads/$imageUrl" 
           : "assets/images/placeholder.jpg", 
       category: json["item_type"] ?? "Uncategorized",
       quantity: json["quantity"] ?? 0, 
@@ -51,7 +51,7 @@ Future<List<Product>> fetchProducts() async {
   }
 
   final response = await http.get(
-    Uri.parse('http://localhost:3000/api/items'),
+    Uri.parse('https://api.cashcrate.shop/api/items'),
     headers: {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',
