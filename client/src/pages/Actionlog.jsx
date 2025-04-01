@@ -10,7 +10,7 @@ const ActionLogs = () => {
     const [searchQuery, setSearchQuery] = useState("");
     
       useEffect(() => {
-        fetchWithAuth("http://localhost:3000/api/crud", {}) 
+        fetchWithAuth("https://api.cashcrate.shop/api/crud", {}) 
           .then((response) => response.json())
           .then((data) => setCrud(data))
           .catch((error) => console.error("Error fetching data:", error));

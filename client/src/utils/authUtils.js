@@ -13,7 +13,7 @@ export const refreshToken = async () => {
             throw new Error('No refresh token available');
         }
 
-        const response = await fetch('http://localhost:3000/api/refresh', {
+        const response = await fetch('https://api.cashcrate.shop/api/refresh', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -80,7 +80,7 @@ export const logout = async (silent = false) => {
             const refreshToken = localStorage.getItem('refreshToken');
 
             if (accessToken && refreshToken) {
-                await fetch('http://localhost:3000/api/logout', {
+                await fetch('https://api.cashcrate.shop/api/logout', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

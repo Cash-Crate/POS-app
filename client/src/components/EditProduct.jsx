@@ -2,7 +2,7 @@
 import { fetchWithAuth } from "../utils/authUtils";
 import { addAttr } from "@/pages/Products";
 const updateAttr = async (editItem) => {
-    const response = await fetchWithAuth(`http://localhost:3000/api/items/attrs/${editItem.item_id}/${editItem.attributes?.[0]?.attr_name}`, {
+    const response = await fetchWithAuth(`https://api.cashcrate.shop/api/items/attrs/${editItem.item_id}/${editItem.attributes?.[0]?.attr_name}`, {
         method: "PUT",headers: {"Content-Type": "application/json",},
         body: JSON.stringify({
             attr_value: editItem.attributes?.[0]?.attr_value,
@@ -11,7 +11,7 @@ const updateAttr = async (editItem) => {
 };  
 
 const updateProduct = async (editItem, openEditModal) => {
-    const response = await fetchWithAuth(`http://localhost:3000/api/items/${editItem.item_id}`, {
+    const response = await fetchWithAuth(`https://api.cashcrate.shop/api/items/${editItem.item_id}`, {
         method: "PUT",headers: {"Content-Type": "application/json",},
         body: JSON.stringify({
             item_name: editItem.item_name,

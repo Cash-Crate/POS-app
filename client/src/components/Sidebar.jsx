@@ -23,7 +23,7 @@ const Sidebar = () => {
                 throw new Error('No refresh token available')
             }
 
-            await fetchWithAuth(`http://localhost:3000/api/logins/${localStorage.getItem("loginID")}`, {
+            await fetchWithAuth(`https://api.cashcrate.shop/api/logins/${localStorage.getItem("loginID")}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -31,7 +31,7 @@ const Sidebar = () => {
                 }
             )
 
-            const res = await fetchWithAuth('http://localhost:3000/api/logout', {
+            const res = await fetchWithAuth('https://api.cashcrate.shop/api/logout', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
