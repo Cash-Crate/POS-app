@@ -59,13 +59,13 @@
     --border: oklch(0.922 0 0);
     --input: oklch(0.922 0 0);
     --ring: oklch(0.708 0 0);
-    --chart-1: rgb(40, 47, 74);
-    --chart-2: rgb(56, 174, 204);
-    --chart-3: rgb(0, 144, 193);
-    --chart-4:  rgb(24, 52, 70);
-    --chart-5: rgb(3, 110, 143);
-    --chart-6: rgb(60, 84, 115);
-    --sidebar: oklch(0.985 0 0);
+    --chart-1: #1A281F;
+    --chart-2: #F5B700;
+    --chart-3: #00A1E4;
+    --chart-4:  #DC0073;
+    --chart-5: #04E762 ;
+    --chart-6: #DB5A42;
+    --sidebar: #241623;
     --sidebar-foreground: oklch(0.145 0 0);
     --sidebar-primary: oklch(0.205 0 0);
     --sidebar-primary-foreground: oklch(0.985 0 0);
@@ -206,6 +206,13 @@ rgb(50, 111, 107) 58%,
 }
 .dashboard .data tr td{
     padding: 0.75rem 0 ;
+}
+.required{
+    border-color: var(--color-danger);
+}
+.form{
+    border: black 1px solid;
+    border-radius: 8px;
 }
 
 /* shadcn  */

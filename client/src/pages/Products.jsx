@@ -16,7 +16,6 @@ const ProductsTable = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedType, setSelectedType] = useState("All");
     const [addModal, openAddModal] = useState(false);
-    const [addAttrModal, openAddAttrModal] = useState(false);
     const [editModal, openEditModal] = useState(false);
     const [editItem, setEditItem] = useState(null);
     const [deleteModal, openDeleteModal] = useState(false);
@@ -36,7 +35,7 @@ const ProductsTable = () => {
     });
     
     useEffect(() => {
-        fetchWithAuth("http://localhost:3000/api/items", {})
+        fetchWithAuth("https://api.cashcrate.shop/api/items", {})
         .then((response) => response.json())
         .then((data) => setProducts(data))
         .catch((error) => console.error("Error fetching data:", error));
@@ -61,7 +60,7 @@ const ProductsTable = () => {
     };
     
     const addProduct = async () => {
-        const response = await fetchWithAuth("http://localhost:3000/api/items/create", 
+        const response = await fetchWithAuth("https://api.cashcrate.shop/api/items/create", 
             {method: "POST",headers: { "Content-Type": "application/json" },
             body: JSON.stringify(newItem),});
         const addedItem = await response.json();
@@ -74,7 +73,7 @@ const ProductsTable = () => {
 
     const addAttr = async (id) => {
         console.log(newAttr);
-        const response = await fetchWithAuth(`http://localhost:3000/api/items/attrs/create/${id}`, 
+        const response = await fetchWithAuth(`https://api.cashcrate.shop/api/items/attrs/create/${id}`, 
             {method: "POST",headers: { "Content-Type": "application/json" },body: JSON.stringify(newAttr),});
             const addedAttr = await response.json();
         console.log("success");
@@ -83,7 +82,7 @@ const ProductsTable = () => {
     }; 
     
     const updateAttr = async (editItem) => {
-        const response = await fetchWithAuth(`http://localhost:3000/api/items/attrs/${editItem.item_id}/${editItem.attributes?.[0]?.attr_name}`, {
+        const response = await fetchWithAuth(`https://api.cashcrate.shop/api/items/attrs/${editItem.item_id}/${editItem.attributes?.[0]?.attr_name}`, {
             method: "PUT",headers: {"Content-Type": "application/json",},
             body: JSON.stringify({
                 attr_value: editItem.attributes?.[0]?.attr_value,
@@ -92,7 +91,7 @@ const ProductsTable = () => {
     };  
     
     const updateProduct = async (editItem, openEditModal) => {
-        const response = await fetchWithAuth(`http://localhost:3000/api/items/${editItem.item_id}`, {
+        const response = await fetchWithAuth(`https://api.cashcrate.shop/api/items/${editItem.item_id}`, {
             method: "PUT",headers: {"Content-Type": "application/json",},
             body: JSON.stringify({
                 item_name: editItem.item_name,
@@ -109,7 +108,7 @@ const ProductsTable = () => {
     const deleteItem = async () => {
         if (!deleteItemId) return;
         try {
-            await fetchWithAuth(`http://localhost:3000/api/items/${deleteItemId}`, { method: "DELETE" });
+            await fetchWithAuth(`https://api.cashcrate.shop/api/items/${deleteItemId}`, { method: "DELETE" });
             setProducts((prevItems) => prevItems.filter(item => item.item_id !== deleteItemId));
             openDeleteModal(false);
             setDeleteItemId(null);
@@ -167,7 +166,7 @@ const ProductsTable = () => {
                         <table>
                             <thead>
                             <tr className="btn-dark text-center">
-                                <th className="btn-dark sticky left-0 px-4 py-2 text-center rounded-tl-lg">
+                                <th className="btn-dark md:sticky md:left-0 px-4 py-2 text-center rounded-tl-lg whitespace-nowrap">
                                     Item ID
                                 </th>
                                 {[
@@ -178,7 +177,7 @@ const ProductsTable = () => {
                                 "Quantity",
                                 "Type",
                                 "Attributes",
-                                <button className="btn-highlight w-[45px] p-1 rounded-md text-center" onClick={() => openAddModal(true)}>
+                                <button className="btn-highlight w-[45px] p-1 rounded-md text-center md:sticky md:left-0" onClick={() => openAddModal(true)}>
                                     <img src={add} alt="add-icon" className="aspect-square h-5 w-full" />
                                 </button>,
                                 ].map((header, index, arr) => (
@@ -192,7 +191,7 @@ const ProductsTable = () => {
                             <tbody className="overflow-hidden">
                             {filteredItems.map((item) => (
                                 <tr key={item.item_id} id={item.item_type}>
-                                    <td className="px-4 py-2 sticky left-0 bg-background">{item.item_id}</td>
+                                    <td className="px-4 py-2 md:sticky md:left-0 bg-background">{item.item_id}</td>
                                     <td className="table-data text-center min-w-5 max-w-10">{item.item_name}</td>
                                     <td className="table-data text-center min-w-5 max-w-10">{item.description}</td>
                                     <td className="table-data text-center min-w-5 max-w-10">
@@ -227,25 +226,47 @@ const ProductsTable = () => {
             <div className="fixed inset-0 flex items-center justify-center bg-gray-500/50">
                 <div className="bg-white p-6 rounded-lg w-[400px] text-center">
                     <h3>Add Item</h3>  
-                    <div className="flex flex-col gap-3">
-                        <input type="text" placeholder="Name" className="border p-2 rounded" value={newItem.item_name} onChange={(e) => setNewItem({ ...newItem, item_name: e.target.value })}/>
-                        <input type="text" placeholder="Description" width="48" height="48" className="border p-2 rounded" value={newItem.description} onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}/>
-                        <input className="w-full text-md text-gray-900 border border-gray-300 cursor-pointer h-7.5 bg-gray-50 placeholder-gray-400" onChange={(e) => setNewItem({ ...newItem, item_image: URL.createObjectURL(e.target.files[0]) })} id="image" type="file" accept="image/*"/>
-                        {newItem.item_image && (<img src={newItem.item_image} alt="image input" className="w-10 object-cover rounded-lg"/>)}
-                        {/* <input type="image" placeholder="Image URL"  className="border p-2 rounded" value={newItem.item_image} onChange={(e) => setNewItem({ ...newItem, item_image: e.target.value })}/> */}
-                        <input type="number" placeholder="Price" className="border p-2 rounded" value={newItem.price} onChange={(e) => setNewItem({ ...newItem, price: parseFloat(e.target.value) })}/>
-                        <input type="number" placeholder="Quantity" className="border p-2 rounded" value={newItem.quantity} onChange={(e) => setNewItem({ ...newItem, quantity: parseInt(e.target.value) })}/>
-                        <select id="type" name="type" className="border p-2 rounded"  onChange={(e) => setNewItem({ ...newItem, item_type: e.target.value })}>
-                            <option value="">Select Type</option>
-                            <option value="Electronics">Electronics</option>
-                            <option value="Clothing">Clothing</option>
-                            <option value="Books">Books</option>
-                            <option value="Furniture">Furniture</option>
-                            <option value="Toys">Toys</option>
-                            <option value="Beverages">Beverages</option>
-                        </select>
-                            <input type="text" placeholder="Attribute Name" className="border p-2 rounded" value={newAttr.attr_name} onChange={(e) => setAttr({ ...newAttr, attr_name: e.target.value })}/>
-                            <input type="text" placeholder="Attribute Value" className="border p-2 rounded" value={newAttr.attr_value} onChange={(e) => setAttr({ ...newAttr, attr_value: e.target.value })}/>
+                    <div className="flex flex-col gap-3 text-start">
+                        <div className='flex flex-col gap-1'>
+                        <label htmlFor="name">Product Name</label>
+                            <input type="text" placeholder="Name" className="form required: p-2 rounded" value={newItem.item_name} onChange={(e) => setNewItem({ ...newItem, item_name: e.target.value })}/>
+                        </div>
+                        <div className='flex flex-col gap-1'>
+                            <label htmlFor="description">Description</label>
+                            <input type="text" placeholder="Description" width="48" height="48" className="form p-2 rounded" value={newItem.description} onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}/>
+                        </div>
+                        <div className='flex flex-col gap-1'>
+                            <label htmlFor="item_image">Image</label>
+                            <input type="file" className=" form required: w-full cursor-pointer p-1 h-7.5 bg-gray-50 " onChange={(e) => setNewItem({ ...newItem, item_image: (e.target.files[0]) })}  accept="image/*" required/>
+                            {newItem.item_image && (<img src={newItem.item_image} alt="image input" className="w-10 object-cover rounded-lg"/>)}
+                        </div>
+                        <div className='flex flex-col gap-1'>
+                            <label htmlFor="price">Price</label>
+                            <input type="number" placeholder="Price" className="form required p-2 rounded" value={newItem.price} onChange={(e) => setNewItem({ ...newItem, price: parseFloat(e.target.value) })} required/>
+                        </div>
+                        <div className='flex flex-col gap-1'>
+                            <label htmlFor="quantity">Quantity</label>
+                            <input type="number" placeholder="Quantity" className="form required p-2 rounded" value={newItem.quantity} onChange={(e) => setNewItem({ ...newItem, quantity: parseInt(e.target.value) })} required/>
+                        </div>
+                        <div className='flex flex-col gap-1'>
+                            <label htmlFor="type">Product Type</label>
+                            <select id="type" name="type" className="form required p-2 rounded"  onChange={(e) => setNewItem({ ...newItem, item_type: e.target.value })}>
+                                <option value="">Select Type</option>
+                                <option value="Electronics">Electronics</option>
+                                <option value="Clothing">Clothing</option>
+                                <option value="Books">Books</option>
+                                <option value="Furniture">Furniture</option>
+                                <option value="Toys">Toys</option>
+                                <option value="Beverages">Beverages</option>
+                            </select>
+                        </div>
+                        <div className='flex flex-col gap-1'>
+                            <label htmlFor="type">Attribute</label>
+                            <div className='flex flex-row gap-2'>
+                                <input type="text" placeholder="Attribute Name" className="form p-2 rounded w-full" value={newAttr.attr_name} onChange={(e) => setAttr({ ...newAttr, attr_name: e.target.value })}/>
+                                <input type="text" placeholder="Attribute Value" className="form p-2 rounded w-full" value={newAttr.attr_value} onChange={(e) => setAttr({ ...newAttr, attr_value: e.target.value })}/>
+                            </div>
+                        </div>
                     </div>
                     <div className="flex justify-end mt-4 gap-2">
                         <button className="btn-dark px-4 py-2 rounded" onClick={() => openAddModal(false)}>Cancel</button>
@@ -253,45 +274,53 @@ const ProductsTable = () => {
                     </div>
                 </div>
             </div>
-        )}{addAttrModal && (
-            <div className="fixed inset-0 flex items-center justify-center bg-gray-500/50">
-                <div className="bg-white p-6 rounded-lg w-[400px] text-center">
-                    <h3>Add Attribute</h3>  
-                    <div className="flex flex-col gap-0.5">
-                        <input type="text" placeholder="Attribute Name" className="border p-2 rounded" value={newAttr.attr_name} onChange={(e) => setAttr({ ...newAttr, attr_name: e.target.value })}/>
-                        <input type="text" placeholder="Attribute Value" className="border p-2 rounded" value={newAttr.attr_value} onChange={(e) => setAttr({ ...newAttr, attr_value: e.target.value })}/>
-                    </div>
-                    <div className="flex justify-end mt-4 gap-2">
-                        <button className="btn-dark px-4 py-2 rounded" onClick={() => openAddAttrModal(false)}>Cancel</button>
-                        <button className="btn-highlight px-4 py-2 rounded" onClick={() => addAttr(id)}>Add</button>
-                    </div>
-                </div>
-            </div>
         )}{editModal && editItem && (
             <div className="fixed inset-0 flex items-center justify-center bg-gray-500/50">
                 <div className="bg-white p-6 rounded-lg w-[400px] text-center">
                     <h3>Edit</h3>
-                    <div className="flex flex-col gap-3">
-                        <input type="text" placeholder="Name" className="border p-2 rounded" value={editItem.item_name} onChange={(e) => setEditItem({ ...editItem, item_name: e.target.value })}/>
-                        <input type="text" placeholder="Description" className="border p-2 rounded" value={editItem.description} onChange={(e) => setEditItem({ ...editItem, description: e.target.value })}/>
-                        <input type="text" placeholder="Image URL" className="border p-2 rounded" value={editItem.item_image} onChange={(e) => setEditItem({ ...editItem, item_image: e.target.value })}/>
-                        <input type="number" placeholder="Price" className="border p-2 rounded" value={editItem.price} onChange={(e) => setEditItem({ ...editItem, price: parseFloat(e.target.value) })}/>
-                        <input type="number" placeholder="Quantity" className="border p-2 rounded" value={editItem.quantity} onChange={(e) => setEditItem({ ...editItem, quantity: parseInt(e.target.value) })}/>
-                        <select id="type" name="type" className="border p-2 rounded" value={editItem.item_type} onChange={(e) => setEditItem({ ...editItem, item_type: (e.target.value) })} required>
-                            <option value="">Select Type</option>
-                            <option value="Electronics">Electronics</option>
-                            <option value="Clothing">Clothing</option>
-                            <option value="Books">Books</option>
-                            <option value="Furniture">Furniture</option>
-                            <option value="Toys">Toys</option>
-                            <option value="Beverages">Beverages</option>
-                        </select>
-                        <input type="text" placeholder="Attribute Name" className="border p-2 rounded" value={editItem?.attributes?.[0]?.attr_name || newAttr?.attr_name && undefined } 
-                        onChange={(e) => editItem.attributes == null? setAttr({ ...newAttr, attr_name: e.target.value }) :setEditItem({ ...editItem, attributes: [{ attr_name: e.target.value, attr_value: editItem.attributes?.[0]?.attr_value}] })} />
-
-                        <input type="text" placeholder="Attribute Value" className="border p-2 rounded" value={editItem.attributes?.[0]?.attr_value || newAttr?.attr_value && undefined} 
-                        onChange={(e) => editItem.attributes == null? setAttr({ ...newAttr, attr_value: e.target.value }) :setEditItem({ ...editItem, attributes: [{ attr_name: editItem.attributes?.[0]?.attr_name, attr_value: e.target.value}] })} />
-
+                    <div className="flex flex-col gap-3 text-start">
+                        <div className='flex flex-col gap-1'>
+                            <label htmlFor="name">Product Name</label>
+                            <input type="text" name='name' className="form required p-2 rounded" value={editItem.item_name} onChange={(e) => setEditItem({ ...editItem, item_name: e.target.value })} required/>
+                        </div>
+                        <div className='flex flex-col gap-1'>
+                            <label htmlFor="description">Description</label>
+                            <input type="text" placeholder="Description" className="form p-2 rounded" value={editItem.description} onChange={(e) => setEditItem({ ...editItem, description: e.target.value })}/>
+                        </div>
+                        <div className='flex flex-col gap-1'>
+                            <label htmlFor="item_image">Image</label>
+                            <input type="file" placeholder="Image URL" className="form required p-2 rounded" onChange={(e) => setEditItem({ ...editItem, item_image: e.target.value })} required/>
+                            {editItem.item_image && (<img src={editItem.item_image} alt="image input" className="w-10 object-cover rounded-lg"/>)}
+                        </div>
+                        <div className='flex flex-col gap-1'>
+                            <label htmlFor="price">Price</label>
+                            <input type="number" placeholder="Price" className="form required p-2 rounded" value={editItem.price} onChange={(e) => setEditItem({ ...editItem, price: parseFloat(e.target.value) })} required/>
+                        </div>
+                        <div className='flex flex-col gap-1'>
+                            <label htmlFor="quantity">Quantity</label>
+                            <input type="number" placeholder="Quantity" className="form required p-2 rounded" value={editItem.quantity} onChange={(e) => setEditItem({ ...editItem, quantity: parseInt(e.target.value) })} required/>
+                        </div>
+                        <div className='flex flex-col gap-1'>
+                            <label htmlFor="type">Product Type</label>
+                            <select id="type" name="type" className="form required p-2 rounded" value={editItem.item_type} onChange={(e) => setEditItem({ ...editItem, item_type: (e.target.value) })} required>
+                                <option value="">Select Type</option>
+                                <option value="Electronics">Electronics</option>
+                                <option value="Clothing">Clothing</option>
+                                <option value="Books">Books</option>
+                                <option value="Furniture">Furniture</option>
+                                <option value="Toys">Toys</option>
+                                <option value="Beverages">Beverages</option>
+                            </select>
+                        </div>
+                        <div className='flex flex-col gap-1'>
+                            <label htmlFor="type">Attribute</label>
+                            <div className='flex flex-row gap-2'>
+                                <input type="text" placeholder='Name' className="form p-2 rounded w-full" value={editItem?.attributes?.[0]?.attr_name || newAttr?.attr_name && undefined } 
+                                onChange={(e) => editItem.attributes == null? setAttr({ ...newAttr, attr_name: e.target.value }) :setEditItem({ ...editItem, attributes: [{ attr_name: e.target.value, attr_value: editItem.attributes?.[0]?.attr_value}] })} />
+                                <input type="text" placeholder='Value' className="form p-2 rounded w-full" value={editItem.attributes?.[0]?.attr_value || newAttr?.attr_value && undefined} 
+                                onChange={(e) => editItem.attributes == null? setAttr({ ...newAttr, attr_value: e.target.value }) :setEditItem({ ...editItem, attributes: [{ attr_name: editItem.attributes?.[0]?.attr_name, attr_value: e.target.value}] })} />
+                            </div>
+                        </div>
                     </div>
                     <div className="flex justify-end mt-4 gap-2">
                         <button className="btn-dark px-4 py-2 rounded" onClick={() => openEditModal(false)}>Cancel</button>

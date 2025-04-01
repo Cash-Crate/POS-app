@@ -12,7 +12,7 @@ const Items = () => {
 
   async function getItems() {
     try {
-      const res = await fetchWithAuth('http://localhost:3000/api/items', {})
+      const res = await fetchWithAuth('https://api.cashcrate.shop/api/users')
       const data = await res.json()
       setItems(data)
     } catch (error) {
@@ -25,11 +25,10 @@ const Items = () => {
       <Navbar />
       {items.map((item, index) => (
         <div className="border-b-2 border-gray-500 grid grid-cols-5" key={index}>
-          <p>{item.item_type_name}</p>
-          <p>{item.item_name}</p>
-          <p>{item.item_image}</p>
-          <p>{item.price}</p>
-          <p>{item.quantity}</p>
+          <p>{item.user_id}</p>
+          <p>{item.first_name}</p>
+          <p>{item.last_name}</p>
+          <p>{item.email}</p>
         </div>
       ))}
     </>

@@ -15,7 +15,7 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:3000/api/login', {
+      const response = await fetch('https://api.cashcrate.shop/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ const Login = () => {
 
   const getUserID = async (user_id) => {
     try {
-      const res = await fetchWithAuth('http://localhost:3000/api/logins/create', {
+      const res = await fetchWithAuth('https://api.cashcrate.shop/api/logins/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
