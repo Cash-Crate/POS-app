@@ -12,8 +12,8 @@ func GetLoginsQuery() (*sql.Rows, error) {
 	rows, err := db.DB.Query(`SELECT
 		l.login_id,
 		u.email,
-		l.login_at,
-		l.logout_at,
+		l.login_at AT TIME ZONE 'Asia/Manila',
+		l.logout_at AT TIME ZONE 'Asia/Manila',
 		l.ip_addr,
 		l.device_type,
 		l.browser,

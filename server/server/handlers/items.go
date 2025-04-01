@@ -123,7 +123,7 @@ func SellItem(res http.ResponseWriter, req *http.Request) {
 
 	rows, err := q.SellItemQuery(id, quantity)
 	if err != nil {
-		util.ErrorRes(res, http.StatusInternalServerError,
+		util.ErrorRes(res, http.StatusBadRequest,
 			fmt.Sprintf("Could not sell item: %s", err))
 		log.Println(err)
 		return

@@ -25,8 +25,8 @@ func CreateSchema() {
 	_, err = database.DB.Exec(`CREATE TABLE IF NOT EXISTS logins_logging (
 		login_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 		user_id INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
-		login_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		logout_at TIMESTAMP,
+		login_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		logout_at TIMESTAMPTZ,
 		ip_addr INET NOT NULL,
 		device_type TEXT NOT NULL,
 		browser TEXT NOT NULL,
@@ -41,10 +41,10 @@ func CreateSchema() {
 	_, err = database.DB.Exec(`CREATE TABLE IF NOT EXISTS crud_logging (
 		action_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 		user_id INT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
-		action_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		action_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		action_taken TEXT NOT NULL,
 		item_id INT NOT NULL
-		) `)
+		)`)
 	if err != nil {
 		log.Fatalf("Failed to create table: %v", err)
 	}

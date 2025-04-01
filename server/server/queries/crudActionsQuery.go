@@ -11,7 +11,7 @@ func GetCrudActionsQuery() (*sql.Rows, error) {
 	rows, err := db.DB.Query(`SELECT 
 		action_id,
 		user_id,
-		action_at,
+		action_at AT TIME ZONE 'Asia/Manila',
 		action_taken,
 		item_id from crud_logging`)
 	if err != nil {

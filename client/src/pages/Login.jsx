@@ -1,5 +1,5 @@
 import image from '/CashCrateLogo.webp'
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { motion } from "motion/react"
 import { fetchWithAuth } from '../utils/authUtils';
 
@@ -8,17 +8,6 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    //fetch('http://localhost:3000/api/logins/create').
-    //  then(response => response.json()).
-    //  then(data => console.log(data))
-
-    //fetch('http://ip-api.com/json/120.29.111.99').
-    //  then(response => response.json()).
-    //  then(data => console.log(data))
-
-  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
