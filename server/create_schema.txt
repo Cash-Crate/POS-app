@@ -27,7 +27,7 @@ CREATE TABLE crud_logging (
     user_id INTEGER NOT NULL REFERENCES users(user_id),
     action_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     action_taken TEXT NOT NULL,
-    x_requested_with TEXT NOT NULL
+    item_id INT NOT NULL
 )
 
 CREATE TABLE item_types (

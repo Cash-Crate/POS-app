@@ -39,11 +39,11 @@ func CreateSchema() {
 	}
 
 	_, err = database.DB.Exec(`CREATE TABLE IF NOT EXISTS crud_logging (
-		action_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-		user_id INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+		action_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+		user_id INT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
 		action_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		action_taken TEXT NOT NULL,
-		x_requested_with TEXT NOT NULL
+		item_id INT NOT NULL
 		) `)
 	if err != nil {
 		log.Fatalf("Failed to create table: %v", err)

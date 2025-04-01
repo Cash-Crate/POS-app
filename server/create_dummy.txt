@@ -15,12 +15,14 @@ INSERT INTO logins_logging (user_id, ip_addr, device_type, browser, cpu_arch, ho
 (5, '192.168.1.5', 'Android', 'Opera', 'ARM', 'host5', 'example.com');
 
 -- Insert dummy CRUD logs
-INSERT INTO crud_logging (user_id, action_taken, x_requested_with) VALUES
-(1, 'Created item', 'XMLHttpRequest'),
-(2, 'Updated profile', 'XMLHttpRequest'),
-(3, 'Deleted transaction', 'XMLHttpRequest'),
-(4, 'Viewed order history', 'XMLHttpRequest'),
-(5, 'Changed password', 'XMLHttpRequest');
+INSERT INTO crud_logging (user_id, action_taken, item_id) VALUES
+(1, 'Created item', 1),
+(2, 'Created item', 2),
+(1, 'Created item', 3),
+(3, 'Created item', 4),
+(5, 'Created item', 5);
+(1, 'Updated item 1 attributes', 1),
+(2, 'Deleted item 3', 3),
 
 -- Insert dummy item types
 INSERT INTO item_types (item_type_name) VALUES
