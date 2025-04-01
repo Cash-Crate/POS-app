@@ -73,7 +73,7 @@ const CustomerLogs = () => {
                                         "Host",
                                         "Origin",
                                     ].map((header, index, arr) => (
-                                        <th key={index} className={`table-datawhitespace-nowrap 
+                                        <th key={index} className={`table-data whitespace-nowrap 
                                             ${index === arr.length - 1 ? 'rounded-tr-lg' : ''}`}>
                                             {header}
                                         </th>

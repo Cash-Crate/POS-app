@@ -33,80 +33,85 @@ const barData = [
     { month: "October", desktop: 217 },
     { month: "November", desktop: 285 },
     { month: "December", desktop: 170 }
-  ]
-  const pieData = [
-    { browser: "Electronics", visitors: 275, fill: "var(--color-chart-1)" },
-    { browser: "Clothing", visitors: 200, fill: "var(--color-chart-2)" },
-    { browser: "Books", visitors: 187, fill: "var(--color-chart-3)" },
-    { browser: "Furniture", visitors: 173, fill: "var(--color-chart-4)" },
-    { browser: "Toys", visitors: 90, fill: "var(--color-chart-5)" },
-    { browser: "Beverages", visitors: 90, fill: "var(--color-chart-6)" },
-  ]
+]
+
+// Pie chart data
+// const pieData = [
+//     { browser: "Update", visitors: update, fill: "var(--color-chart-1)" },
+//     { browser: "Delete", visitors: deleteCount, fill: "var(--color-chart-2)" },
+//     { browser: "Create", visitors: create, fill: "var(--color-chart-3)" },
+//     { browser: "Sold", visitors: sold, fill: "var(--color-chart-4)" },
+// ];
+
   const barConfig = {
     desktop: {
       label: "Desktop",
       color: "(var(--chart-1))",
     },
   } 
-  const pieConfig = {
-    Electronics: {
-      label: "Electronics",
-      color: "(var(--chart-1))",
-    },
-    Clothing: {
-      label: "Clothing",
-      color: "(var(--chart-2))",
-    },
-    Books: {
-      label: "Books",
-      color: "(var(--chart-3))",
-    },
-    Furniture: {
-      label: "Furniture",
-      color: "(var(--chart-4))",
-    },
-    Toys: {
-      label: "Toys",
-      color: "(var(--chart-5))",
-    },
-    Beverages: {
-        label: "Beverages",
-        color: "(var(--chart-6))",
-    },
-  }
+
 const Dashboard = () => {
-    const [lowStock, setStocks] = useState([]);
-    const [prodRank, setProdRank] = useState([]);
-    const [graphData, setGraph] = useState([]);
-
-    useEffect(() => {
-        // fetchWithAuth("http://localhost:3000/api/ ", {})    api for low stocks
-        //     .then((response) => response.json())
-        //     .then((data) => setStocks(data))
-        //     .catch((error) => console.error("Error fetching low stock data:", error));
-    }, []);
-
-    useEffect(() => {
-        // fetchWithAuth("http://localhost:3000/api/ ", {})    api for product ranking
-        //     .then((response) => response.json())
-        //     .then((data) => setProdRank(data))
-        //     .catch((error) => console.error("Error fetching product rank data:", error));
-    }, []);
-
-    useEffect(() => {
-        // fetchWithAuth("http://localhost:3000/api/ ", {})    api for sales graph
-        //     .then((response) => response.json())
-        //     .then((data) => setGraph(data))
-        //     .catch((error) => console.error("Error fetching graph data:", error));
-    }, []);
+    const [data, setCrudGraph] = useState([]);  
+    const [pieCpu, setPieCpu] = useState([]);
+    const [pieBrowser, setPieBrowser] = useState([]);
+    const [cpuConfig, setCpuConfig] = useState({});
+    const [browserConfig, setBrowserConfig] = useState({});
     
+    useEffect(() => {
+        fetchWithAuth("http://localhost:3000/api/logins", {}) 
+            .then((response) => response.json())
+            .then((data) => {
+                setCrudGraph(data);  
+                const cpuData = countForChart(data, "cpu_arch");
+                setPieCpu(cpuData);
+                setCpuConfig(generatePieConfig(cpuData));
+                const browserData = countForChart(data, "browser");
+                setPieBrowser(browserData);
+                setBrowserConfig(generatePieConfig(browserData));
+            })
+            .catch((error) => console.error("Error fetching graph data:", error));
+    }, []); 
+    
+    function countForChart(data, key) {
+        const counts = {};
+        data.forEach((entry) => {
+            const value = entry[key];
+            counts[value] = (counts[value] || 0) + 1;
+        });
+        let sortedData = Object.entries(counts)
+            .map(([label, count]) => ({ label, count }))
+            .sort((a, b) => b.count - a.count);
+        let top5 = sortedData.slice(0, 5);
+        let others = sortedData.slice(5);
+    
+        if (others.length > 0) {
+            let othersCount = others.reduce((sum, item) => sum + item.count, 0);
+            top5.push({ label: "Others", count: othersCount });
+        }
+        return top5.map((item, index) => ({
+            crud: item.label,
+            visitors: item.count,
+            fill: `var(--chart-${index + 1})`
+        }));
+    }
+    
+    function generatePieConfig(pieData) {
+        const config = {};
+        pieData.forEach((item, index) => {
+            config[item.crud] = {
+                label: item.crud,
+                color: `var(--chart-${index + 1})`,
+            };
+        });
+        return config;
+    }
+
     return (
         <main className="h-screen w-screen ">
             <div className="flex flex-row h-screen w-screen overflow-hidden ">
                 <Sidebar />
                 <section className="bg-gray-200 w-full p-4 md:p-8 overflow-y-auto"> 
                     <div className='grid lg:grid-cols-2 gap-2.5 xl:h-full'>
-
                         <div className="dashboard p-2.5 md:p-5 justify-center gap-2 "> 
                             <h4 className="text-xl">
                             Today's Sales
@@ -125,26 +130,33 @@ const Dashboard = () => {
                         </div>
                         <div className="dashboard p-5 justify-between">
                             <CardHeader>
-                                <h4>User CPU</h4>
+                                <h4>CPU</h4>
                             </CardHeader>
-                            <div className="">
-                                <ChartContainer config={pieConfig} >
-                                    <PieChart className=''>
-                                        <Pie data={pieData} dataKey="visitors"/>
-                                        <ChartLegend content={<ChartLegendContent nameKey="browser" />}className="flex-wrap [&>*]:basis-1 [&>*]:justify-center"/>
+                            <div>
+                                <ChartContainer config={cpuConfig}>
+                                    <PieChart>
+                                        <Pie data={pieCpu} dataKey="visitors" />
+                                        <ChartLegend 
+                                            content={<ChartLegendContent nameKey="crud" />}
+                                            className="flex-wrap [&>*]:basis-1 [&>*]:justify-center"
+                                        />
                                     </PieChart>
                                 </ChartContainer>
                             </div>
                         </div>
+
                         <div className="dashboard p-5 justify-between">
                             <CardHeader className="items-center pb-0">
                                 <h4>Device/Platform</h4>
                             </CardHeader>
-                            <div className="">
-                                <ChartContainer config={pieConfig} >
+                            <div>
+                                <ChartContainer config={browserConfig}>
                                     <PieChart>
-                                        <Pie data={pieData} dataKey="visitors"/>
-                                        <ChartLegend content={<ChartLegendContent nameKey="browser" />}className="flex-wrap [&>*]:basis-1/4 lg:[&>*]:basis-1 [&>*]:justify-center"/>
+                                        <Pie data={pieBrowser} dataKey="visitors" />
+                                        <ChartLegend 
+                                            content={<ChartLegendContent nameKey="crud" />}
+                                            className="flex-wrap [&>*]:basis-1/4 lg:[&>*]:basis-1 [&>*]:justify-center"
+                                        />
                                     </PieChart>
                                 </ChartContainer>
                             </div>
@@ -152,7 +164,7 @@ const Dashboard = () => {
                         <div className="dashboard p-2.5 md:p-5 gap-2 lg:col-span-2 xl:col-span-1">
                             <CardHeader>
                                 <h4>Sales Overview</h4>
-                                <CardDescription>January - June 2025</CardDescription>
+                                <CardDescription>Work Under Progres</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <ChartContainer config={barConfig}>
@@ -187,13 +199,7 @@ const Dashboard = () => {
                                         </tr>
                                     </thead>
                                     <tbody className="overflow-hidden">
-                                        <tr><td >prd 1</td><td className="text-center">10</td></tr>
-                                        <tr><td>prd 1</td><td className="text-center">10</td></tr>
-                                        <tr><td>prd 1</td><td className="text-center">10</td></tr>
-                                        <tr><td>prd 1</td><td className="text-center">10</td></tr>
-                                        <tr><td>prd 1</td><td className="text-center">10</td></tr>
-                                        <tr><td>prd 1</td><td className="text-center">10</td></tr>
-                                        <tr><td>prd 1</td><td className="text-center">10</td></tr>
+                                        <tr><td>Work under Progress</td></tr>
                                     </tbody>
                                 </table>
                             </div>
