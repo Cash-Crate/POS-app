@@ -5,5 +5,11 @@ type CrudActionsResponse struct {
 	User_id      int    `json:"user_id"`
 	Action_at    string `json:"action_at"`
 	Action_taken string `json:"action_taken"`
-	Item         string `json:"item"`
+	Item_id      int    `json:"item_id"`
+}
+
+type CrudActionsRequest struct {
+	User_id   int    `json:"user_id"`
+	Action_at string `json:"action_at"`
+	Item_id   int    `json:"item_id"`
 }

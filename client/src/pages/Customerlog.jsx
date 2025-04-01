@@ -82,7 +82,7 @@ const CustomerLogs = () => {
                             </thead>
                             <tbody className='space-y-20'>
                                 {filteredItems.map((login) => (
-                                    <tr key={login.email}>
+                                    <tr key={login.login_id}>
                                         <td className="table-data sticky left-0 bg-white">{login.email}</td>
                                         <td className="table-data">{login.login_at}</td>
                                         <td className="table-data">{login.logout_at == "0001-01-01 00:00:00" ? "none" : login.logout_at}</td>

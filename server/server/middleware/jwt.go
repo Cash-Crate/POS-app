@@ -5,7 +5,9 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/Cash-Crate/POS-app/server/models"
 	util "github.com/Cash-Crate/POS-app/server/utilities"
@@ -15,6 +17,11 @@ import (
 type ContextKey string
 
 const UserIDKey ContextKey = "user_id"
+
+var (
+	userSessions = make(map[string]string)
+	sessionLock sync.Mutex
+)
 
 func JWTAuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request){
@@ -60,12 +67,24 @@ func JWTAuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
+		sessionLock.Lock()
+		userSessions[tokenString] = strconv.Itoa(claims.UserID)
+		sessionLock.Unlock()
+
 		ctx := context.WithValue(req.Context(), UserIDKey, claims.UserID)
 		next.ServeHTTP(res, req.WithContext(ctx))
 	})
 }
 
-func GetUserID(ctx context.Context) (string, bool) {
+func GetUserID(ctx context.Context, token string) (string, bool) {
 	userID, ok := ctx.Value(UserIDKey).(string)
-	return userID, ok
+	if ok {
+		return userID, true
+	}
+
+	sessionLock.Lock()
+	defer sessionLock.Unlock()
+
+	userID, exists := userSessions[token]
+	return userID, exists
 }

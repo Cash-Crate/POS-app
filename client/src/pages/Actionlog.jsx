@@ -21,7 +21,7 @@ const ActionLogs = () => {
         return(
             crud.user_id.toString().includes(query) ||
             crud.action_taken?.toLowerCase().includes(query) ||
-            crud.item?.toLowerCase().includes(query) 
+            crud.item_id?.toLowerCase().includes(query) 
         );
     });
 
@@ -41,7 +41,7 @@ const ActionLogs = () => {
                             <ul className='flex gap-2.5 items-center'>
                                 <motion.li  whileTap={{ scale: 0.95 }} className='btn-dark w-full md:w-40 py-2.5 rounded-lg'>
                                     <Link to="/customerlog" className=''>
-                                        <button className=' w-full'>Customer Logs</button>
+                                        <button className=' w-full'>Logins Logs</button>
                                     </Link>
                                 </motion.li>
                                 <motion.li  whileTap={{ scale: 0.95 }}  className='btn-highlight w-full md:w-40  py-2.5 rounded-lg'>
@@ -62,7 +62,6 @@ const ActionLogs = () => {
                                     {[
                                         "Date",
                                         "Operation",
-                                        "Item",
                                     ].map((header, index, arr) => (
                                         <th key={index} className={`table-data whitespace-nowrap 
                                             ${index === arr.length - 1 ? 'rounded-tr-lg' : ''}`}>
@@ -77,7 +76,6 @@ const ActionLogs = () => {
                                         <td className="table-data sticky left-0 bg-white">{crud.user_id}</td>
                                         <td className="table-data">{crud.action_at}</td>
                                         <td className="table-data">{crud.action_taken}</td>
-                                        <td className="table-data">{crud.item}</td>
                                     </tr>
                                 ))}
                             </tbody>
