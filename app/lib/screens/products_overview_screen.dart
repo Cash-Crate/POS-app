@@ -1,9 +1,12 @@
 import 'package:app/services/edit_product.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
 import '../widgets/left_panel.dart';
 import '../models/products.dart';
 import '../services/create_product.dart';
 import '../services/delete_product.dart';
+import '../services/login_service.dart';
+import '../screens/login_screen.dart';
 
 class ProductsOverviewScreen extends StatefulWidget {
   @override
@@ -16,11 +19,31 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   TextEditingController searchController = TextEditingController();
   bool isSearchExpanded = false;
 
+  Future<void> checkUserSession() async {
+    bool expired = await LoginService.isTokenExpired();
+    print("Is token expired? $expired");
+
+    if (expired) {
+      print("Token expired! Logging out...");
+      await LoginService.logout();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _loadProducts();
     searchController.addListener(_filterProducts);
+    checkUserSession(); // Run initially
+
+    // Check session every 10 seconds
+    Timer.periodic(Duration(minutes: 5), (timer) {
+      checkUserSession();
+    });
   }
 
   Future<void> _loadProducts() async {

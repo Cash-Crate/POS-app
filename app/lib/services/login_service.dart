@@ -46,11 +46,17 @@ class LoginService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? expiresAtString = prefs.getString('expiresAt');
 
+    print("Stored expiration time in SharedPreferences: $expiresAtString");
+
     if (expiresAtString == null) return true;
 
     DateTime expiresAt = DateTime.parse(expiresAtString);
+    print("Current time: ${DateTime.now()}");
+    print("Expires at: $expiresAt");
+
     return DateTime.now().isAfter(expiresAt);
   }
+
 
   //REFRESH TOKEN FUNCTION
   static Future<String?> refreshToken() async {
@@ -87,13 +93,20 @@ class LoginService {
 
   //GET VALID ACCESS TOKEN 
   static Future<String?> getAccessToken() async {
-    if (await isTokenExpired()) {
-      return await refreshToken(); // Refresh token if expired
-    }
+  SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('accessToken');
+  if (await isTokenExpired()) {
+    String? newAccessToken = await refreshToken();
+    if (newAccessToken == null) {
+      await logout(); 
+      return null;
+    }
+    return newAccessToken;
   }
+
+  return prefs.getString('accessToken');
+}
+
 
   // LOGOUT FUNCTION
   static Future<void> logout() async {

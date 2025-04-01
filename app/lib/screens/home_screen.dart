@@ -3,6 +3,9 @@ import '/models/products.dart';
 import '/widgets/product_card.dart';
 import '/widgets/left_panel.dart';
 import '/widgets/right_panel.dart';
+import 'dart:async';
+import '../screens/login_screen.dart';
+import '../services/login_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,10 +26,29 @@ class _HomeScreenState extends State<HomeScreen> {
   List<String> categories = ["All"];
   List<Product> products = [];
 
+  Future<void> checkUserSession() async {
+    bool expired = await LoginService.isTokenExpired();
+    print("Is token expired? $expired");
+
+    if (expired) {
+      print("Token expired! Logging out...");
+      await LoginService.logout();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _loadProducts();
+    checkUserSession(); 
+   
+    Timer.periodic(Duration(minutes: 5), (timer) {
+      checkUserSession();
+    });
   }
 
   void updateCart() {
@@ -57,15 +79,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
   void filterByCategory(String category) {
-      setState(() {
-        selectedCategory = category;
-        filterProducts(searchController.text);
-      });
-    }
-    Future<void> _loadProducts() async {
+    setState(() {
+      selectedCategory = category;
+      filterProducts(searchController.text);
+    });
+  }
+  Future<void> _loadProducts() async {
     try {
       List<Product> fetchedProducts = await fetchProducts();
-      print("Fetched products: $fetchedProducts"); // Debug print
+      print("Fetched products: $fetchedProducts"); 
       setState(() {
         products = List.from(fetchedProducts);
         filteredProducts = List.from(fetchedProducts);

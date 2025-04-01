@@ -31,7 +31,7 @@ class Product {
       description: json['description'] ?? '',
       price: (json["price"] as num?)?.toDouble() ?? 0.0,
       image: hasValidImage
-          ? "http://localhost:3000/uploads/$imageUrl"
+          ? "http://localhost:3000/uploads/$imageUrl" //change this to image api
           : "assets/images/placeholder.jpg", 
       category: json["item_type"] ?? "Uncategorized",
     );

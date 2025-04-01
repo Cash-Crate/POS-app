@@ -90,7 +90,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
     });
   }
 
-  Future<void> addProduct() async {
+Future<void> addProduct() async {
   final url = Uri.parse('http://localhost:3000/api/items/create');
 
   if (selectedCategoryName == null) {
