@@ -1,90 +1,31 @@
-import { useState } from 'react'
-import './App.css'
-import { useEffect } from 'react'
+import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import Home from './pages/Home';
+import Test from './pages/test';
+import Items from './pages/GetItems';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import Documentation from './pages/Documentation';
+import ProductsTable from './pages/Products';
+import CustomerLogs from './pages/Customerlog';
+import ActionLogs from './pages/Actionlog';
+import './App.css';
 
 function App() {
-  const [users, setUsers] = useState([])
-  const [name, setName] = useState("")
-  const [birthYear, setBirthYear] = useState(0)
-
-  useEffect(() => {
-    fetchUsers();
-  }, [])
-
-  const fetchUsers = async () => {
-    try {
-      const res = await fetch('http://localhost:8000/api/users/')
-      const data = await res.json()
-      setUsers(data)
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  const addUser = async () => {
-    const userData = {
-      name,
-      birth_year: birthYear
-    }
-    try {
-      const res = await fetch('http://localhost:8000/api/users/create/', {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData)
-      })
-
-      const data = await res.json()
-      setUsers(prev => [...prev, data])
-
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  const delUser = async (id, index) => {
-    try {
-      await fetch(`http://localhost:8000/api/users/${id}/`, {
-        method: "DELETE",
-      })
-
-      setUsers(prev => (prev.filter((_, i) => i !== index)))
-
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
   return (
-    <>
-      <h1> Users Website </h1>
-
-      <div>
-        <input type="text"
-          placeholder="Enter name"
-          onChange={(e) => setName(e.target.value)}
-        />
-        <input type="number"
-          placeholder="Enter year"
-          onChange={(e) => setBirthYear(e.target.value)}
-        />
-        <button onClick={addUser}>Add user</button>
-      </div>
-      {users.map((user, index) => (
-        <div key={index}>
-            <p>
-              Name: {user.name}
-              <button
-                onClick={() => delUser(user.id, index)}>
-                X
-              </button>
-            </p>
-          <p> Birth Year: {user.birth_year} </p>
-        </div>
-      ))}
-    </>
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/test" element={<Test />} />
+        <Route path="/items" element={<Items />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path='/products' element={<ProductsTable/>} ></Route>
+        <Route path="/customerlog" element={<CustomerLogs />} />
+        <Route path="/actionlog" element={<ActionLogs />} />
+        <Route path="/documentation" element={<Documentation />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
