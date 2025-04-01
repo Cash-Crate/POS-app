@@ -1,12 +1,24 @@
 import image from '/CashCrateLogo.webp'
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "motion/react"
+import { fetchWithAuth } from '../utils/authUtils';
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    //fetch('http://localhost:3000/api/logins/create').
+    //  then(response => response.json()).
+    //  then(data => console.log(data))
+
+    //fetch('http://ip-api.com/json/120.29.111.99').
+    //  then(response => response.json()).
+    //  then(data => console.log(data))
+
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,9 +31,9 @@ const Login = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
-          email, 
-          password 
+        body: JSON.stringify({
+          email,
+          password
         }),
       });
 
@@ -38,6 +50,9 @@ const Login = () => {
       const expiresAt = new Date(new Date().getTime() + 15 * 60000).toISOString()
       localStorage.setItem('expiresAt', expiresAt)
 
+      const user_id = localStorage.getItem('userID')
+      await getUserID(user_id)
+
       window.location.href = '/dashboard';
 
     } catch (err) {
@@ -48,7 +63,26 @@ const Login = () => {
     }
   };
 
- return (
+  const getUserID = async (user_id) => {
+    try {
+      const res = await fetchWithAuth('http://localhost:3000/api/logins/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id,
+        })
+      })
+      const data = await res.json()
+      localStorage.setItem('loginID', data.login_id)
+
+    } catch (err) {
+      console.error('Error getting user ID:', err);
+    }
+  }
+
+  return (
     <main className="h-screen flex flex-col">
       <section className="bg-gradient h-full flex items-center justify-center py-5 px-4 md:px-8 xl:px-12">
         <div className='card flex flex-col gap-5 md:gap-5 px-5 py-7.5 lg:max-w-[500px] xl:max-w-[520px]'>
@@ -70,28 +104,28 @@ const Login = () => {
           <form className='flex flex-col gap-2.5' onSubmit={handleSubmit}>
             <div className='flex flex-col gap-2'>
               <label htmlFor="email">Email</label>
-              <motion.input 
+              <motion.input
                 id="email"
-                whileTap={{ scale: 0.95 }} 
+                whileTap={{ scale: 0.95 }}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 type="text"
-                placeholder="your@email.com" 
-                className="input p-2 border-2 rounded-lg" 
-                required 
+                placeholder="your@email.com"
+                className="input p-2 border-2 rounded-lg"
+                required
               />
             </div>
             <div className='flex flex-col gap-2'>
               <label htmlFor="password">Password</label>
-              <motion.input 
+              <motion.input
                 id="password"
-                whileTap={{ scale: 0.95 }} 
+                whileTap={{ scale: 0.95 }}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                type="password" 
-                placeholder="********" 
-                className="input p-2 border-2 rounded-lg" 
-                required 
+                type="password"
+                placeholder="********"
+                className="input p-2 border-2 rounded-lg"
+                required
               />
             </div>
             <motion.button

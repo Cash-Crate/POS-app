@@ -11,4 +11,5 @@ require (
 require (
 	github.com/golang-jwt/jwt/v5 v5.2.2 // indirect
 	github.com/kittipat1413/go-common v0.11.0 // indirect
+	github.com/mileusna/useragent v1.3.5 // indirect
 )

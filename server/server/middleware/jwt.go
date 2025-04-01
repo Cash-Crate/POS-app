@@ -16,7 +16,7 @@ type ContextKey string
 
 const UserIDKey ContextKey = "user_id"
 
-func JWTAuthMiddleware(next http.Handler) http.Handler {
+func JWTAuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request){
 		authHeader := req.Header.Get("Authorization")
 		if authHeader == "" {

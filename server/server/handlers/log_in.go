@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/Cash-Crate/POS-app/server/models"
@@ -90,6 +91,49 @@ func Login(res http.ResponseWriter, req *http.Request) {
 	}
 
 	json.NewEncoder(res).Encode(response)
+}
+
+func Logout(res http.ResponseWriter, req *http.Request) {
+	res.Header().Set("Content-Type", "application/json")
+
+	authHeader := req.Header.Get("Authorization")
+	if authHeader == "" {
+		util.ErrorRes(res, http.StatusUnauthorized, "Authorization header required")
+		return
+	}
+
+	tokenParts := strings.Split(authHeader, " ")
+	if len(tokenParts) != 2 || tokenParts[0] != "Bearer" {
+		util.ErrorRes(res, http.StatusUnauthorized, "Invalid authorization format")
+		return
+	}
+
+	// accessToken := tokenParts[1]
+
+	err := json.NewDecoder(req.Body).Decode(&models.LogoutReq)
+	if err != nil {
+		util.ErrorRes(res, http.StatusBadRequest, "Invalid request format")
+		return
+	}
+
+	signingKey := []byte(os.Getenv("SIGNING_KEY"))
+	if signingKey == nil {
+		util.ErrorRes(res, http.StatusInternalServerError, "Signing key not found")
+		log.Fatalf("Signing key not found")
+		return
+	}
+
+	_, err = jwtutil.NewJWTManager(jwtutil.HS256, signingKey)
+	if err != nil {
+		log.Printf("Failed to create JWTManager: %v", err)
+		util.ErrorRes(res, http.StatusInternalServerError,
+			"Authentication service unavailable")
+		return
+	}
+
+	json.NewEncoder(res).Encode(util.OkResponse{
+		Message: "Successfully logged out",
+	})
 }
 
 func RefreshToken(res http.ResponseWriter, req *http.Request) {

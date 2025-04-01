@@ -12,7 +12,7 @@ func GetCrudActionsQuery() (*sql.Rows, error) {
 		user_id,
 		action_at,
 		action_taken,
-		x_requested_with from crud_logging`)
+		item from crud_logging`)
 	if err != nil {
 		return nil, err
 	}
