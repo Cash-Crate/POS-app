@@ -58,7 +58,7 @@ const Dashboard = () => {
     const [browserConfig, setBrowserConfig] = useState({});
     
     useEffect(() => {
-        fetchWithAuth("http://localhost:3000/api/logins", {}) 
+        fetchWithAuth("https://api.cashcrate.shop/api/logins", {}) 
             .then((response) => response.json())
             .then((data) => {
                 setCrudGraph(data);  
