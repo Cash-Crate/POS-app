@@ -13,7 +13,7 @@ export const refreshToken = async () => {
             throw new Error('No refresh token available');
         }
 
-        const response = await fetch('/api/refresh-token', {
+        const response = await fetch('http://localhost:3000/api/refresh', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

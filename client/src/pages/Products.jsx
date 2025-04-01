@@ -31,8 +31,8 @@ const ProductsTable = () => {
         item_type: ""
     });
     const [newAttr, setAttr] = useState({
-        attr_value: "",
-        attr_name: ""
+        attr_value: null,
+        attr_name: null
     });
     
     useEffect(() => {
@@ -40,7 +40,7 @@ const ProductsTable = () => {
         .then((response) => response.json())
         .then((data) => setProducts(data))
         .catch((error) => console.error("Error fetching data:", error));
-    }, []);
+    }, [items]);
 
     const prodAttr = {};
     items.forEach((item) => {
@@ -70,7 +70,6 @@ const ProductsTable = () => {
         setNewItem({ item_name: "", item_desc: "", item_image: "", price: "", quantity: "", item_type: "" });
         addAttr(addedItem.id);
         openAddModal(false);
-        addAttr(addedItem.id);
     };
 
     const addAttr = async (id) => {
@@ -81,7 +80,6 @@ const ProductsTable = () => {
         console.log("success");
         setProducts((prevItems) => [...prevItems, addedAttr]);
         setAttr({ attr_name: "", attr_value: ""});
-        window.location.reload();
     }; 
     
     const updateAttr = async (editItem) => {
@@ -124,6 +122,7 @@ const ProductsTable = () => {
         const query = searchQuery.toLowerCase();
         const typeMatch = selectedType === "All" || item.item_type === selectedType;
         return typeMatch && (
+            item.item_id?.toString().includes(query) ||
             item.item_name?.toLowerCase().includes(query) ||
             item.description?.toLowerCase().includes(query) ||
             item.item_type?.toLowerCase().includes(query)
@@ -169,9 +168,10 @@ const ProductsTable = () => {
                             <thead>
                             <tr className="btn-dark text-center">
                                 <th className="btn-dark sticky left-0 px-4 py-2 text-center rounded-tl-lg">
-                                    Name
+                                    Item ID
                                 </th>
                                 {[
+                                "Name",
                                 "Description",
                                 "Image",
                                 "Price",
@@ -192,7 +192,8 @@ const ProductsTable = () => {
                             <tbody className="overflow-hidden">
                             {filteredItems.map((item) => (
                                 <tr key={item.item_id} id={item.item_type}>
-                                    <td className="px-4 py-2 sticky left-0 bg-background whitespace-nowrap">{item.item_name}</td>
+                                    <td className="px-4 py-2 sticky left-0 bg-background whitespace-nowrap">{item.item_id}</td>
+                                    <td className="table-data text-center">{item.item_name}</td>
                                     <td className="table-data text-center">{item.description}</td>
                                     <td className="table-data text-center min-w-5 max-w-10">
                                         <img src={item.item_image} alt={item.item_name} className="aspect-square object-cover w-full" />

@@ -30,7 +30,7 @@ func GetCrudActions(res http.ResponseWriter, req *http.Request) {
 			&action.User_id,
 			&action_at,
 			&action.Action_taken,
-			&action.Item)
+			&action.Item_id)
 		if err != nil {
 			util.ErrorRes(res, http.StatusInternalServerError,
 				fmt.Sprintf("Could not decode request body %s", err))
