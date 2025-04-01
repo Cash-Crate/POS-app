@@ -2,6 +2,7 @@ package queries
 
 import (
 	"database/sql"
+	"errors"
 
 	db "github.com/Cash-Crate/POS-app/server/database"
 	"github.com/Cash-Crate/POS-app/server/models"
@@ -240,6 +241,19 @@ func UpdateItemQuery(item *models.ItemRequest, id int64) (int64, error) {
 }
 
 func SellItemQuery(id, quantity int64) (int64, error) {
+	var quanDB int64
+	err := db.DB.QueryRow(`SELECT quantity 
+		FROM items
+		WHERE item_id = $1`, id).Scan(&quanDB)
+	if err != nil {
+		return 0, err
+	}
+
+	if quanDB < quantity {
+		return 0,
+		errors.New("Quantity is less than the quantity to sell")
+	}
+
 	result, err := db.DB.Exec(`UPDATE items
 		SET quantity = quantity - $2
 		WHERE item_id = $1

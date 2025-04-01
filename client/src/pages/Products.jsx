@@ -192,9 +192,9 @@ const ProductsTable = () => {
                             <tbody className="overflow-hidden">
                             {filteredItems.map((item) => (
                                 <tr key={item.item_id} id={item.item_type}>
-                                    <td className="px-4 py-2 sticky left-0 bg-background whitespace-nowrap">{item.item_id}</td>
-                                    <td className="table-data text-center">{item.item_name}</td>
-                                    <td className="table-data text-center">{item.description}</td>
+                                    <td className="px-4 py-2 sticky left-0 bg-background">{item.item_id}</td>
+                                    <td className="table-data text-center min-w-5 max-w-10">{item.item_name}</td>
+                                    <td className="table-data text-center min-w-5 max-w-10">{item.description}</td>
                                     <td className="table-data text-center min-w-5 max-w-10">
                                         <img src={item.item_image} alt={item.item_name} className="aspect-square object-cover w-full" />
                                     </td>
