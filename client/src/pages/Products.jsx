@@ -36,7 +36,7 @@ const ProductsTable = () => {
     });
     
     useEffect(() => {
-        fetchWithAuth("http://localhost:3000/api/items", {})
+        fetchWithAuth("https://api.cashcrate.shop/api/items", {})
         .then((response) => response.json())
         .then((data) => setProducts(data))
         .catch((error) => console.error("Error fetching data:", error));
@@ -61,7 +61,7 @@ const ProductsTable = () => {
     };
     
     const addProduct = async () => {
-        const response = await fetchWithAuth("http://localhost:3000/api/items/create", 
+        const response = await fetchWithAuth("https://api.cashcrate.shop/api/items/create", 
             {method: "POST",headers: { "Content-Type": "application/json" },
             body: JSON.stringify(newItem),});
         const addedItem = await response.json();
@@ -74,7 +74,7 @@ const ProductsTable = () => {
 
     const addAttr = async (id) => {
         console.log(newAttr);
-        const response = await fetchWithAuth(`http://localhost:3000/api/items/attrs/create/${id}`, 
+        const response = await fetchWithAuth(`https://api.cashcrate.shop/api/items/attrs/create/${id}`, 
             {method: "POST",headers: { "Content-Type": "application/json" },body: JSON.stringify(newAttr),});
             const addedAttr = await response.json();
         console.log("success");
@@ -83,7 +83,7 @@ const ProductsTable = () => {
     }; 
     
     const updateAttr = async (editItem) => {
-        const response = await fetchWithAuth(`http://localhost:3000/api/items/attrs/${editItem.item_id}/${editItem.attributes?.[0]?.attr_name}`, {
+        const response = await fetchWithAuth(`https://api.cashcrate.shop/api/items/attrs/${editItem.item_id}/${editItem.attributes?.[0]?.attr_name}`, {
             method: "PUT",headers: {"Content-Type": "application/json",},
             body: JSON.stringify({
                 attr_value: editItem.attributes?.[0]?.attr_value,
@@ -92,7 +92,7 @@ const ProductsTable = () => {
     };  
     
     const updateProduct = async (editItem, openEditModal) => {
-        const response = await fetchWithAuth(`http://localhost:3000/api/items/${editItem.item_id}`, {
+        const response = await fetchWithAuth(`https://api.cashcrate.shop/api/items/${editItem.item_id}`, {
             method: "PUT",headers: {"Content-Type": "application/json",},
             body: JSON.stringify({
                 item_name: editItem.item_name,
@@ -109,7 +109,7 @@ const ProductsTable = () => {
     const deleteItem = async () => {
         if (!deleteItemId) return;
         try {
-            await fetchWithAuth(`http://localhost:3000/api/items/${deleteItemId}`, { method: "DELETE" });
+            await fetchWithAuth(`https://api.cashcrate.shop/api/items/${deleteItemId}`, { method: "DELETE" });
             setProducts((prevItems) => prevItems.filter(item => item.item_id !== deleteItemId));
             openDeleteModal(false);
             setDeleteItemId(null);

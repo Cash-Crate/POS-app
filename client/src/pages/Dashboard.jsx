@@ -80,21 +80,21 @@ const Dashboard = () => {
     const [graphData, setGraph] = useState([]);
 
     useEffect(() => {
-        // fetchWithAuth("http://localhost:3000/api/ ", {})    api for low stocks
+        // fetchWithAuth("https://api.cashcrate.shop/api/ ", {})    api for low stocks
         //     .then((response) => response.json())
         //     .then((data) => setStocks(data))
         //     .catch((error) => console.error("Error fetching low stock data:", error));
     }, []);
 
     useEffect(() => {
-        // fetchWithAuth("http://localhost:3000/api/ ", {})    api for product ranking
+        // fetchWithAuth("https://api.cashcrate.shop/api/ ", {})    api for product ranking
         //     .then((response) => response.json())
         //     .then((data) => setProdRank(data))
         //     .catch((error) => console.error("Error fetching product rank data:", error));
     }, []);
 
     useEffect(() => {
-        // fetchWithAuth("http://localhost:3000/api/ ", {})    api for sales graph
+        // fetchWithAuth("https://api.cashcrate.shop/api/ ", {})    api for sales graph
         //     .then((response) => response.json())
         //     .then((data) => setGraph(data))
         //     .catch((error) => console.error("Error fetching graph data:", error));
