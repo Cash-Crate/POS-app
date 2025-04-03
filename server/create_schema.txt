@@ -12,7 +12,7 @@ CREATE TABLE users (
 CREATE TABLE logins_logging (
     login_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     user_id INTEGER NOT NULL REFERENCES users(user_id),
-    login_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Manila',
+    login_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     logout_at TIMESTAMPTZ,
     ip_addr INET NOT NULL,
     device_type TEXT NOT NULL,
@@ -45,7 +45,7 @@ CREATE TABLE items (
 )
 
 CREATE TABLE item_attributes (
-    item_id INTEGER NOT NULL REFERENCES items(item_id),
+    item_id INTEGER NOT NULL REFERENCES items(item_id) ON DELETE CASCADE,
     PRIMARY KEY(item_id, attr_name),
     attr_name TEXT NOT NULL,
     attr_value TEXT NOT NULL
